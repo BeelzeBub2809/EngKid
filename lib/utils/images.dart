@@ -1,0 +1,355 @@
+class LocalImage {
+  // background
+  static const _backgroundUrl = "assets/backgrounds";
+  static const declareParentCodeBg = "$_backgroundUrl/declare_parent_code.png";
+  static const safetyGuideBg = "$_backgroundUrl/safety_guide.png";
+  static const gradeBg = "$_backgroundUrl/grade.png";
+  static const topicBg = "$_backgroundUrl/topic.png";
+  static const quizBg = "$_backgroundUrl/quiz.png";
+  static const readBg = "$_backgroundUrl/read.png";
+  static const coloringBg = "$_backgroundUrl/coloring.png";
+  static const drawingBg = "$_backgroundUrl/drawing.png";
+  static const readingBg = "$_backgroundUrl/reading.png";
+  static const jigsawPuzzleBg = "$_backgroundUrl/jigsaw_puzzle.png";
+  static const spaceBg = "$_backgroundUrl/space.png";
+  static const feedbackFormBg = "$_backgroundUrl/feedback_form.png";
+  static const feedbackOptionsBg = "$_backgroundUrl/feedback_options.png";
+  static const dropdownBg = "$_backgroundUrl/dropdown.png";
+  static const areaTextBg = "$_backgroundUrl/area_text.png";
+  static const feedbackCommentBg = "$_backgroundUrl/feedback_comment.png";
+  static const dropDown2Bg = "$_backgroundUrl/dropdown2.png";
+  static const messageBg = "$_backgroundUrl/message.png";
+  // image
+  static const _imageUrl = "assets/images";
+  static const shapeLogin = "$_imageUrl/shape_login.png";
+  static const start = "$_imageUrl/start.png";
+  static const mascotExcited = "$_imageUrl/mascot_excited.png";
+  static const iconShare = "$_imageUrl/icon_share.png";
+  static const children = "$_imageUrl/children.png";
+
+  static const mascotWelcome = "$_imageUrl/mascot_tiger.png";
+  static const button0 = "$_imageUrl/button0.png";
+  static const button1 = "$_imageUrl/button1.png";
+  static const button2 = "$_imageUrl/button2.png";
+  static const button3 = "$_imageUrl/button3.png";
+  static const button4 = "$_imageUrl/button4.png";
+  static const button5 = "$_imageUrl/button5.png";
+  static const button6 = "$_imageUrl/button6.png";
+  static const button7 = "$_imageUrl/button7.png";
+  static const button8 = "$_imageUrl/button8.png";
+  static const button9 = "$_imageUrl/button9.png";
+  static const buttonClear = "$_imageUrl/buttonclear.png";
+  static const buttonEnter = "$_imageUrl/buttonenter.png";
+  static const buttonClose = "$_imageUrl/buttonclose.png";
+  static const shapePin = "$_imageUrl/shape_pin.png";
+  static const inputPin = "$_imageUrl/input_pin.png";
+  static const personalInfo = "$_imageUrl/personal_info.png";
+  static const report = "$_imageUrl/report.png";
+  static const setting = "$_imageUrl/setting.png";
+  static const library = "$_imageUrl/library.png";
+  static const guideLine = "$_imageUrl/guide_line.png";
+  static const appInfo = "$_imageUrl/app_info.png";
+  static const name = "$_imageUrl/name.png";
+  static const swiperNext = "$_imageUrl/swiper_next.png";
+  static const swiperBack = "$_imageUrl/swiper_back.png";
+  static const shapeGuide = "$_imageUrl/shape_guide.png";
+  static const buttonQuiz = "$_imageUrl/buttonquiz.png";
+  static const takeSurvey = "$_imageUrl/take_survey.png";
+  static const watchAgain = "$_imageUrl/watch_again.png";
+  static const surveyOnline = "$_imageUrl/survey_online.png";
+  static const surveyRadioChecked = "$_imageUrl/survey_radio_checked.png";
+  static const surveyRadioUnchecked = "$_imageUrl/survey_radio_unchecked.png";
+  static const radioLangChecked = "$_imageUrl/radio_lang_checked.png";
+  static const radioLangUnchecked = "$_imageUrl/radio_lang_unchecked.png";
+  static const radioLangChecked2 = "$_imageUrl/radio_lang_checked2.png";
+  static const radioLangUnchecked2 = "$_imageUrl/radio_lang_unchecked2.png";
+  static const surveyQuiz = "$_imageUrl/survey_quiz.png";
+  static const surveyQuizShape = "$_imageUrl/survey_quiz_shape.png";
+  static const surveyCorrect = "$_imageUrl/survey_correct.png";
+  static const surveyIncorrect = "$_imageUrl/survey_incorrect.png";
+  static const mailForgotpassword = "$_imageUrl/mail_forgotpassword.png";
+  static const managementSpaceTabSelected =
+      "$_imageUrl/management_space_tab_selected.png";
+  static const managementSpaceTabUnselected =
+      "$_imageUrl/management_space_tab_unselected.png";
+  static const menuSelected = "$_imageUrl/menu_selected.png";
+  static const buttonHome = "$_imageUrl/buttonhome.png";
+  static const elibraryBackground = "$_imageUrl/elibrary_background.png";
+  static const buttonElibrary = "$_imageUrl/button_elibrary.png";
+  static const categoryElibrary = "$_imageUrl/elibrary_category.png";
+  static const bookElibrary = "$_imageUrl/elibrary_book.png";
+  static const bookElibraryDark = "$_imageUrl/elibrary_book_dark.png";
+  static const bookSmallElibrary = "$_imageUrl/elibrary_book_small.png";
+
+  static const bookBarElibrary = "$_imageUrl/elibrary_book_bar.png";
+  static const sampleThumbnail = "$_imageUrl/sample_thumbnail.png";
+  static const sampleThumbnail2 = "$_imageUrl/sample_thumbnail2.png";
+
+  static const boxElibrary = "$_imageUrl/elibrary_box.png";
+  static const languageBox = "$_imageUrl/language_box.png";
+  static const dropDown = "$_imageUrl/dropdown.png";
+  static const languageOptionBox = "$_imageUrl/language_option_box.png";
+  static const choosedLanguage = "$_imageUrl/choosed_language.png";
+
+  static const number1 = "$_imageUrl/number_1.png";
+  static const number2 = "$_imageUrl/number_2.png";
+  static const number3 = "$_imageUrl/number_3.png";
+  static const number4 = "$_imageUrl/number_4.png";
+  static const number5 = "$_imageUrl/number_5.png";
+  static const number6 = "$_imageUrl/number_6.png";
+  static const number7 = "$_imageUrl/number_7.png";
+  static const number8 = "$_imageUrl/number_8.png";
+  static const number9 = "$_imageUrl/number_9.png";
+  static const number10 = "$_imageUrl/number_10.png";
+  static const shapePersonalInfo = "$_imageUrl/shape_personal_info.png";
+  static const avatarParent = "$_imageUrl/avatar_parent.png";
+  static const logo = "$_imageUrl/logo.png";
+  static const textLogo = "$_imageUrl/text_logo.png";
+  static const viFlag = "$_imageUrl/vi_flag.png";
+  static const shapeAvatar = "$_imageUrl/shape_avatar.png";
+  static const shapeName = "$_imageUrl/shape_name.png";
+  static const volumnButton = "$_imageUrl/volumn_button.png";
+  static const volumnSpeak = "$_imageUrl/volumn_speak.png";
+  static const volumnMusic = "$_imageUrl/volumn_music.png";
+  static const volumnVideoMute = "$_imageUrl/mute.png";
+  static const volumnVideoUnmute = "$_imageUrl/unmute.png";
+  static const shapeStarBoardTotal = "$_imageUrl/shape_star_board_total.png";
+  static const warningTime = "$_imageUrl/warning_time.png";
+  static const shapeButtonSubmit = "$_imageUrl/shape_button_submit.png";
+  static const shapeBook = "$_imageUrl/shape_book.png";
+  static const shapeSpaceParent = "$_imageUrl/shape_space_parent.png";
+  static const shapeSpaceStudent = "$_imageUrl/shape_space_student.png";
+  static const logout = "$_imageUrl/logout.png";
+  static const googleTranslate = "$_imageUrl/google_translate.png";
+
+  // grade
+  static const pig = "$_imageUrl/grade1.png";
+  static const sheep = "$_imageUrl/grade2.png";
+  static const hippo = "$_imageUrl/grade3.png";
+  static const zebra = "$_imageUrl/grade4.png";
+  static const panda = "$_imageUrl/grade5.png";
+  static const gradeName = "$_imageUrl/grade_name.png";
+  static const gradeShape = "$_imageUrl/grade_shape.png";
+  static const backButton = "$_imageUrl/back_button.png";
+  static const nextButton = "$_imageUrl/next_button.png";
+  static const numOfStar = "$_imageUrl/num_of_star.png";
+  static const gradeShapeDisable = "$_imageUrl/grade_shape_disable.png";
+  static const gradeNameDisable = "$_imageUrl/grade_name_disable.png";
+  static const lock = "$_imageUrl/lock.png";
+  // topic
+  static const lessonCompleted = "$_imageUrl/lesson_completed.png";
+  static const lessonLocked = "$_imageUrl/lesson_locked.png";
+  static const lessonProgress = "$_imageUrl/lesson_progress.png";
+  static const progressLessons = "$_imageUrl/progress_lessons.png";
+  static const progressQuiz = "$_imageUrl/progress_quiz.png";
+  static const progressStars = "$_imageUrl/progress_stars.png";
+  static const progressTopic = "$_imageUrl/progress_topic.png";
+  static const star = "$_imageUrl/star.png";
+  static const starGrey = "$_imageUrl/star_grey.png";
+  static const shapeTopic = "$_imageUrl/shape_topic.png";
+  static const topicImage = "$_imageUrl/topic_image.png";
+  static const topicImageChoosed = "$_imageUrl/topic_image_choosed.png";
+  static const topicName = "$_imageUrl/topic_name.png";
+  static const topicNameChoosed = "$_imageUrl/topic_name_choosed.png";
+  static const shapeStar = "$_imageUrl/shape_star.png";
+  static const progress = "$_imageUrl/progress.png";
+  static const progressDoing = "$_imageUrl/progress_doing.png";
+  static const insideProgress = "$_imageUrl/inside_progress.png";
+  static const selectBox = "$_imageUrl/select_box.png";
+  static const nextAcc = "$_imageUrl/next_acc.png";
+  static const backAcc = "$_imageUrl/back_acc.png";
+  static const shapeButton = "$_imageUrl/shape_button.png";
+  static const questionBackButton = "$_imageUrl/question_back_button.png";
+  static const questionNextButton = "$_imageUrl/question_next_button.png";
+  static const questionResetButton = "$_imageUrl/question_reset_button.png";
+  static const mascotBorder = "$_imageUrl/mascot_border.png";
+  static const effectAfterMascot = "$_imageUrl/effect_after_mascot.png";
+  static const effectAfterMascotDot = "$_imageUrl/effect_after_mascot_dot.png";
+  // lesson
+  static const playButton = "$_imageUrl/play_button.png";
+  static const pauseButton = "$_imageUrl/pause_button.png";
+  static const refreshButton = "$_imageUrl/refresh_button.png";
+  static const downloadButton = "$_imageUrl/download_button.png";
+  static const level1 = "$_imageUrl/level_1.png";
+  static const level2 = "$_imageUrl/level_2.png";
+  static const level3 = "$_imageUrl/level_3.png";
+  static const shapeQuiz = "$_imageUrl/shape_quiz.png";
+  static const shapeQuizTitle = "$_imageUrl/shape_quiz_title.png";
+  static const a = "$_imageUrl/a.png";
+  static const b = "$_imageUrl/b.png";
+  static const c = "$_imageUrl/c.png";
+  static const d = "$_imageUrl/d.png";
+  static const aChecked = "$_imageUrl/a_checked.png";
+  static const bChecked = "$_imageUrl/b_checked.png";
+  static const cChecked = "$_imageUrl/c_checked.png";
+  static const dChecked = "$_imageUrl/d_checked.png";
+  static const submitQuiz = "$_imageUrl/submit_quiz.png";
+  static const checkboxChecked = "$_imageUrl/checkbox_checked.png";
+  static const checkboxCheckedBlue = "$_imageUrl/checkbox_checked_blue.png";
+  static const checkboxUnChecked = "$_imageUrl/checkbox_unchecked.png";
+  static const trashCan = "$_imageUrl/trash_can.png";
+  static const shapeScene = "$_imageUrl/shape_scene.png";
+  static const matchedA = "$_imageUrl/matched_a.png";
+  static const matchedB = "$_imageUrl/matched_b.png";
+  static const matched2A = "$_imageUrl/matched_2_a.png";
+  static const matched2B = "$_imageUrl/matched_2_b.png";
+  static const matchedBDot = "$_imageUrl/matched_b_dot.png";
+  static const matchedBBackground = "$_imageUrl/matched_b_background.png";
+  static const shapeDtSmall = "$_imageUrl/shape_dt_small.png";
+  static const shapeDtLarge = "$_imageUrl/shape_dt_large.png";
+  static const readPlay = "$_imageUrl/read_play.png";
+  static const readPause = "$_imageUrl/read_pause.png";
+  static const readPlayRed = "$_imageUrl/read_play_red.png";
+  static const readPauseRed = "$_imageUrl/read_pause_red.png";
+  static const readPauseNew = "$_imageUrl/read_pause_new.png";
+  static const readRecord = "$_imageUrl/read_record.png";
+  static const readBoard = "$_imageUrl/read_board.png";
+  static const mic = "$_imageUrl/mic.png";
+  static const readingHeadphone = "$_imageUrl/reading_headphone.png";
+  static const readingMic = "$_imageUrl/reading_mic.png";
+  static const readingTrash = "$_imageUrl/reading_trash.png";
+  static const questionCloseWarning = "$_imageUrl/question_close_warning.png";
+  static const questionSuccessButton = "$_imageUrl/question_success_button.png";
+  static const questionWarningButton = "$_imageUrl/question_warning_button.png";
+  static const questionSuccessButton2 =
+      "$_imageUrl/question_success_button2.png";
+  static const questionWarningButton2 =
+      "$_imageUrl/question_warning_button2.png";
+  static const questionWarning = "$_imageUrl/question_warning.png";
+  static const shapeQuestionWarning = "$_imageUrl/shape_question_warning.png";
+  static const shapeQuestionFail = "$_imageUrl/shape_question_fail.png";
+  static const shapeQuestionSuccess = "$_imageUrl/shape_question_success.png";
+  static const circleBlue = "$_imageUrl/circle_blue.png";
+  static const matchShort = "$_imageUrl/match_short.png";
+  static const matchLong = "$_imageUrl/match_long.png";
+  static const matchImageShort = "$_imageUrl/match_image_short.png";
+  static const matchImageLong = "$_imageUrl/match_image_long.png";
+  static const messageHello = "$_imageUrl/message_hello.png";
+  static const messageGrade = "$_imageUrl/message_grade.png";
+  static const liked = "$_imageUrl/liked.png";
+  static const likeNormal = "$_imageUrl/like_normal.png";
+  static const commented = "$_imageUrl/commented.png";
+  static const comment = "$_imageUrl/comment.png";
+
+  // golden
+  static const shapeGoldenBoard = "$_imageUrl/shape_golden_board.png";
+  static const shapeBoardTabActive = "$_imageUrl/shape_board_tab_active.png";
+  static const shapeBoardTabUnActive =
+      "$_imageUrl/shape_board_tab_unactive.png";
+  static const calendar = "$_imageUrl/calendar.png";
+  static const starLineChart = "$_imageUrl/star_line_chart.png";
+  static const hightLight = "$_imageUrl/hight_light.png";
+  static const totalStar = "$_imageUrl/total_star.png";
+  static const reportClock = "$_imageUrl/report_clock.png";
+  static const reportSandclock = "$_imageUrl/report_sandclock.png";
+  static const reportBook = "$_imageUrl/report_book.png";
+  static const shapeReadMic = "$_imageUrl/shape_read_mic.png";
+  static const shapeReadMicRed = "$_imageUrl/shape_read_mic_red.png";
+  static const shapeJigsawPuzzle = "$_imageUrl/shape_jigsaw_puzzle.png";
+  // feedback
+  static const feedback = "$_imageUrl/feedback.png";
+  static const rateStarUnchecked = "$_imageUrl/rate_star_unchecked.png";
+  static const rateStarChecked = "$_imageUrl/rate_star_checked.png";
+  static const feedbackFormTitle = "$_imageUrl/feedback_form_title.png";
+  static const bell = "$_imageUrl/bell.png";
+  static const mess = "$_imageUrl/mess.png";
+  static const guideApplication = "$_imageUrl/guide_application.png";
+  static const empty = "$_imageUrl/empty.png";
+  static const micListening = "$_imageUrl/mic_listening.png";
+  static const selectBoxShort = "$_imageUrl/select_box_short.png";
+  static const settingRed = "$_imageUrl/setting_red.png";
+  static const settingRed2 = "$_imageUrl/setting_red2.png";
+  static const boxSearchMessage = "$_imageUrl/box_search_message.png";
+  static const addred = "$_imageUrl/add_red.png";
+  static const backNoShadow = "$_imageUrl/back_noshadow.png";
+  static const arrowLeftRed = "$_imageUrl/arrow_left_red.png";
+  static const tickGvcn = "$_imageUrl/tick_gvcn.png";
+  static const camera = "$_imageUrl/camera.png";
+  static const images = "$_imageUrl/images.png";
+  static const icons = "$_imageUrl/icons.png";
+  static const bellBlack = "$_imageUrl/bell_black.png";
+  static const outChat = "$_imageUrl/out_chat.png";
+  static const buttonPurple = "$_imageUrl/button_purple.png";
+  static const sendMessage = "$_imageUrl/send_message.png";
+  static const audioBlack = "$_imageUrl/audio_black.png";
+  static const soundBlack = "$_imageUrl/sound_black.png";
+  static const keyboard = "$_imageUrl/keyboard.png";
+  static const copy = "$_imageUrl/copy.png";
+  static const trash = "$_imageUrl/trash.png";
+
+  // game
+  static const _gameUrl = "game";
+
+  static const coloring01 = "$_gameUrl/coloring/coloring-01.png";
+  static const coloring02 = "$_gameUrl/coloring/coloring-02.png";
+  static const coloring03 = "$_gameUrl/coloring/coloring-03.png";
+  static const coloring04 = "$_gameUrl/coloring/coloring-04.png";
+  static const coloring05 = "$_gameUrl/coloring/coloring-05.png";
+  static const coloring06 = "$_gameUrl/coloring/coloring-06.png";
+  static const coloring07 = "$_gameUrl/coloring/coloring-07.png";
+  static const coloring08 = "$_gameUrl/coloring/coloring-08.png";
+  static const coloring09 = "$_gameUrl/coloring/coloring-09.png";
+  static const coloring10 = "$_gameUrl/coloring/coloring-10.png";
+  static const coloring11 = "$_gameUrl/coloring/coloring-11.png";
+  static const coloring12 = "$_gameUrl/coloring/coloring-12.png";
+  static const coloring13 = "$_gameUrl/coloring/coloring-13.png";
+  static const coloring14 = "$_gameUrl/coloring/coloring-14.png";
+  static const coloring15 = "$_gameUrl/coloring/coloring-15.png";
+  static const coloring16 = "$_gameUrl/coloring/coloring-16.png";
+  static const coloring17 = "$_gameUrl/coloring/coloring-17.png";
+  static const coloring18 = "$_gameUrl/coloring/coloring-18.png";
+  static const coloring19 = "$_gameUrl/coloring/coloring-19.png";
+  static const coloring20 = "$_gameUrl/coloring/coloring-20.png";
+  static const coloring21 = "$_gameUrl/coloring/coloring-21.png";
+  static const coloring22 = "$_gameUrl/coloring/coloring-22.png";
+  static const coloring23 = "$_gameUrl/coloring/coloring-23.png";
+  static const coloring24 = "$_gameUrl/coloring/coloring-24.png";
+  static const coloring25 = "$_gameUrl/coloring/coloring-25.png";
+  static const coloring26 = "$_gameUrl/coloring/coloring-26.png";
+  static const coloring27 = "$_gameUrl/coloring/coloring-27.png";
+  static const coloring28 = "$_gameUrl/coloring/coloring-28.png";
+  static const coloring29 = "$_gameUrl/coloring/coloring-29.png";
+  static const coloring30 = "$_gameUrl/coloring/coloring-30.png";
+  static const coloring31 = "$_gameUrl/coloring/coloring-31.png";
+  static const coloring32 = "$_gameUrl/coloring/coloring-32.png";
+  static const coloring33 = "$_gameUrl/coloring/coloring-33.png";
+  static const coloring34 = "$_gameUrl/coloring/coloring-34.png";
+  static const coloring35 = "$_gameUrl/coloring/coloring-35.png";
+
+  static const b38l1 = "$_gameUrl/b38l1.png";
+  static const b40l1 = "$_gameUrl/b40l1.png";
+  static const b6l2 = "$_gameUrl/b6l2.png";
+  static const b65l2 = "$_gameUrl/b65l2.png";
+  static const cancel = "$_imageUrl/$_gameUrl/cancel.png";
+  static const accept = "$_imageUrl/$_gameUrl/accept.png";
+  static const drawingGameBg = "$_gameUrl/drawingBg.png";
+  static const coloringGameBg = "$_gameUrl/coloringBg.png";
+  static const coloringColorBrushBg =
+      "images/$_gameUrl/coloringColorBrushBg.svg";
+  static const coloringColorBrushImg =
+      "images/$_gameUrl/coloringColorBrushImg.svg";
+  static const coloringColorWheel = "$_gameUrl/coloringColorWheel.png";
+  static const coloringDone = "$_gameUrl/coloringDone.png";
+  static const coloringEraser = "images/$_gameUrl/coloringEraser.svg";
+  static const coloringPencilImg = "images/$_gameUrl/coloringPencilImg.svg";
+  static const coloringPencilBg = "images/$_gameUrl/coloringPencilBg.svg";
+  static const coloringTakingPicture = "$_gameUrl/coloringTakingPicture.png";
+  static const coloringUndo = "$_gameUrl/coloringUndo.png";
+  static const paintboxBg = "images/$_gameUrl/paintboxBg.svg";
+  static const paintboxImg = "images/$_gameUrl/paintboxImg.svg";
+  static const pencilcase = "$_gameUrl/pencilcase.png";
+
+  // game
+  static const _pdfUrl = "assets/pdfs";
+  static const phuHuynhPdf = "$_pdfUrl/phuHuynh.pdf";
+  static const hocSinhPdf = "$_pdfUrl/hocSinh.pdf";
+
+  // gifs
+  static const _gifUrl = "assets/gifs";
+  static const loadingGif = "$_gifUrl/loading.gif";
+
+  // profile
+  static const icEdit = "$_imageUrl/ic_edit.png";
+
+
+}

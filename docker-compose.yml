@@ -1,0 +1,31 @@
+version: '3'
+services:
+  # The Application
+  api_oes:
+    container_name: api_oes
+    build:
+      context: ./
+      dockerfile: ./web.dockerfile
+    restart: always
+    networks:
+      - traefik_traefik
+      - default
+    working_dir: /usr/src/app
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.api_oes.entrypoints=http'
+      - 'traefik.http.routers.api_oes.rule=Host(`api.oes.bfd.vn`)'
+      - 'traefik.docker.network=traefik_traefik'
+      - 'traefik.http.services.api_oes.loadbalancer.server.port=80'
+
+      - 'traefik.http.middlewares.api_oes-https-redirect.redirectscheme.scheme=https'
+      - 'traefik.http.routers.api_oes.middlewares=api_oes-https-redirect'
+      - 'traefik.http.routers.api_oes-secure.rule=Host(`api.oes.bfd.vn`)'
+      - 'traefik.http.routers.api_oes-secure.tls=true'
+      - 'traefik.http.routers.api_oes-secure.tls.certresolver=http'
+      - 'traefik.http.routers.api_oes-secure.entrypoints=https'
+      - 'traefik.http.routers.api_oes-secure.service=api_oes'
+
+networks:
+  traefik_traefik:
+    external: true

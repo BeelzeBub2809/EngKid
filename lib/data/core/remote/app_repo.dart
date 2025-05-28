@@ -1,0 +1,30 @@
+import 'dart:io';
+import 'package:EzLish/data/core/remote/api_response_array/api_response_array.dart';
+import 'package:EzLish/domain/core/app_reponsitory.dart';
+import 'package:EzLish/domain/core/entities/app_setting/entities/entities.dart';
+import 'package:EzLish/domain/core/entities/entities.dart';
+import 'package:path_provider/path_provider.dart';
+import 'api/user_api/user_api.dart';
+import 'api_response_object/api_response_object.dart';
+
+class AppRepositoryImp extends AppRepository {
+  final UserApi userApi;
+
+  AppRepositoryImp({
+    required this.userApi,
+  });
+
+  // @override
+  // Future<UserInfo> getUserInfo(int id) async {
+  //   try {
+  //     final ApiResponseObject response = await userApi.getUserInfo(id);
+  //     if (response.result) {
+  //       return UserInfo.fromJson(response.data);
+  //     } else {
+  //       throw '';
+  //     }
+  //   } catch (error) {
+  //     return Future.error(error);
+  //   }
+  // }
+}

@@ -1,0 +1,9 @@
+{
+  "dart.flutterSdkPath": ".fvm/versions/3.13.0",
+  "cmake.ignoreCMakeListsMissing": true,
+  "workbench.colorCustomizations": {
+    "editor.selectionBackground": "#264f78",
+    "editor.selectionHighlightBackground": "#264f7844",
+    "editor.selectionHighlightBorder": "#264f7844"
+  }
+}

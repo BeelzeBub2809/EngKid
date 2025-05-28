@@ -1,0 +1,148 @@
+// ignore_for_file: file_names
+
+import 'package:flutter/material.dart';
+import 'package:card_swiper/card_swiper.dart';
+import 'package:EzLish/utils/images.dart';
+import 'package:EzLish/utils/lib_function.dart';
+
+class SwiperControlCustom extends SwiperPlugin {
+  ///IconData for previous
+  final String iconPrevious;
+
+  ///iconData fopr next
+  final String iconNext;
+
+  ///icon size
+  // final double size;
+
+  ///Icon normal color, The theme's [ThemeData.primaryColor] by default.
+  final Color? color;
+
+  ///if set loop=false on Swiper, this color will be used when swiper goto the last slide.
+  ///The theme's [ThemeData.disabledColor] by default.
+  final Color? disableColor;
+
+  final EdgeInsetsGeometry padding;
+  final CrossAxisAlignment crossAxisAlignment;
+
+  final double? width;
+  final double? height;
+
+  final Key? key;
+
+  const SwiperControlCustom(
+      {this.iconPrevious = LocalImage.swiperBack,
+      this.iconNext = LocalImage.swiperNext,
+      this.color,
+      this.disableColor,
+      this.key,
+      this.width = 0,
+      this.height = 0,
+      this.padding = const EdgeInsets.all(5.0),
+      this.crossAxisAlignment = CrossAxisAlignment.end});
+
+  Widget buildButton({
+    required SwiperPluginConfig? config,
+    required Color color,
+    required String iconDaga,
+    required int quarterTurns,
+    required bool previous,
+    required double width,
+    required height,
+  }) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        LibFunction.effectConfirmPop();
+        if (previous) {
+          config!.controller.previous(animation: true);
+        } else {
+          config!.controller.next(animation: true);
+        }
+      },
+      child: Padding(
+        padding: padding,
+        child: Image.asset(
+          iconDaga,
+          width: width,
+          height: height,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, SwiperPluginConfig config) {
+    final themeData = Theme.of(context);
+
+    final color = this.color ?? themeData.primaryColor;
+    final disableColor = this.disableColor ?? themeData.disabledColor;
+    Color prevColor;
+    Color nextColor;
+
+    if (config.loop) {
+      prevColor = nextColor = color;
+    } else {
+      final next = config.activeIndex < config.itemCount - 1;
+      final prev = config.activeIndex > 0;
+      prevColor = prev ? color : disableColor;
+      nextColor = next ? color : disableColor;
+    }
+
+    Widget child;
+    if (config.scrollDirection == Axis.horizontal) {
+      child = Row(
+        key: key,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: crossAxisAlignment,
+        children: <Widget>[
+          buildButton(
+              config: config,
+              color: prevColor,
+              iconDaga: iconPrevious,
+              quarterTurns: 0,
+              previous: true,
+              width: width!,
+              height: height!),
+          buildButton(
+              config: config,
+              color: nextColor,
+              iconDaga: iconNext,
+              quarterTurns: 0,
+              previous: false,
+              width: width!,
+              height: height!)
+        ],
+      );
+    } else {
+      child = Column(
+        key: key,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          buildButton(
+              config: config,
+              color: prevColor,
+              iconDaga: iconPrevious,
+              quarterTurns: -3,
+              previous: true,
+              width: width!,
+              height: height!),
+          buildButton(
+              config: config,
+              color: nextColor,
+              iconDaga: iconNext,
+              quarterTurns: -3,
+              previous: false,
+              width: width!,
+              height: height!)
+        ],
+      );
+    }
+
+    return SizedBox(
+      height: double.infinity,
+      width: double.infinity,
+      child: child,
+    );
+  }
+}
