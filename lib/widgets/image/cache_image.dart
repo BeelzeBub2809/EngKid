@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/file.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:EzLish/utils/im_utils.dart';
-import 'package:EzLish/utils/images.dart';
-import 'package:EzLish/utils/lib_function.dart';
+import 'package:EngKid/utils/im_utils.dart';
+import 'package:EngKid/utils/images.dart';
+import 'package:EngKid/utils/lib_function.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+
 /// * A widget that displays an image from a URL, caching it locally.
 /// Supports SVG and other image formats.
 class CacheImage extends StatelessWidget {

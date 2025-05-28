@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:local_captcha/local_captcha.dart';
-import 'package:EzLish/utils/lib_function.dart';
+import 'package:EngKid/utils/lib_function.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import '../../domain/login/login_usecases.dart';
 import '../../domain/organization/entities/organization/organization.dart';
@@ -302,7 +302,7 @@ class RegisterController extends GetxController {
               'listSchool': _listSchool.value,
               'idProvinces': selectedProvinces['id'],
               'idWards': selectedWards['id'],
-              'id' : data['id']
+              'id': data['id']
             });
             print('idParent: ${data['id']}');
             print('idProvinces: ${_selectedProvinces.value['id']}');

@@ -1,5 +1,5 @@
-import 'package:EzLish/domain/login/entities/login/login.dart';
-import 'package:EzLish/domain/login/login_repository.dart';
+import 'package:EngKid/domain/login/entities/login/login.dart';
+import 'package:EngKid/domain/login/login_repository.dart';
 
 class LoginUsecases {
   final LoginRepository _loginRepository;

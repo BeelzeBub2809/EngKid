@@ -1,5 +1,5 @@
-import 'package:EzLish/domain/core/entities/feedback/entities/categories/categories.dart';
-import 'package:EzLish/domain/core/entities/feedback/entities/feedbacks/feedbacks.dart';
+import 'package:EngKid/domain/core/entities/feedback/entities/categories/categories.dart';
+import 'package:EngKid/domain/core/entities/feedback/entities/feedbacks/feedbacks.dart';
 
 import 'feedback_responsitory.dart';
 

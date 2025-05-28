@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EzLish/utils/app_color.dart';
-import 'package:EzLish/utils/lib_function.dart';
+import 'package:EngKid/utils/app_color.dart';
+import 'package:EngKid/utils/lib_function.dart';
 
 class NetworkService extends GetxService {
   late StreamSubscription _connectivitySubscription;

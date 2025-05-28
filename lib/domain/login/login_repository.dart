@@ -1,4 +1,4 @@
-import 'package:EzLish/domain/login/entities/login/login.dart';
+import 'package:EngKid/domain/login/entities/login/login.dart';
 
 abstract class LoginRepository {
   Future<Login> login(String userLoginId);

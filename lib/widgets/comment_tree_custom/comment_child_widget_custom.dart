@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:EzLish/widgets/comment_tree_custom/tree_theme_data_custom.dart';
+import 'package:EngKid/widgets/comment_tree_custom/tree_theme_data_custom.dart';
 import 'package:provider/provider.dart';
 
 class CommentChildWidgetCustom extends StatelessWidget {

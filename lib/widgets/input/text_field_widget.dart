@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EzLish/utils/app_color.dart';
+import 'package:EngKid/utils/app_color.dart';
 
 /// Custom TextField Widget
 /// This widget provides a customizable text field with various properties such as title, validation, keyboard type, and more.

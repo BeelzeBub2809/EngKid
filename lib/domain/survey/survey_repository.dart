@@ -1,4 +1,4 @@
-import 'package:EzLish/domain/survey/entities/entities.dart';
+import 'package:EngKid/domain/survey/entities/entities.dart';
 
 abstract class SurveyRepository {
   Future<SurveyContent> getSurveyContent(int studentId);

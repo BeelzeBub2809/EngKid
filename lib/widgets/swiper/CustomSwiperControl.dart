@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
-import 'package:EzLish/utils/images.dart';
-import 'package:EzLish/utils/lib_function.dart';
+import 'package:EngKid/utils/images.dart';
+import 'package:EngKid/utils/lib_function.dart';
 
 class SwiperControlCustom extends SwiperPlugin {
   ///IconData for previous

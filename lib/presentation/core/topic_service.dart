@@ -2,18 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EzLish/data/core/local/share_preferences_manager.dart';
-import 'package:EzLish/di/injection.dart';
-import 'package:EzLish/domain/core/app_usecases.dart';
-import 'package:EzLish/domain/core/entities/lesson/entities/entities.dart';
-import 'package:EzLish/domain/core/entities/lesson/lesson.dart';
-import 'package:EzLish/domain/core/entities/submit_answer/submit_answer.dart';
-import 'package:EzLish/domain/grade/entities/entities.dart';
-import 'package:EzLish/domain/quiz/entities/entites.dart';
-import 'package:EzLish/domain/topic/entities/entites.dart';
-import 'package:EzLish/presentation/core/network_service.dart';
-import 'package:EzLish/utils/key_shared_preferences.dart';
-import 'package:EzLish/utils/lib_function.dart';
+import 'package:EngKid/data/core/local/share_preferences_manager.dart';
+import 'package:EngKid/di/injection.dart';
+import 'package:EngKid/domain/core/app_usecases.dart';
+import 'package:EngKid/domain/core/entities/lesson/entities/entities.dart';
+import 'package:EngKid/domain/core/entities/lesson/lesson.dart';
+import 'package:EngKid/domain/core/entities/submit_answer/submit_answer.dart';
+import 'package:EngKid/domain/grade/entities/entities.dart';
+import 'package:EngKid/domain/quiz/entities/entites.dart';
+import 'package:EngKid/domain/topic/entities/entites.dart';
+import 'package:EngKid/presentation/core/network_service.dart';
+import 'package:EngKid/utils/key_shared_preferences.dart';
+import 'package:EngKid/utils/lib_function.dart';
 
 import 'user_service.dart';
 

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-import 'package:EzLish/utils/font_size.dart';
-import 'package:EzLish/widgets/text/regular_text.dart';
+import 'package:EngKid/utils/font_size.dart';
+import 'package:EngKid/widgets/text/regular_text.dart';
 
 /// A custom loading dialog widget that displays a loading animation and a message.
 /// This widget is useful for indicating that a process is ongoing, such as data fetching or processing.

@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:EzLish/main_common.dart';
-import 'package:EzLish/utils/app_config.dart';
+import 'package:EngKid/main_common.dart';
+import 'package:EngKid/utils/app_config.dart';
 
 const isrgRootX1 = '''-----BEGIN CERTIFICATE-----
 MIIFazCCA1OgAwIBAgIRAIIQz7DSQONZRGPgu2OCiwAwDQYJKoZIhvcNAQELBQAw

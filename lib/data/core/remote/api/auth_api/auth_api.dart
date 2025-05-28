@@ -1,7 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:dio/dio.dart';
-import 'package:EzLish/data/core/remote/api_response_object/api_response_object.dart';
+import 'package:EngKid/data/core/remote/api_response_object/api_response_object.dart';
 import 'package:retrofit/http.dart';
 
 part 'auth_api.g.dart';

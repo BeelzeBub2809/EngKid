@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:EzLish/data/core/remote/api_response_array/api_response_array.dart';
-import 'package:EzLish/domain/core/app_reponsitory.dart';
-import 'package:EzLish/domain/core/entities/app_setting/entities/entities.dart';
-import 'package:EzLish/domain/core/entities/entities.dart';
+import 'package:EngKid/data/core/remote/api_response_array/api_response_array.dart';
+import 'package:EngKid/domain/core/app_reponsitory.dart';
+import 'package:EngKid/domain/core/entities/app_setting/entities/entities.dart';
+import 'package:EngKid/domain/core/entities/entities.dart';
 import 'package:path_provider/path_provider.dart';
 import 'api/user_api/user_api.dart';
 import 'api_response_object/api_response_object.dart';

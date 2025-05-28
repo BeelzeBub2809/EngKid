@@ -1,4 +1,4 @@
-import 'package:EzLish/domain/survey/entities/entities.dart';
+import 'package:EngKid/domain/survey/entities/entities.dart';
 
 import 'survey_repository.dart';
 

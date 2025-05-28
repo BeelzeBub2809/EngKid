@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:EzLish/data/core/local/share_preferences_manager.dart';
-import 'package:EzLish/data/core/remote/api/auth_api/auth_api.dart';
-import 'package:EzLish/data/core/remote/api/user_api/user_api.dart';
-import 'package:EzLish/utils/key_shared_preferences.dart';
-import 'package:EzLish/utils/lib_function.dart';
+import 'package:EngKid/data/core/local/share_preferences_manager.dart';
+import 'package:EngKid/data/core/remote/api/auth_api/auth_api.dart';
+import 'package:EngKid/data/core/remote/api/user_api/user_api.dart';
+import 'package:EngKid/utils/key_shared_preferences.dart';
+import 'package:EngKid/utils/lib_function.dart';
 import '../injection.dart';
 
 class ApiModule {

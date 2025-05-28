@@ -1,5 +1,5 @@
-import 'package:EzLish/domain/organization/entities/entities.dart';
-import 'package:EzLish/domain/organization/organiztion_responsitory.dart';
+import 'package:EngKid/domain/organization/entities/entities.dart';
+import 'package:EngKid/domain/organization/organiztion_responsitory.dart';
 
 class OrganizationUseCases {
   final OrganizationRepository _organizationRepository;

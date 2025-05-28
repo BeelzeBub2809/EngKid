@@ -1,12 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EzLish/utils/app_color.dart';
-import 'package:EzLish/utils/font_size.dart';
-import 'package:EzLish/utils/images.dart';
-import 'package:EzLish/utils/lib_function.dart';
-import 'package:EzLish/widgets/empty/empty_data.dart';
-import 'package:EzLish/widgets/select_custom/select_custom.dart';
+import 'package:EngKid/utils/app_color.dart';
+import 'package:EngKid/utils/font_size.dart';
+import 'package:EngKid/utils/images.dart';
+import 'package:EngKid/utils/lib_function.dart';
+import 'package:EngKid/widgets/empty/empty_data.dart';
+import 'package:EngKid/widgets/select_custom/select_custom.dart';
 
 /// A custom multiple selection widget that allows users to select multiple items from a dropdown list.
 /// This widget is useful for scenarios where users need to select multiple options from a predefined list.

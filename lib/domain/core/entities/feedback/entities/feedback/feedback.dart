@@ -1,7 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, invalid_annotation_target
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:EzLish/domain/core/entities/entities.dart';
+import 'package:EngKid/domain/core/entities/entities.dart';
 
 part 'feedback.freezed.dart';
 part 'feedback.g.dart';

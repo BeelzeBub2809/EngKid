@@ -3,16 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:EzLish/data/core/local/share_preferences_manager.dart';
-import 'package:EzLish/di/injection.dart';
-import 'package:EzLish/domain/login/entities/login/login.dart';
-import 'package:EzLish/domain/login/login_usecases.dart';
-import 'package:EzLish/presentation/core/topic_service.dart';
-import 'package:EzLish/presentation/core/user_service.dart';
-import 'package:EzLish/utils/app_route.dart';
-import 'package:EzLish/utils/cache_control.dart';
-import 'package:EzLish/utils/key_shared_preferences.dart';
-import 'package:EzLish/utils/lib_function.dart';
+import 'package:EngKid/data/core/local/share_preferences_manager.dart';
+import 'package:EngKid/di/injection.dart';
+import 'package:EngKid/domain/login/entities/login/login.dart';
+import 'package:EngKid/domain/login/login_usecases.dart';
+import 'package:EngKid/presentation/core/topic_service.dart';
+import 'package:EngKid/presentation/core/user_service.dart';
+import 'package:EngKid/utils/app_route.dart';
+import 'package:EngKid/utils/cache_control.dart';
+import 'package:EngKid/utils/key_shared_preferences.dart';
+import 'package:EngKid/utils/lib_function.dart';
 
 enum LoginInputType { username, password }
 

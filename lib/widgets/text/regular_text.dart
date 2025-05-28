@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EzLish/utils/font_size.dart';
+import 'package:EngKid/utils/font_size.dart';
 
 /// A widget that displays regular text with customizable styles and alignment.
 /// This widget is useful for displaying text in various parts of the application with options for styling, alignment, and data parameters.

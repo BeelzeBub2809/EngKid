@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:EzLish/utils/localization/localization_service.dart';
+import 'package:EngKid/utils/localization/localization_service.dart';
 
 part 'app_setting.freezed.dart';
 part 'app_setting.g.dart';

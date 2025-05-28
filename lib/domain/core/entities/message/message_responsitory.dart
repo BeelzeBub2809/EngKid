@@ -1,5 +1,5 @@
-import 'package:EzLish/domain/core/entities/feedback/entities/categories/categories.dart';
-import 'package:EzLish/domain/core/entities/message/entities/message/message.dart';
+import 'package:EngKid/domain/core/entities/feedback/entities/categories/categories.dart';
+import 'package:EngKid/domain/core/entities/message/entities/message/message.dart';
 
 abstract class MessageRepository {
   Future<Categories> getCategories();

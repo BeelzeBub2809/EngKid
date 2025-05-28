@@ -1,7 +1,7 @@
 // ignore_for_file: invalid_annotation_target
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:EzLish/domain/topic/entities/entites.dart';
+import 'package:EngKid/domain/topic/entities/entites.dart';
 
 part 'progress_grade.freezed.dart';
 part 'progress_grade.g.dart';

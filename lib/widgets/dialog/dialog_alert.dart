@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EzLish/utils/app_color.dart';
-import 'package:EzLish/utils/lib_function.dart';
-import 'package:EzLish/widgets/text/regular_text.dart';
+import 'package:EngKid/utils/app_color.dart';
+import 'package:EngKid/utils/lib_function.dart';
+import 'package:EngKid/widgets/text/regular_text.dart';
 
 class DialogAlert extends StatelessWidget {
   final String message;

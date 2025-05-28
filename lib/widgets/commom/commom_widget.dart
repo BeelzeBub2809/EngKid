@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:EzLish/utils/app_color.dart';
+import 'package:EngKid/utils/app_color.dart';
 import 'package:get/get.dart';
 
 import '../../utils/font_size.dart';
