@@ -1,11 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EzLish/utils/app_color.dart';
-import 'package:EzLish/utils/font_size.dart';
-import 'package:EzLish/utils/images.dart';
-import 'package:EzLish/utils/lib_function.dart';
-import 'package:EzLish/widgets/empty/empty_data.dart';
+import 'package:EngKid/utils/app_color.dart';
+import 'package:EngKid/utils/font_size.dart';
+import 'package:EngKid/utils/images.dart';
+import 'package:EngKid/utils/lib_function.dart';
+import 'package:EngKid/widgets/empty/empty_data.dart';
 
 /// A custom select dropdown widget that allows users to select an item from a list of options.
 /// This widget supports custom styling, loading states, and various configurations for the dropdown appearance.

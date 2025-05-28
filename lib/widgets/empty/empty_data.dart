@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EzLish/utils/font_size.dart';
-import 'package:EzLish/utils/images.dart';
+import 'package:EngKid/utils/font_size.dart';
+import 'package:EngKid/utils/images.dart';
 
 class EmptyData extends StatelessWidget {
   final double width;

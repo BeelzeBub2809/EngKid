@@ -1,10 +1,10 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:get/get.dart';
-import 'package:EzLish/data/core/remote/api/auth_api/auth_api.dart';
-import 'package:EzLish/data/core/remote/api_response_object/api_response_object.dart';
-import 'package:EzLish/domain/login/entities/login/login.dart';
-import 'package:EzLish/domain/login/login_repository.dart';
+import 'package:EngKid/data/core/remote/api/auth_api/auth_api.dart';
+import 'package:EngKid/data/core/remote/api_response_object/api_response_object.dart';
+import 'package:EngKid/domain/login/entities/login/login.dart';
+import 'package:EngKid/domain/login/login_repository.dart';
 
 import '../../utils/lib_function.dart';
 

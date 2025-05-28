@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EzLish/utils/font_size.dart';
-import 'package:EzLish/widgets/text/regular_text.dart';
+import 'package:EngKid/utils/font_size.dart';
+import 'package:EngKid/widgets/text/regular_text.dart';
 
 /// A widget that displays an image with text overlay.
 /// This widget is useful for creating buttons or interactive elements with an image background and text label.

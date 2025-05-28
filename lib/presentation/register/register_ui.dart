@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:EzLish/presentation/register/register_controller.dart';
+import 'package:EngKid/presentation/register/register_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_captcha/local_captcha.dart';
@@ -108,7 +108,7 @@ class RegisterScreen extends GetView<RegisterController> {
                             ),
                           ),
                           Obx(
-                                () => ItemInputRegister(
+                            () => ItemInputRegister(
                               size: size,
                               controller: controller.loginId.obs,
                               title: "user_name",
@@ -224,30 +224,30 @@ class RegisterScreen extends GetView<RegisterController> {
                             ),
                           ),
                           Obx(() => ItemInputRegister(
-                            size: size,
-                            controller: controller.password.obs,
-                            validateValue: controller.validatePassword,
-                            title: 'password'.tr,
-                            onChange: (text) {
-                              controller.onChangeInput(
-                                  input: text,
-                                  type: RegisterInputType.password);
-                            },
-                            isTypeNumber: false,
-                          )),
+                                size: size,
+                                controller: controller.password.obs,
+                                validateValue: controller.validatePassword,
+                                title: 'password'.tr,
+                                onChange: (text) {
+                                  controller.onChangeInput(
+                                      input: text,
+                                      type: RegisterInputType.password);
+                                },
+                                isTypeNumber: false,
+                              )),
                           Obx(() => ItemInputRegister(
-                            size: size,
-                            controller: controller.confirmPassword.obs,
-                            validateValue: controller.validateConfirmPassword,
-                            title: 'confirm_password'.tr,
-                            onChange: (text) {
-                              controller.onChangeInput(
-                                  input: text,
-                                  type: RegisterInputType.confirmPassword);
-                            },
-                            isTypeNumber: false,
-                          )),
-
+                                size: size,
+                                controller: controller.confirmPassword.obs,
+                                validateValue:
+                                    controller.validateConfirmPassword,
+                                title: 'confirm_password'.tr,
+                                onChange: (text) {
+                                  controller.onChangeInput(
+                                      input: text,
+                                      type: RegisterInputType.confirmPassword);
+                                },
+                                isTypeNumber: false,
+                              )),
                         ],
                       ),
                     ),
@@ -278,7 +278,7 @@ class RegisterScreen extends GetView<RegisterController> {
                             text: 'next'.tr,
                             pathImage: LocalImage.shapeButtonSubmit,
                             onTap: () async {
-                              if(await controller.validateSignUp()){
+                              if (await controller.validateSignUp()) {
                                 if (controller.isShowCaptcha) {
                                   await CommonWidget.dialog(
                                     barrierDismissible: false,
@@ -302,7 +302,6 @@ class RegisterScreen extends GetView<RegisterController> {
                                   }
                                 }
                               }
-
                             },
                             isUpperCase: true,
                             width: size.width * 0.3,

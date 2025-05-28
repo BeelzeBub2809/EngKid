@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:EzLish/utils/font_size.dart';
-import 'package:EzLish/widgets/text/regular_text.dart';
+import 'package:EngKid/utils/font_size.dart';
+import 'package:EngKid/widgets/text/regular_text.dart';
 
 /// A modal that allows users to input text in a bottom sheet.
 /// This widget is designed to be used in a landscape orientation,

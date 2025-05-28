@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EzLish/utils/images.dart';
-import 'package:EzLish/widgets/button/image_button.dart';
+import 'package:EngKid/utils/images.dart';
+import 'package:EngKid/widgets/button/image_button.dart';
 
 class BackButton extends StatelessWidget {
   const BackButton({super.key, required this.onTap});

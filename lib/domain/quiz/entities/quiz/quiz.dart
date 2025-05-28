@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:EzLish/domain/quiz/entities/question/question.dart';
-import 'package:EzLish/domain/quiz/entities/quiz_reading/quiz_reading.dart';
+import 'package:EngKid/domain/quiz/entities/question/question.dart';
+import 'package:EngKid/domain/quiz/entities/quiz_reading/quiz_reading.dart';
 
 part 'quiz.freezed.dart';
 part 'quiz.g.dart';

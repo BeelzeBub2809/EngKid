@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EzLish/utils/app_color.dart';
-import 'package:EzLish/utils/app_route.dart';
-import 'package:EzLish/utils/font_size.dart';
-import 'package:EzLish/utils/images.dart';
-import 'package:EzLish/widgets/input/landscape_textfield.dart';
-import 'package:EzLish/widgets/text/image_text.dart';
-import 'package:EzLish/widgets/text/regular_text.dart';
+import 'package:EngKid/utils/app_color.dart';
+import 'package:EngKid/utils/app_route.dart';
+import 'package:EngKid/utils/font_size.dart';
+import 'package:EngKid/utils/images.dart';
+import 'package:EngKid/widgets/input/landscape_textfield.dart';
+import 'package:EngKid/widgets/text/image_text.dart';
+import 'package:EngKid/widgets/text/regular_text.dart';
 import 'login_controller.dart';
 
 class LoginScreen extends GetView<LoginController> {
@@ -56,63 +56,64 @@ class LoginScreen extends GetView<LoginController> {
                           ),
                         ),
                         Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: Text(
-                                      "Username",
-                                      style: TextStyle(
-                                        fontSize: Fontsize.normal,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Text(
+                                    "Username",
+                                    style: TextStyle(
+                                      fontSize: Fontsize.normal,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColor.gray,
+                                    ),
+                                  ),
+                                ),
+                                Obx(
+                                  () => SizedBox(
+                                    width: 0.3 * size.width,
+                                    child: LandScapeTextField(
+                                      maxLength: 30,
+                                      input: controller.username,
+                                      keyboardType: TextInputType.text,
+                                      backgroundColor: Colors.transparent,
+                                      borderColor: Colors.black38,
+                                      textAlign: Alignment.bottomCenter,
+                                      textStyle: TextStyle(
+                                        fontSize: Fontsize.biggest,
                                         fontWeight: FontWeight.w600,
                                         color: AppColor.gray,
                                       ),
-                                    ),
-                                  ),
-                                  Obx(
-                                        () => SizedBox(
-                                      width: 0.3 * size.width,
-                                      child: LandScapeTextField(
-                                        maxLength: 30,
-                                        input: controller.username,
-                                        keyboardType: TextInputType.text,
-                                        backgroundColor: Colors.transparent,
-                                        borderColor: Colors.black38,
-                                        textAlign: Alignment.bottomCenter,
-                                        textStyle: TextStyle(
-                                          fontSize: Fontsize.biggest,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColor.gray,
-                                        ),
-                                        onChange: (text) => controller.onChangeInput(
-                                          input: text,
-                                          type: LoginInputType.username,
-                                        ),
+                                      onChange: (text) =>
+                                          controller.onChangeInput(
+                                        input: text,
+                                        type: LoginInputType.username,
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: Text(
-                                      "Password",
-                                      style: TextStyle(
-                                        fontSize: Fontsize.normal,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColor.gray,
-                                      ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Text(
+                                    "Password",
+                                    style: TextStyle(
+                                      fontSize: Fontsize.normal,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColor.gray,
                                     ),
                                   ),
-                                  Obx(
-                                        () => SizedBox(
+                                ),
+                                Obx(
+                                  () => SizedBox(
                                     width: 0.3 * size.width,
                                     child: LandScapeTextField(
                                       input: controller.password,
@@ -125,27 +126,25 @@ class LoginScreen extends GetView<LoginController> {
                                         fontWeight: FontWeight.w600,
                                         color: AppColor.gray,
                                       ),
-                                      onChange: (text) => controller.onChangeInput(
+                                      onChange: (text) =>
+                                          controller.onChangeInput(
                                         input: text,
                                         type: LoginInputType.password,
                                       ),
                                       //hide password
                                       obscureText: true,
                                     ),
-                                  ),)
-              
-                                ],
-                              )
-                            ],
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
                         ),
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             GestureDetector(
-                              onTap: () {
-
-                              },
+                              onTap: () {},
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 0.05 * size.height),
@@ -221,4 +220,3 @@ class LoginScreen extends GetView<LoginController> {
     );
   }
 }
-

@@ -1,8 +1,8 @@
 // ignore_for_file: invalid_annotation_target
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:EzLish/domain/quiz/entities/connection/connection.dart';
-import 'package:EzLish/domain/quiz/entities/option/option.dart';
+import 'package:EngKid/domain/quiz/entities/connection/connection.dart';
+import 'package:EngKid/domain/quiz/entities/option/option.dart';
 
 part 'question.freezed.dart';
 part 'question.g.dart';

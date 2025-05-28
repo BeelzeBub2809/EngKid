@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EzLish/presentation/core/topic_service.dart';
-import 'package:EzLish/presentation/core/user_service.dart';
-import 'package:EzLish/utils/app_color.dart';
-import 'package:EzLish/utils/app_route.dart';
-import 'package:EzLish/utils/font_size.dart';
-import 'package:EzLish/utils/images.dart';
-import 'package:EzLish/utils/lib_function.dart';
-import 'package:EzLish/widgets/text/image_text.dart';
-import 'package:EzLish/widgets/text/regular_text.dart';
+import 'package:EngKid/presentation/core/topic_service.dart';
+import 'package:EngKid/presentation/core/user_service.dart';
+import 'package:EngKid/utils/app_color.dart';
+import 'package:EngKid/utils/app_route.dart';
+import 'package:EngKid/utils/font_size.dart';
+import 'package:EngKid/utils/images.dart';
+import 'package:EngKid/utils/lib_function.dart';
+import 'package:EngKid/widgets/text/image_text.dart';
+import 'package:EngKid/widgets/text/regular_text.dart';
 
 class DialogSurveyResult extends StatelessWidget {
   DialogSurveyResult(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:EzLish/utils/font_size.dart';
-import 'package:EzLish/widgets/text/regular_text.dart';
+import 'package:EngKid/utils/font_size.dart';
+import 'package:EngKid/widgets/text/regular_text.dart';
 
 import 'text_input_modal.dart';
 
