@@ -19,6 +19,8 @@ class LocalImage {
   static const feedbackCommentBg = "$_backgroundUrl/feedback_comment.png";
   static const dropDown2Bg = "$_backgroundUrl/dropdown2.png";
   static const messageBg = "$_backgroundUrl/message.png";
+  static const backgroundBlue = "$_backgroundUrl/background.png";
+  static const backgroundPink = "$_backgroundUrl/background_2.png";
   // image
   static const _imageUrl = "assets/images";
   static const shapeLogin = "$_imageUrl/shape_login.png";

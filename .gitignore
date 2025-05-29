@@ -46,7 +46,7 @@ app.*.map.json
 # FVM Version Cache
 .fvm/
 .fvmrc
-.env
+assets/.env
 ./linux/*
 ./windows/*`
 

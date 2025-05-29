@@ -1,3 +1,4 @@
+import 'package:EngKid/presentation/my_library/my_library_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/utils/app_color.dart';
@@ -191,7 +192,9 @@ class LoginScreen extends GetView<LoginController> {
                   child: ImageText(
                     text: 'login',
                     pathImage: LocalImage.shapeButton,
-                    onTap: () => controller.onLogin(context),
+                    onTap: () {
+                      Get.to(() => const MyLibraryScreen());
+                    },
                     isUpperCase: true,
                     width: size.width * 0.18,
                     height: size.height * 0.14,
