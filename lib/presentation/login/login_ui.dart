@@ -206,7 +206,7 @@ class LoginScreen extends GetView<LoginController> {
                   alignment: Alignment.bottomRight,
                   child: GestureDetector(
                     onTap: () {
-                      Get.toNamed(AppRoute.speechTextSample);
+                      // Get.toNamed(AppRoute.speechTextSample);
                     },
                     child: Image.asset(
                       LocalImage.mascotWelcome,

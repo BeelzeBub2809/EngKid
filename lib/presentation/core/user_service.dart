@@ -105,6 +105,18 @@ class UserService extends GetxService {
     super.onInit();
     debugPrint('Init User Service');
     getRemoteLanguages();
+
+    _currentUser.value = const Child(
+      id: 1,
+      userId: "sample_user_id",
+      name: "Sample Name",
+      classname: "Sample Class",
+      loginId: "sample_login_id",
+      grade: "Grade 5",
+      school: "Sample School",
+      avatar: "sample_base64_avatar",
+      surveyPassed: true,
+    );
   }
 
   String getPhotoBase64(Map<String, dynamic> public) {

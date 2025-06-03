@@ -62,6 +62,67 @@ class TopicService extends GetxService {
   // Other api ==============================================
 
   // Grades ==============================================
+  Future<void> getLibrary() async {
+    try {
+      const imageUrl = "assets/images";
+      //custom for teacher
+
+      //init 5 grades
+      List<Grade> grades = [];
+
+      for(int index = 0; index < 5; index++) {
+        grades.add(
+          Grade(
+            id: index + 1,
+            name: "Grade ${index + 1}",
+            image: "$imageUrl/grade${index + 1}.png",
+            isOpen: true,
+          ),
+        );
+      }
+      // List.generate(
+      //     5,
+      //         (index) {
+      //       grades.add(
+      //         Grade(
+      //           id: index+1,
+      //           name: "Grade ${index + 1}",
+      //           image: "$imageUrl/grade${index + 1}.png",
+      //           isOpen: _userService.userLogin.roleId == "2",
+      //         ),
+      //       );
+      //     });
+      //
+      assignGrades(grades);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> getGradesFromStorage({bool isAwait = false}) async {
+    final String? grades = _preferencesManager.getString(
+      KeySharedPreferences.grades,
+    );
+
+    if (grades != null) {
+      final decodeGrades = List<Map<String, dynamic>>.from(jsonDecode(grades));
+
+      _grades.assignAll(
+        decodeGrades.map<Grade>((json) => Grade.fromJson(json)).toList(),
+      );
+      if (_networkService.networkConnection.value) {
+        if (isAwait == true) {
+          await getLibrary();
+        } else {
+          getLibrary();
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<void> assignGrades(List<Grade> grades) async {
     _grades.assignAll(grades);
     await saveGradesToStorage();

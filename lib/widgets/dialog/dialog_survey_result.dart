@@ -152,13 +152,13 @@ class DialogSurveyResult extends StatelessWidget {
                   Get.back(); // close dialog
                   if (!goLibrary) {
                     LibFunction.rePlayBackgroundSound();
-                    Get.offAllNamed(AppRoute.kidSpace); // out route
+                    // Get.offAllNamed(AppRoute.kidSpace); // out route
                   } else {
                     LibFunction.rePlayBackgroundSound();
                     // _topicService.getGradesFromStorage();
-                    Get.offNamed(
-                        goeLibrary ? AppRoute.eLibrary : AppRoute.chooseGrade,
-                        arguments: true);
+                    // Get.offNamed(
+                    //     goeLibrary ? AppRoute.eLibrary : AppRoute.chooseGrade,
+                    //     arguments: true);
                   }
                 } else {
                   onTap();

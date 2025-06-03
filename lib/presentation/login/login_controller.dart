@@ -114,7 +114,7 @@ class LoginController extends GetxController {
 
   void onForgotIdentifier() async {
     await LibFunction.effectConfirmPop();
-    Get.toNamed(AppRoute.forgotIdentifier);
+    // Get.toNamed(AppRoute.forgotIdentifier);
   }
 
   Future<void> _configureUserProfile(Login userProfile) async {
@@ -135,12 +135,12 @@ class LoginController extends GetxController {
     // _userService.getStarSetting();
 
     Get.back(); //hide loading modal
-    if (!_userService.checkValidSafetyCode()) {
-      Get.offNamed(
-        AppRoute.declareParentCode,
-      );
-    } else {
-      Get.offAllNamed(AppRoute.kidSpace);
-    }
+    // if (!_userService.checkValidSafetyCode()) {
+    //   Get.offNamed(
+    //     // AppRoute.declareParentCode,
+    //   );
+    // } else {
+    //   // Get.offAllNamed(AppRoute.kidSpace);
+    // }
   }
 }

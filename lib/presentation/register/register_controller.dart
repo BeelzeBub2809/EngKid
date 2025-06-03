@@ -297,16 +297,13 @@ class RegisterController extends GetxController {
           LibFunction.toast('Đăng ký thành công');
           closeScreenOrientation();
           Future.delayed(const Duration(milliseconds: 300), () {
-            Get.toNamed(AppRoute.addChildAccount, arguments: {
-              'router': '1',
-              'listSchool': _listSchool.value,
-              'idProvinces': selectedProvinces['id'],
-              'idWards': selectedWards['id'],
-              'id': data['id']
-            });
-            print('idParent: ${data['id']}');
-            print('idProvinces: ${_selectedProvinces.value['id']}');
-            print('idWards: ${_selectedWards.value['id']}');
+            // Get.toNamed(AppRoute.addChildAccount, arguments: {
+            //   'router': '1',
+            //   'listSchool': _listSchool.value,
+            //   'idProvinces': selectedProvinces['id'],
+            //   'idWards': selectedWards['id'],
+            //   'id': data['id']
+            // });
           });
 
           resetAll();

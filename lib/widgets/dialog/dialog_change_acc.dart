@@ -47,7 +47,7 @@ class _DialogChangeAccState extends State<DialogChangeAcc> {
           // Get.back(); // back to grade
           isChangeChild = false;
         });
-        Get.offAllNamed(AppRoute.kidSpace);
+        // Get.offAllNamed(AppRoute.kidSpace);
       } catch (_) {
         LibFunction.toast('error_handle');
         setState(() {
