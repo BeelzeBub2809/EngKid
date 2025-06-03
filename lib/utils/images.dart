@@ -164,7 +164,6 @@ class LocalImage {
   static const questionBackButton = "$_imageUrl/question_back_button.png";
   static const questionNextButton = "$_imageUrl/question_next_button.png";
   static const questionResetButton = "$_imageUrl/question_reset_button.png";
-  static const mascotBorder = "$_imageUrl/mascot_border.png";
   static const effectAfterMascot = "$_imageUrl/effect_after_mascot.png";
   static const effectAfterMascotDot = "$_imageUrl/effect_after_mascot_dot.png";
   // lesson
