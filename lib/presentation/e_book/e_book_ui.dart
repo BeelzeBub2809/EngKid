@@ -9,7 +9,7 @@ class EbookScreen extends GetView<EBookController> {
 
   Widget _buildTopicItem(String iconPath, String title, double itemWidth,  {bool isSelected = false}){
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 2),
+      margin: const EdgeInsets.only(bottom: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,7 +77,7 @@ class EbookScreen extends GetView<EBookController> {
     );
   }
 
-  Widget _storyItem(double width, String iconPath, String title){
+  Widget _storyItem(double width, String iconPath, String title, {bool isSelected = false}){
     return Container(
       width: width,
       child: Padding(
@@ -112,8 +112,9 @@ class EbookScreen extends GetView<EBookController> {
               width: width * 0.94,
               child: Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
+                  color: isSelected ? Colors.red.shade700 : Colors.black,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -139,13 +140,13 @@ class EbookScreen extends GetView<EBookController> {
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.only(right: cardWidth * 0.14, top: cardHeight * 0.08),
+            margin: EdgeInsets.only(right: cardWidth * 0.18, top: cardHeight * 0.05),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Container(
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.all(6),
                   child: Text(
                     "Topic",
                     style: TextStyle(
@@ -202,7 +203,7 @@ class EbookScreen extends GetView<EBookController> {
                     shrinkWrap: true,
                     children: [
                       _storyItem(width * 0.6, LocalImage.appInfo, 'Family’s first stories'),
-                      _storyItem(width * 0.6, LocalImage.avatarParent, 'Family’s second stories'),
+                      _storyItem(width * 0.6, LocalImage.avatarParent, 'Family’s second stories', isSelected: true),
                       _storyItem(width * 0.6,LocalImage.avatarParent, 'Animals'),
                       _storyItem(width * 0.6,LocalImage.appInfo, 'Nature'),
                       _storyItem(width * 0.6,LocalImage.appInfo, 'Science'),
@@ -219,7 +220,7 @@ class EbookScreen extends GetView<EBookController> {
 
   Widget _buildVideoBookPlayer(double width, double height, String imagePath){
     return Stack(
-      alignment: Alignment.centerLeft,
+      alignment: Alignment.center,
       children: [
         ClipRRect(
           child: Container(
@@ -237,7 +238,17 @@ class EbookScreen extends GetView<EBookController> {
           imagePath,
           width: width * 0.96,
           height: height,
-        )
+        ),
+        Container(
+          width: width * 0.2,
+          height: width * 0.2,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(LocalImage.playButton),
+              fit: BoxFit.cover
+            )
+          )
+        ),
       ],
     );
   }
