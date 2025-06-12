@@ -43,29 +43,39 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
       arguments: false, // if is library then ques cannot caculator score
       count: 0,
     ),
+    Menu(
+      name: 'settings_and_management',
+      pathImage: LocalImage.setting,
+      to: AppRoute.managementSpace,
+      needValidateParent: true,
+      requireValidate: true,
+      arguments: 'settings',
+      count: 0,
+    ),
   ].obs;
 
   void onPressTo(Menu menu) async {
     await LibFunction.effectConfirmPop();
     handleGetData(menu.to);
-    if (!menu.needValidateParent && !menu.requireValidate) {
-      if (menu.to == "") {
-        LibFunction.toast('is_updating');
-        return;
-      }
-      Get.toNamed(menu.to, arguments: menu.arguments);
-    } else if (menu.needValidateParent) {
-      if (menu.to == "") {
-        LibFunction.toast('is_updating');
-        return;
-      }
-    } else {
-      if (menu.to == "") {
-        LibFunction.toast('is_updating');
-        return;
-      }
-      Get.toNamed(menu.to, arguments: menu.arguments);
-    }
+    // if (!menu.needValidateParent && !menu.requireValidate) {
+    //   if (menu.to == "") {
+    //     LibFunction.toast('is_updating');
+    //     return;
+    //   }
+    //   Get.toNamed(menu.to, arguments: menu.arguments);
+    // } else if (menu.needValidateParent) {
+    //   if (menu.to == "") {
+    //     LibFunction.toast('is_updating');
+    //     return;
+    //   }
+    // } else {
+    //   if (menu.to == "") {
+    //     LibFunction.toast('is_updating');
+    //     return;
+    //   }
+    //   Get.toNamed(menu.to, arguments: menu.arguments);
+    // }
+    Get.toNamed(menu.to, arguments: menu.arguments);
   }
 
   @override
@@ -115,18 +125,18 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
       if (isElibraryOpen == false) {
         if (_networkService.networkConnection.value) {
           isElibraryOpen = true;
-          // Get.toNamed(
-          //   AppRoute.eLibrary,
-          //   arguments: [true, true],
-          // );
+          Get.toNamed(
+            AppRoute.eLibrary,
+            arguments: [true, true],
+          );
         } else {
           LibFunction.toast('require_network_to_elibrary');
         }
       } else {
-        // Get.toNamed(
-        //   AppRoute.eLibrary,
-        //   arguments: [true, true],
-        // );
+        Get.toNamed(
+          AppRoute.eLibrary,
+          arguments: [true, true],
+        );
       }
     } else {
       // Get.toNamed(

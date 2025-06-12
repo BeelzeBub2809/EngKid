@@ -7,12 +7,14 @@ class AppColor {
   static const secondary = Color(0xFFd1ab73);
   static const deny = Color(0xFF933434);
   static const red = Color(0XFFE30613);
-  static const gray = Color(0XFF606060);
-  static const blue = Color(0XFF00ADBB);
+  static const gray = Color(0XFF545454);
+  static const grayBiger = Color(0XFF606060);
+  static const blue = Color(0XFF00A2AD);
   static const textDefault = Color(0xFF333333);
-  static const yellow = Colors.amber;
+  static const yellow = Color(0xFFB88A00);
   static const green = Color(0XFF45B083);
   static const lightYellow = Color(0XFFfdf9ec);
   static const lightBlue = Color(0XFFe1f1f2);
   static const organe = Color(0XFFe1723a);
+  static const blackBgUser = Color(0XFFCCCCCC);
 }
