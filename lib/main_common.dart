@@ -1,5 +1,16 @@
+import 'package:EngKid/domain/core/entities/app_setting/entities/entities.dart';
+import 'package:EngKid/presentation/e_library/e_library_binding.dart';
+import 'package:EngKid/presentation/e_library/e_library_ui.dart';
 import 'package:EngKid/presentation/home/home_screen_binding.dart';
 import 'package:EngKid/presentation/home/home_screen_ui.dart';
+import 'package:EngKid/presentation/management_space/management_space_binding.dart';
+import 'package:EngKid/presentation/management_space/management_space_ui.dart';
+import 'package:EngKid/presentation/management_space/personal_info/personal_info_binding.dart';
+import 'package:EngKid/presentation/management_space/personal_info/personal_info_ui.dart';
+import 'package:EngKid/presentation/management_space/report/report_binding.dart';
+import 'package:EngKid/presentation/management_space/report/report_ui.dart';
+import 'package:EngKid/presentation/management_space/setting/setting_binding.dart';
+import 'package:EngKid/presentation/management_space/setting/setting_ui.dart';
 import 'package:EngKid/presentation/my_library/my_library_binding.dart';
 import 'package:EngKid/presentation/my_library/my_library_ui.dart';
 import 'package:EngKid/presentation/reading_space/reading_space_binding.dart';
@@ -91,6 +102,33 @@ class _MyAppState extends State<MyApp> {
               name: AppRoute.myLibrary,
               page: () => const MyLibraryScreen(),
               binding: MyLibraryBinding(),
+            ),
+            GetPage(
+              name: AppRoute.managementSpace,
+              page: () => const ManagementSpaceScreen(),
+              binding: ManagementSpaceBinding(),
+              children: [
+                GetPage(
+                  name: AppRoute.report,
+                  page: () => const ReportScreen(),
+                  binding: ReportBinding()
+                ),
+                GetPage(
+                  name: AppRoute.personalInfo,
+                  page: () => const PersonalInfoScreen(),
+                  binding: PersonalInfoBinding()
+                ),
+                GetPage(
+                  name: AppRoute.settings,
+                  page: () => const SettingScreen(),
+                  binding: SettingBinding(),
+                ),
+              ],
+            ),
+            GetPage(
+              name: AppRoute.eLibrary,
+              page: () => const ElibraryScreen(),
+              binding: ElibraryBinding(),
             )
           ],
         ),
