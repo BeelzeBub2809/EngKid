@@ -99,8 +99,9 @@ class VideoController extends GetxController {
         //   final File video = await LibFunction.getSingleFile(question.video);
         //   _videoController = VideoPlayerController.file(video);
         // }
-        _videoController =
-            VideoPlayerController.networkUrl(Uri.parse(question.video));
+        _videoController = VideoPlayerController.networkUrl(
+          Uri.parse('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'),
+        );
       } else {
         if (!getLanguageVideoFromStorage()) {
           handleShowDownload(question.video_mong);
