@@ -13,6 +13,8 @@ import 'package:EngKid/presentation/management_space/setting/setting_binding.dar
 import 'package:EngKid/presentation/management_space/setting/setting_ui.dart';
 import 'package:EngKid/presentation/my_library/my_library_binding.dart';
 import 'package:EngKid/presentation/my_library/my_library_ui.dart';
+import 'package:EngKid/presentation/question/question_binding.dart';
+import 'package:EngKid/presentation/question/question_ui.dart';
 import 'package:EngKid/presentation/reading_space/reading_space_binding.dart';
 import 'package:EngKid/presentation/reading_space/reading_space_ui.dart';
 import 'package:EngKid/presentation/register/register_binding.dart';
@@ -129,7 +131,12 @@ class _MyAppState extends State<MyApp> {
               name: AppRoute.eLibrary,
               page: () => const ElibraryScreen(),
               binding: ElibraryBinding(),
-            )
+            ),
+            GetPage(
+              name: AppRoute.lesson,
+              page: () => QuestionScreen(),
+              binding: QuestionBinding(),
+            ),
           ],
         ),
       ),
