@@ -115,10 +115,10 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     readingId = quiz.reading.id;
     _topicService.readingName = quiz.reading.name;
 
-    // _unCompleteQuestions.add(Question(
-    //     video: quiz.reading.video,
-    //     typeCode: 'V',
-    //     video_mong: quiz.reading.videoMong));
+    _unCompleteQuestions.add(Question(
+        video: quiz.reading.video,
+        typeCode: 'V',
+        video_mong: quiz.reading.videoMong));
     late String contentReadGame = "";
     try {
       final int dataGameIndex = (Get.arguments[2] as Reading).positionId % 100;
