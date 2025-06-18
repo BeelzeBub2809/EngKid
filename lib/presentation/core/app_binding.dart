@@ -1,3 +1,4 @@
+import 'package:EngKid/domain/quiz/quiz_usecases.dart';
 import 'package:EngKid/presentation/core/elibrary_service.dart';
 import 'package:EngKid/presentation/e_library/e_library_video_binding.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ class AppBinding extends Bindings {
     Get.put(UserService(appUseCases: Get.find()));
     Get.put(TopicService(appUseCases: Get.find()));
     Get.put(ElibraryService(appUseCases: Get.find()));
+    Get.put(QuizUseCases());
     // Get.put(PurchaseService(appUseCases: Get.find()));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:EngKid/utils/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -261,263 +262,244 @@ class ShapeLesson extends StatelessWidget {
         bottom: 0.015 * size.height,
       ),
       child: Obx(
-        () => topicService.topicReadings.topicReadings.topic.id != -1
-            ? RawScrollbar(
-                controller: controller.scrollControllerLesson,
-                thumbColor: AppColor.red,
-                trackColor: AppColor.gray,
-                thumbVisibility: true,
-                padding: EdgeInsets.only(
-                  top: 0.03 * size.height,
-                  bottom: 0.01 * size.height,
-                  // right: 0.01 * size.width,
-                ),
-                thickness: 0.008 * size.width,
-                interactive: true,
-                radius: Radius.circular(0.008 * 2 * size.width),
-                child: GridView.builder(
-                  controller: controller.scrollControllerLesson,
-                  itemCount:
-                      topicService.topicReadings.topicReadings.readings.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: 0.9,
-                  ),
-                  itemBuilder: (context, index) => Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Stack(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              onPressLesson(
-                                reading: topicService.topicReadings
-                                    .topicReadings.readings[index],
-                                index: index,
-                              );
-                            },
-                            child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.circular(0.025 * size.height),
-                              child: CacheImage(
-                                url: topicService.topicReadings.topicReadings
-                                    .readings[index].thumImg
-                                // 'https://quantri2.sciv.vn/public/img/users/admin.jpg'
-                                ,
-                                width: size.width * 0.16,
-                                height: size.width * 0.16,
-                              ),
-                              // child: Image.asset(
-                              //   LocalImage.book,
-                              //   width: size.width * 0.16,
-                              // ),
+        () => RawScrollbar(
+          controller: controller.scrollControllerLesson,
+          thumbColor: AppColor.red,
+          trackColor: AppColor.gray,
+          thumbVisibility: true,
+          padding: EdgeInsets.only(
+            top: 0.03 * size.height,
+            bottom: 0.01 * size.height,
+            // right: 0.01 * size.width,
+          ),
+          thickness: 0.008 * size.width,
+          interactive: true,
+          radius: Radius.circular(0.008 * 2 * size.width),
+          child: GridView.builder(
+            controller: controller.scrollControllerLesson,
+            itemCount:
+            controller.readings.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 0.9,
+            ),
+            itemBuilder: (context, index) => Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        onPressLesson(
+                          reading: controller.readings[index],
+                          index: index,
+                        );
+                      },
+                      child: ClipRRect(
+                        borderRadius:
+                        BorderRadius.circular(0.025 * size.height),
+                        child: CacheImage(
+                          url: controller
+                              .readings[index].thumImg
+                          // 'https://quantri2.sciv.vn/public/img/users/admin.jpg'
+                          ,
+                          width: size.width * 0.16,
+                          height: size.width * 0.16,
+                        ),
+                        // child: Image.asset(
+                        //   LocalImage.book,
+                        //   width: size.width * 0.16,
+                        // ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      right: 0.01 * size.width,
+                      // top: 0.045 * size.height,
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: Image.asset(
+                          controller.getPathLessonStatus(index),
+                          width: 0.05 * size.width,
+                          height: 0.08 * size.height,
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      bottom: 0.005 * size.height,
+                      left: 0.01 * size.width,
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Stack(
+                          children: [
+                            Image.asset(
+                              LocalImage.shapeStar,
+                              width: 0.13 * size.width,
+                              height: 0.06 * size.height,
                             ),
-                          ),
-                          Positioned.fill(
-                            right: 0.01 * size.width,
-                            // top: 0.045 * size.height,
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Image.asset(
-                                controller.getPathLessonStatus(index),
-                                width: 0.05 * size.width,
-                                height: 0.08 * size.height,
-                              ),
-                            ),
-                          ),
-                          Positioned.fill(
-                            bottom: 0.005 * size.height,
-                            left: 0.01 * size.width,
-                            child: Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Stack(
-                                children: [
-                                  Image.asset(
-                                    LocalImage.shapeStar,
-                                    width: 0.13 * size.width,
-                                    height: 0.06 * size.height,
-                                  ),
-                                  Obx(
-                                    () => Positioned.fill(
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: List.generate(
-                                            topicService
-                                                .topicReadings
-                                                .topicReadings
-                                                .readings[index]
-                                                .stars,
-                                            (idx) => Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal:
-                                                      0.003 * size.width),
-                                              child: Image.asset(
-                                                idx <
-                                                        (topicService
-                                                                    .topicReadings
-                                                                    .topicReadings
-                                                                    .readings[
-                                                                        index]
-                                                                    .achievedStars >
-                                                                topicService
-                                                                    .topicReadings
-                                                                    .topicReadings
-                                                                    .readings[
-                                                                        index]
-                                                                    .maxAchievedStars
-                                                            ? topicService
-                                                                .topicReadings
-                                                                .topicReadings
-                                                                .readings[index]
-                                                                .achievedStars
-                                                            : topicService
-                                                                .topicReadings
-                                                                .topicReadings
-                                                                .readings[index]
-                                                                .maxAchievedStars)
-                                                    ? LocalImage.star
-                                                    : LocalImage.starGrey,
-                                                width: 0.02 * size.width,
-                                              ),
-                                            ),
-                                          ),
+                            Obx(
+                                  () => Positioned.fill(
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                    children: List.generate(
+                                      controller
+                                          .readings[index]
+                                          .stars,
+                                          (idx) => Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal:
+                                            0.003 * size.width),
+                                        child: Image.asset(
+                                          idx <
+                                              (controller
+                                                  .readings[
+                                              index]
+                                                  .achievedStars >
+                                                  controller
+                                                      .readings[
+                                                  index]
+                                                      .maxAchievedStars
+                                                  ? controller
+                                                  .readings[index]
+                                                  .achievedStars
+                                                  : controller
+                                                  .readings[index]
+                                                  .maxAchievedStars)
+                                              ? LocalImage.star
+                                              : LocalImage.starGrey,
+                                          width: 0.02 * size.width,
                                         ),
                                       ),
                                     ),
-                                  )
-                                ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 0.02 * size.height),
+                Padding(
+                  padding: EdgeInsets.only(
+                      right: 0.025 * size.width,
+                      left: 0.018 * size.width),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                            width: 0.11 * size.width,
+                            height: 0.03 * size.height,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(LocalImage.progress),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    right: 0.005 * size.width),
+                                child: Obx(
+                                      () => Text(
+                                    "${(controller.readings[index].totalQuiz != 0 ? controller.readings[index].totalCompleteQuiz * 100 / controller.readings[index].totalQuiz : 0).ceil()}%",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w800,
+                                      color: const Color.fromARGB(
+                                          255, 255, 147, 7),
+                                      fontSize: Fontsize.smallest - 4,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned.fill(
+                            left: 0.002 * size.width,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                width: 0.075 * size.width,
+                                height: 0.02 * size.height,
+                                decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      LocalImage.insideProgress,
+                                    ),
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Obx(
+                                () => Positioned.fill(
+                              left: 0.003 * size.width,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: SizedBox(
+                                  width: 0.075 *
+                                      size.width *
+                                      (controller
+                                          .readings[index]
+                                          .totalQuiz !=
+                                          0
+                                          ? controller
+                                          .readings[index]
+                                          .totalCompleteQuiz /
+                                          controller
+                                              .readings[index]
+                                              .totalQuiz
+                                          : 0),
+                                  height: 0.017 * size.height,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(
+                                        size.width * 0.02),
+                                    child: Image.asset(
+                                      LocalImage.progressDoing,
+                                      repeat: ImageRepeat.repeatX,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 0.02 * size.height),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            right: 0.025 * size.width,
-                            left: 0.018 * size.width),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Stack(
-                              children: [
-                                Container(
-                                  width: 0.11 * size.width,
-                                  height: 0.03 * size.height,
-                                  decoration: const BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage(LocalImage.progress),
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                  child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                          right: 0.005 * size.width),
-                                      child: Obx(
-                                        () => Text(
-                                          "${(topicService.topicReadings.topicReadings.readings[index].totalQuiz != 0 ? topicService.topicReadings.topicReadings.readings[index].totalCompleteQuiz * 100 / topicService.topicReadings.topicReadings.readings[index].totalQuiz : 0).ceil()}%",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w800,
-                                            color: const Color.fromARGB(
-                                                255, 255, 147, 7),
-                                            fontSize: Fontsize.smallest - 4,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned.fill(
-                                  left: 0.002 * size.width,
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Container(
-                                      width: 0.075 * size.width,
-                                      height: 0.02 * size.height,
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                            LocalImage.insideProgress,
-                                          ),
-                                          fit: BoxFit.fill,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Obx(
-                                  () => Positioned.fill(
-                                    left: 0.003 * size.width,
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: SizedBox(
-                                        width: 0.075 *
-                                            size.width *
-                                            (topicService
-                                                        .topicReadings
-                                                        .topicReadings
-                                                        .readings[index]
-                                                        .totalQuiz !=
-                                                    0
-                                                ? topicService
-                                                        .topicReadings
-                                                        .topicReadings
-                                                        .readings[index]
-                                                        .totalCompleteQuiz /
-                                                    topicService
-                                                        .topicReadings
-                                                        .topicReadings
-                                                        .readings[index]
-                                                        .totalQuiz
-                                                : 0),
-                                        height: 0.017 * size.height,
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                              size.width * 0.02),
-                                          child: Image.asset(
-                                            LocalImage.progressDoing,
-                                            repeat: ImageRepeat.repeatX,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              width: 0.04 * size.width,
-                              height: 0.03 * size.height,
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(LocalImage.progressQuiz),
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Quiz ${topicService.topicReadings.topicReadings.readings[index].totalCompleteQuiz}/${topicService.topicReadings.topicReadings.readings[index].totalQuiz}',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                      fontSize: Fontsize.smallest - 4),
-                                ),
-                              ),
-                            ),
-                          ],
+                      Container(
+                        width: 0.04 * size.width,
+                        height: 0.03 * size.height,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(LocalImage.progressQuiz),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Quiz ${controller.readings[index].totalCompleteQuiz}/${controller.readings[index].totalQuiz}',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                                fontSize: Fontsize.smallest - 4),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              )
-            : const SizedBox(),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -535,6 +517,8 @@ class ShapeTopic extends StatelessWidget {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final TopicService topicService = Get.find<TopicService>();
+    final ReadingSpaceController readingSpaceController =
+        Get.find<ReadingSpaceController>();
 
     return Container(
       width: size.width * 0.32,
@@ -575,14 +559,12 @@ class ShapeTopic extends StatelessWidget {
                   controller: controller.scrollControllerTopic,
                   child: Column(
                     children: List.generate(
-                        topicService.progressGrade.myProgress.topics.length,
+                        readingSpaceController.topics.length,
                         (index) {
                       return GestureDetector(
                         onTap: () {
-                          // topicService.onChangeTopicReadings(
-                          //     topicService
-                          //         .progressGrade.myProgress.topics[index],
-                          //     index);
+                          readingSpaceController.onChangeTopicReadings(
+                              index);
                         },
                         child: Padding(
                           padding: EdgeInsets.only(bottom: 0.01 * size.height),
@@ -593,7 +575,7 @@ class ShapeTopic extends StatelessWidget {
                                 Obx(
                                   () => Container(
                                     decoration: BoxDecoration(
-                                      image: index == topicService.topicIndex
+                                      image: index == readingSpaceController.topicIndex
                                           ? const DecorationImage(
                                               image: AssetImage(
                                                   LocalImage.topicImageChoosed),
@@ -604,7 +586,7 @@ class ShapeTopic extends StatelessWidget {
                                                   LocalImage.topicImage),
                                               fit: BoxFit.fill,
                                             ),
-                                      border: index == topicService.topicIndex
+                                      border: index == readingSpaceController.topicIndex
                                           ? Border.all(
                                               color: const Color.fromARGB(
                                                   255, 63, 195, 131),
@@ -622,8 +604,7 @@ class ShapeTopic extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(
                                             0.05 * size.width),
                                         child: CacheImage(
-                                          url: topicService.progressGrade
-                                              .myProgress.topics[index].icon,
+                                          url: readingSpaceController.topics[index].icon,
                                           width: 0.05 * size.width,
                                           height: 0.05 * size.width,
                                         ),
@@ -637,7 +618,7 @@ class ShapeTopic extends StatelessWidget {
                                 Obx(() => Container(
                                       decoration: BoxDecoration(
                                           image: index ==
-                                                  topicService.topicIndex
+                                                  readingSpaceController.topicIndex
                                               ? const DecorationImage(
                                                   image: AssetImage(LocalImage
                                                       .topicNameChoosed),
@@ -659,9 +640,7 @@ class ShapeTopic extends StatelessWidget {
                                           Align(
                                             alignment: Alignment.centerLeft,
                                             child: RegularText(
-                                              topicService
-                                                  .progressGrade
-                                                  .myProgress
+                                              readingSpaceController
                                                   .topics[index]
                                                   .name,
                                               maxLines: 1,
@@ -670,7 +649,7 @@ class ShapeTopic extends StatelessWidget {
                                                   fontWeight: FontWeight.w700),
                                             ),
                                           ),
-                                          if (index == topicService.topicIndex)
+                                          if (index == readingSpaceController.topicIndex)
                                             Image.asset(
                                               LocalImage.menuSelected,
                                               width: size.height * 0.1,

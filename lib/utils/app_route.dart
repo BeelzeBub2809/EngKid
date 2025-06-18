@@ -19,4 +19,23 @@ class AppRoute {
   //e library routes
   static const eLibrary = '/e_library';
 
+  //quiz routes
+  static const quizNestedRouteKey = 1;
+  static const lesson = '/lesson';
+  static const video = '/video';
+
+  static const singleChoice = '/single-choice';
+  static const multipleChoice = '/multiple-choice';
+  static const matched = '/matched';
+  static const fillWord = '/fill-word';
+  static const fillBlank = '/fill-blank';
+  static const fillTable = '/fill-table';
+  static const crosswordPuzzle = '/crossword-puzzle';
+  static const dragBox = '/drag-box';
+  static const jigsawPuzzle = "/jigsaw-puzzle";
+  static const read = "/read";
+  static const achieveStar = "/achieve_star";
+  static const questionFinalScreen = "/final_screen";
+  static const coloring = '/coloring';
+  static const drawing = '/drawing';
 }

@@ -52,6 +52,8 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
   late int _remainingTime = 0;
   late Uint8List? thumbVideo;
 
+  final RxList<Topic> _topics = <Topic>[].obs;
+  final RxList<Reading> _readings = <Reading>[].obs;
   final RxBool _isDownload = false.obs;
   final RxBool _isDownloading = false.obs;
   final RxInt _loadingProgress = 10.obs;
@@ -68,27 +70,52 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
   final RxBool _isCheckedLanguage = false.obs;
   final RxBool _isCheckedAllMong = false.obs;
   final RxString _selectLanguage = "None".obs;
+  final RxInt _topicIndex = 0.obs;
 
   final RxBool _isCheckAll = false.obs;
+
   bool get isDownload => _isDownload.value;
+
   bool get isDownloading => _isDownloading.value;
+
   bool get isCheckedLanguage => _isCheckedLanguage.value;
+
   int get loadingProgress => _loadingProgress.value;
+
   bool get loadingVideo => _loadingVideo.value;
+
   VideoPlayerController get videoController => _videoController!;
+
   List get isDownloaded => _isDownloaded.value;
+
   List get isVideoDownloaded => _isVideoDownloaded.value;
+
   List get isMultipleDownloading => _isMultipleDownloading.value;
+
   List get isHasVideoMong => _isHasVideoMong.value;
+
   bool get isDownloadedScreen => _isDownloadedScreen.value;
+
   String get selectedLanguage => _selectLanguage.value;
+
   List get isCheckedMong => _isCheckedMong.value;
+
   bool get isCheckedAllMong => _isCheckedAllMong.value;
+
   bool get isSelectedMong => _isSelectedMong.value;
+
   List get isDownloadedVideoMong => _isDownloadedVideoMong.value;
+
   bool get ReadingSequence => _readingSequence.value;
 
+  List<Topic> get topics => _topics.value;
+
+  List<Reading> get readings => _readings.value;
+
+  int get topicIndex => _topicIndex.value;
+
   bool get isCheckAll => _isCheckAll.value;
+
   set isDownload(bool value) {
     if (_isDownloading.value) return;
     _isDownload.value = value;
@@ -99,9 +126,103 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
   Future<void> onInit() async {
     super.onInit();
     // _userService.getReadingSequenceSetting();
-    _readingSequence.value = _userService.readingSequenceSetting.readingSequenceSetting;
+    _readingSequence.value =
+        _userService.readingSequenceSetting.readingSequenceSetting;
     WidgetsBinding.instance.addObserver(this);
-    LibFunction.playAudioLocal(LocalAudio.chooseLesson);
+
+    // get topics
+    _topics.value = [
+      const Topic(
+        id: 1,
+        name: "Topic 1",
+        icon: "https://cdn-icons-png.flaticon.com/512/5656/5656829.png",
+        thmbImg: LocalImage.backgroundBlue,
+      ),
+      const Topic(
+        id: 1,
+        name: "Topic 2",
+        icon: "https://cdn-icons-png.flaticon.com/512/5656/5656829.png",
+        thmbImg: LocalImage.backgroundBlue,
+      ),
+      const Topic(
+        id: 1,
+        name: "Topic 3",
+        icon: "https://cdn-icons-png.flaticon.com/512/5656/5656829.png",
+        thmbImg: LocalImage.backgroundBlue,
+      ),
+      const Topic(
+        id: 1,
+        name: "Topic 4",
+        icon: "https://cdn-icons-png.flaticon.com/512/5656/5656829.png",
+        thmbImg: LocalImage.backgroundBlue,
+      ),
+    ];
+
+    // get readings
+    _readings.value = [
+      const Reading(
+        id: 1,
+        name: "Reading 1",
+        thumImg: 'https://m.media-amazon.com/images/I/41wt2QdOFuL._SL500_.jpg',
+        background: LocalImage.backgroundBlue,
+        readingVideo: "https://youtu.be/OrDB4jpA1g8",
+        stars: 5,
+        achievedStars: 3,
+        maxAchievedStars: 5,
+        isActionGame: true,
+        isLocked: false,
+        totalQuiz: 5,
+        totalCompleteQuiz: 3,
+        percentage: 60,
+      ),
+      const Reading(
+        id: 2,
+        name: "Reading 2",
+        thumImg: 'https://d2n9ha3hrkss16.cloudfront.net/uploads/stage/stage_image/37837/optimized_large_thumb_stage.jpg',
+        background: LocalImage.backgroundBlue,
+        readingVideo: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
+        stars: 5,
+        achievedStars: 3,
+        maxAchievedStars: 5,
+        isActionGame: true,
+        isLocked: false,
+        totalQuiz: 5,
+        totalCompleteQuiz: 3,
+        percentage: 60,
+      ),
+      const Reading(
+        id: 3,
+        name: "Reading 3",
+        thumImg: 'https://img.freepik.com/premium-photo/children-s-storybook-cover-design_968502-387.jpg',
+        background: LocalImage.backgroundBlue,
+        readingVideo: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
+        stars: 5,
+        achievedStars: 3,
+        maxAchievedStars: 5,
+        isActionGame: true,
+        isLocked: false,
+        totalQuiz: 5,
+        totalCompleteQuiz: 3,
+        percentage: 60,
+      ),
+      const Reading(
+        id: 4,
+        name: "Reading 4",
+        thumImg: 'https://img.freepik.com/premium-photo/children-s-storybook-cover-design_968502-1232.jpg',
+        background: LocalImage.backgroundBlue,
+        readingVideo: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
+        stars: 5,
+        achievedStars: 3,
+        maxAchievedStars: 5,
+        isActionGame: true,
+        isLocked: false,
+        totalQuiz: 5,
+        totalCompleteQuiz: 3,
+        percentage: 60,
+      ),
+    ];
+
+    _topicIndex.value = 0;
   }
 
   Future<void> onPressLesson(
@@ -109,71 +230,122 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     await LibFunction.effectConfirmPop();
     readingData = reading;
     indexReading = index;
-    setHasVideoMong();
-    if (!getQuizsFromStorage()) {
-      await handleShowDownload(reading.readingVideo);
-      debugPrint("check download : $reading.readingVideo");
-    } else {
-      // check lock
-      if (getPathLessonStatus(index) == LocalImage.lessonLocked &&
-          _topicService.isCaculator) {
-        LibFunction.toast("lock_lesson");
-        return;
-      }
-      // kiểm tra ngôn ngữ
-      late String language = "vi";
-      final Rx<Setting>? tmp = _userService.settings
-          .firstWhereOrNull((element) => element.value.key == 'language');
-      if (tmp != null) {
-        language = tmp.value.value;
-      }
-      if (_topicService.currentQuiz.language != language) {
-        await handleShowDownload(reading.readingVideo);
-        return;
-      }
-      // handle count down
-      final int timeLimit = getTimeLimitFromStorage();
-      if (timeLimit > 0) {
-        countdownTimerUseApp(timeLimit);
-        // start learn
-        if (_topicService.isCaculator) {
-          await updateAttempt(_topicService.currentQuiz);
-        }
-        startLearning(_topicService.currentQuiz, index);
-      } else {
-        try {
-          _timerUseApp.cancel();
-        } catch (e) {
-          //
-        }
 
-        Get.dialog(
-          DialogWarningTime(
-              timer: _topicService.currentGrade.timeLimit,
-              onTapContinue: () async {
-                // start learn
-                if (_topicService.isCaculator) {
-                  await updateAttempt(_topicService.currentQuiz);
-                }
-                startLearning(_topicService.currentQuiz, index);
-              }),
-          barrierDismissible: false,
-          barrierColor: null,
-        );
-      }
-    }
+    var currentQuiz = Quiz(
+      reading: QuizReading(
+        name: reading.name,
+        id: reading.id,
+        thumImg: reading.thumImg,
+        background: reading.background,
+        video: reading.readingVideo,
+        videoMong: '',
+        questionCount: reading.totalQuiz == 0
+            ? const Count()
+            : Count(
+                total: reading.totalQuiz,
+                complete: reading.totalCompleteQuiz,
+              ),
+
+      ),
+      questions: [
+        const Question(
+          questionId: 1,
+          type: 'Single Choice',
+          typeCode: 'S',
+          question: "What is the capital of France?",
+          options: [
+            Option(
+              optionId: 1,
+              option: "Paris",
+              isCorrect: '1',
+              image: "",
+            ),
+            Option(
+              optionId: 2,
+              option: "London",
+              isCorrect: '0',
+              image: "",
+            ),
+            Option(
+              optionId: 3,
+              option: "Berlin",
+              isCorrect: '0',
+              image: "",
+            ),
+          ],
+          achievedMark: 0.0,
+          background: "",
+          audio: "",
+        ),
+      ],
+
+    );
+    startLearning(currentQuiz, index);
+    // setHasVideoMong();
+    // if (!getQuizsFromStorage()) {
+    //   await handleShowDownload(reading.readingVideo);
+    //   debugPrint("check download : $reading.readingVideo");
+    // } else {
+    //   // check lock
+    //   if (getPathLessonStatus(index) == LocalImage.lessonLocked &&
+    //       _topicService.isCaculator) {
+    //     LibFunction.toast("lock_lesson");
+    //     return;
+    //   }
+    //   // kiểm tra ngôn ngữ
+    //   late String language = "vi";
+    //   final Rx<Setting>? tmp = _userService.settings
+    //       .firstWhereOrNull((element) => element.value.key == 'language');
+    //   if (tmp != null) {
+    //     language = tmp.value.value;
+    //   }
+    //   if (_topicService.currentQuiz.language != language) {
+    //     await handleShowDownload(reading.readingVideo);
+    //     return;
+    //   }
+    //   // handle count down
+    //   final int timeLimit = getTimeLimitFromStorage();
+    //   if (timeLimit > 0) {
+    //     countdownTimerUseApp(timeLimit);
+    //     // start learn
+    //     if (_topicService.isCaculator) {
+    //       await updateAttempt(_topicService.currentQuiz);
+    //     }
+    //     startLearning(_topicService.currentQuiz, index);
+    //   } else {
+    //     try {
+    //       _timerUseApp.cancel();
+    //     } catch (e) {
+    //       //
+    //     }
+    //
+    //     Get.dialog(
+    //       DialogWarningTime(
+    //           timer: _topicService.currentGrade.timeLimit,
+    //           onTapContinue: () async {
+    //             // start learn
+    //             if (_topicService.isCaculator) {
+    //               await updateAttempt(_topicService.currentQuiz);
+    //             }
+    //             startLearning(_topicService.currentQuiz, index);
+    //           }),
+    //       barrierDismissible: false,
+    //       barrierColor: null,
+    //     );
+    //   }
+    // }
   }
 
   void startLearning(Quiz quiz, int index) {
-    // Get.toNamed(
-    //   AppRoute.lesson,
-    //   arguments: [
-    //     quiz, // current reading
-    //     _topicService.topicReadings.topicReadings.readings.length - 1 ==
-    //         index, // reading end
-    //     _topicService.topicReadings.topicReadings.readings[index]
-    //   ],
-    // );
+    Get.toNamed(
+      AppRoute.lesson,
+      arguments: [
+        quiz, // current reading
+        readings.length - 1 ==
+            index, // reading end
+        readings[index]
+      ],
+    );
   }
 
   Future<void> updateAttempt(Quiz quiz) async {
@@ -189,22 +361,20 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
   }
 
   String getPathLessonStatus(int index) {
-    if (_topicService.topicReadings.topicReadings.readings[index].stars <=
-        _topicService
-            .topicReadings.topicReadings.readings[index].achievedStars) {
+    if (_readings[index].stars <=
+        _readings[index].achievedStars) {
       return LocalImage.lessonCompleted;
     }
     if (index == 0) {
       return LocalImage.lessonProgress;
     }
 
-    if (_topicService.topicReadings.topicReadings.readings[index - 1].stars <=
-        _topicService
-            .topicReadings.topicReadings.readings[index - 1].achievedStars) {
+    if (_readings[index - 1].stars <=
+        _readings[index - 1].achievedStars) {
       return LocalImage.lessonProgress;
     }
 
-    if(!_readingSequence.value){
+    if (!_readingSequence.value) {
       return LocalImage.lessonProgress;
     }
 
@@ -326,6 +496,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     LibFunction.saveIds(
         key: KeySharedPreferences.idsDownloaded, id: readingData.id);
   }
+
   //
 
   // countdown time use app
@@ -345,9 +516,10 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
             }
           }
 
-          if(_remainingTime == 25*60){
+          if (_remainingTime == 25 * 60) {
             int loginRecordId = _preferencesManager.getInt(
-              KeySharedPreferences.loginRecord + _userService.currentUser.userId,
+              KeySharedPreferences.loginRecord +
+                  _userService.currentUser.userId,
             )!;
             // _userService.updateLoginRecord(loginRecordId, false, false, true);
           }
@@ -383,14 +555,18 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     if (!_topicService.isCaculator) return;
     await _preferencesManager.putInt(
         key:
-        "${_topicService.currentGrade.id}_${LibFunction.startOfDateNow().microsecondsSinceEpoch}_timeLimit",
+        "${_topicService.currentGrade.id}_${LibFunction
+            .startOfDateNow()
+            .microsecondsSinceEpoch}_timeLimit",
         value: _remainingTime);
   }
 
   int getTimeLimitFromStorage() {
     try {
       final int? timeLimit = _preferencesManager.getInt(
-          "${_topicService.currentGrade.id}_${LibFunction.startOfDateNow().microsecondsSinceEpoch}_timeLimit");
+          "${_topicService.currentGrade.id}_${LibFunction
+              .startOfDateNow()
+              .microsecondsSinceEpoch}_timeLimit");
       if (timeLimit != null) {
         return timeLimit;
       }
@@ -462,7 +638,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     handleChangeDownloadedScreen(false);
     setHasVideoMong();
     setIsDownloadedVideoMong();
-    _isMultipleDownloading.value =  RxList<bool>.filled(2000, false);
+    _isMultipleDownloading.value = RxList<bool>.filled(2000, false);
     _isCheckAll.value = false;
     Get.dialog(
       DialogDownloadAll(
@@ -474,20 +650,18 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
   }
 
   void checkIsDownloaded() {
-
-    for(Reading reading in _topicService.topicReadings.topicReadings.readings) {
+    for (Reading reading in _topicService.topicReadings.topicReadings
+        .readings) {
       String? isVideoDownloaded = _preferencesManager.getString(
         "${_userService.currentUser.id}_${reading.id}_datafile.json",
       );
-      if(isVideoDownloaded != null) {
+      if (isVideoDownloaded != null) {
         _isDownloaded[reading.id] = true;
       }
       else {
         _isDownloaded[reading.id] = false;
-
       }
     }
-
   }
 
   void setIsDownloadedVideoMong() {
@@ -531,12 +705,14 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
             isContinue = true;
             // Get.dialog(ModalBarrier(dismissible: false, color: Colors.transparent));
             Get.dialog(LoadingDialog());
-            showToastWidget(ToastDialog("delete_4".tr), duration: const Duration(seconds: 2 ));
-            for(Reading reading in _topicService.topicReadings.topicReadings.readings) {
+            showToastWidget(ToastDialog("delete_4".tr),
+                duration: const Duration(seconds: 2));
+            for (Reading reading in _topicService.topicReadings.topicReadings
+                .readings) {
               // print("Reading download status");
               // print(reading.id);
               // print(_isVideoDownloaded[reading.id]);
-              if(_isDownloaded[reading.id] == true){
+              if (_isDownloaded[reading.id] == true) {
                 await deleteQuizFromStorage(reading.id);
                 // final Quiz datafile = await _topicService.getQuiz(reading.id);
                 // await LibFunction.removeFileCache(datafile.reading.thumImg);
@@ -576,8 +752,9 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
             //start delete
             isContinue = true;
             Get.dialog(LoadingDialog());
-            showToastWidget(ToastDialog("delete_4".tr), duration: const Duration(seconds: 2 ));
-            if(_isDownloaded[reading.id] == true){
+            showToastWidget(ToastDialog("delete_4".tr),
+                duration: const Duration(seconds: 2));
+            if (_isDownloaded[reading.id] == true) {
               await deleteQuizFromStorage(reading.id);
               // final Quiz datafile = await _topicService.getQuiz(reading.id);
               // await LibFunction.removeFileCache(datafile.reading.thumImg);
@@ -593,7 +770,8 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
               _isDownloadedVideoMong[reading.id] = false;
             }
             await Future.delayed(const Duration(milliseconds: 2000));
-            showToastWidget(ToastDialog("delete_3".tr), duration: const Duration(seconds: 3));
+            showToastWidget(ToastDialog("delete_3".tr),
+                duration: const Duration(seconds: 3));
             Get.back();
           }),
       barrierDismissible: false,
@@ -701,8 +879,8 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     }
   }
 
-  void handleSelectLanguageAll(
-      ReadingSpaceController controller, int readingId) async {
+  void handleSelectLanguageAll(ReadingSpaceController controller,
+      int readingId) async {
     if (!_isDownloadedScreen.value) {
       bool isContinue = false;
 
@@ -858,5 +1036,9 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
       }
     }
     return false;
+  }
+
+  void onChangeTopicReadings(int index){
+    _topicIndex.value = index;
   }
 }
