@@ -85,10 +85,10 @@ class ReadingScreen extends GetView<ReadingSpaceController> {
             ],
           ),
         ),
-        DownloadLesson(
-          controller: controller,
-          size: size,
-        ),
+        // DownloadLesson(
+        //   controller: controller,
+        //   size: size,
+        // ),
         Obx(
           () => topicService.isGetTopicReadings
               ? Container(color: Colors.black38, child: const LoadingDialog())
@@ -690,9 +690,13 @@ class Progress extends StatelessWidget {
       () => Padding(
         padding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
+              margin: EdgeInsets.only(
+                right: LibFunction.scaleForCurrentValue(size, 100, desire: 0),
+                left: LibFunction.scaleForCurrentValue(size, 50, desire: 0),
+              ),
               width: LibFunction.scaleForCurrentValue(size, 400, desire: 0),
               height: LibFunction.scaleForCurrentValue(size, 140, desire: 0),
               decoration: const BoxDecoration(
@@ -723,47 +727,6 @@ class Progress extends StatelessWidget {
                     ),
                     RegularText(
                       "lesson",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: Fontsize.smallest,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              width: LibFunction.scaleForCurrentValue(size, 400, desire: 0),
-              height: LibFunction.scaleForCurrentValue(size, 140, desire: 0),
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(LocalImage.progressTopic),
-                  fit: BoxFit.fill,
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: LibFunction.scaleForCurrentValue(
-                    size,
-                    130,
-                    desire: 0,
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RegularText(
-                      "${topicService.progressGrade.myProgress.topicCount.complete}/${topicService.progressGrade.myProgress.topicCount.total}",
-                      style: TextStyle(
-                        color: AppColor.yellow,
-                        fontSize: Fontsize.smaller - 1,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    RegularText(
-                      "topic",
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: Fontsize.smallest,
@@ -815,7 +778,7 @@ class Progress extends StatelessWidget {
                 ),
               ),
             ),
-            DownloadAll(controller: controller),
+            // DownloadAll(controller: controller),
           ],
         ),
       ),
@@ -870,26 +833,26 @@ class Header extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Column(
-                  children: [
-                    ImageButton(
-                      onTap: () {
-                        // userService.onPressStarBoard(isValidate: false);
-                      },
-                      pathImage: LocalImage.numOfStar,
-                      width: 0.06 * size.width,
-                      height: 0.06 * size.width,
-                    ),
-                    RegularText(
-                      'star_board_title'.tr,
-                      style: TextStyle(
-                          fontSize: Fontsize.smaller, color: AppColor.yellow),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  width: 0.02 * size.height,
-                ),
+                // Column(
+                //   children: [
+                //     ImageButton(
+                //       onTap: () {
+                //         // userService.onPressStarBoard(isValidate: false);
+                //       },
+                //       pathImage: LocalImage.numOfStar,
+                //       width: 0.06 * size.width,
+                //       height: 0.06 * size.width,
+                //     ),
+                //     RegularText(
+                //       'star_board_title'.tr,
+                //       style: TextStyle(
+                //           fontSize: Fontsize.smaller, color: AppColor.yellow),
+                //     )
+                //   ],
+                // ),
+                // SizedBox(
+                //   width: 0.02 * size.height,
+                // ),
                 GestureDetector(
                   onTap: () {
                     userService.onPressProfile();

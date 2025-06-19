@@ -374,9 +374,8 @@ class VideoController extends GetxController {
     return false;
   }
 
-  // @override
-  // void dispose() {
-
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }

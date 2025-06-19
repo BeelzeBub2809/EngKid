@@ -167,13 +167,13 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
         background: LocalImage.backgroundBlue,
         readingVideo: "https://youtu.be/OrDB4jpA1g8",
         stars: 5,
-        achievedStars: 3,
+        achievedStars: 5,
         maxAchievedStars: 5,
         isActionGame: true,
         isLocked: false,
         totalQuiz: 5,
-        totalCompleteQuiz: 3,
-        percentage: 60,
+        totalCompleteQuiz: 5,
+        percentage: 100,
       ),
       const Reading(
         id: 2,
@@ -183,7 +183,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
         readingVideo: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
         stars: 5,
         achievedStars: 3,
-        maxAchievedStars: 5,
+        maxAchievedStars: 3,
         isActionGame: true,
         isLocked: false,
         totalQuiz: 5,
@@ -198,7 +198,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
         readingVideo: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
         stars: 5,
         achievedStars: 3,
-        maxAchievedStars: 5,
+        maxAchievedStars: 3,
         isActionGame: true,
         isLocked: false,
         totalQuiz: 5,
@@ -213,7 +213,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
         readingVideo: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
         stars: 5,
         achievedStars: 3,
-        maxAchievedStars: 5,
+        maxAchievedStars: 3,
         isActionGame: true,
         isLocked: false,
         totalQuiz: 5,
@@ -361,24 +361,14 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
   }
 
   String getPathLessonStatus(int index) {
-    if (_readings[index].stars <=
-        _readings[index].achievedStars) {
+    if (_readings[index].maxAchievedStars == _readings[index].stars) {
       return LocalImage.lessonCompleted;
     }
     if (index == 0) {
       return LocalImage.lessonProgress;
     }
 
-    if (_readings[index - 1].stars <=
-        _readings[index - 1].achievedStars) {
-      return LocalImage.lessonProgress;
-    }
-
-    if (!_readingSequence.value) {
-      return LocalImage.lessonProgress;
-    }
-
-    return LocalImage.lessonLocked;
+    return LocalImage.lessonProgress;
   }
 
   // Tải bài học
