@@ -124,65 +124,6 @@ class HomeScreen extends GetView<HomeScreenController> {
                                         child: Swiper(
                                           itemBuilder: (BuildContext context,
                                               int index) {
-                                            if (userService.userLogin.roleId ==
-                                                "2") {
-                                              return Stack(
-                                                children: [
-                                                  Center(
-                                                    child: Container(
-                                                      width: 0.24 * size.height,
-                                                      height:
-                                                          0.24 * size.height,
-                                                      decoration:
-                                                          const BoxDecoration(
-                                                        color:
-                                                            Color(0XFFfdf1ce),
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                      child: Center(
-                                                        child: ClipRRect(
-                                                          borderRadius: BorderRadius
-                                                              .circular(0.23 *
-                                                                  size.height),
-                                                          child: CacheImage(
-                                                            url: userService
-                                                                .userLogin
-                                                                .image,
-                                                            width: 0.23 *
-                                                                size.height,
-                                                            height: 0.23 *
-                                                                size.height,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned.fill(
-                                                      child: Align(
-                                                    alignment:
-                                                        Alignment.bottomCenter,
-                                                    child: ImageText(
-                                                      pathImage:
-                                                          LocalImage.shapeName,
-                                                      text: userService
-                                                          .userLogin.name,
-                                                      style: TextStyle(
-                                                        color: AppColor.gray,
-                                                        fontSize:
-                                                            Fontsize.larger,
-                                                        height: 1.2,
-                                                      ),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      width: 0.23 * size.width,
-                                                      height: 0.1 * size.height,
-                                                      onTap: controller
-                                                          .copyDeviceTokenToClipboard,
-                                                    ),
-                                                  ))
-                                                ],
-                                              );
-                                            }
                                             return Stack(
                                               children: [
                                                 Center(

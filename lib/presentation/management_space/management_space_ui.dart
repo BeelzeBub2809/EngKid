@@ -239,27 +239,27 @@ class Header extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Column(
-                children: [
-                  ImageButton(
-                    onTap: () {
-                      // userService.onPressStarBoard(isValidate: false);
-                    },
-                    semantics: 'star_board_title',
-                    pathImage: LocalImage.numOfStar,
-                    width: 0.06 * size.width,
-                    height: 0.06 * size.width,
-                  ),
-                  RegularText(
-                    'star_board_title'.tr,
-                    style: TextStyle(
-                        fontSize: Fontsize.smallest, color: AppColor.yellow),
-                  )
-                ],
-              ),
-              SizedBox(
-                width: 0.05 * size.height,
-              ),
+              // Column(
+              //   children: [
+              //     ImageButton(
+              //       onTap: () {
+              //         // userService.onPressStarBoard(isValidate: false);
+              //       },
+              //       semantics: 'star_board_title',
+              //       pathImage: LocalImage.numOfStar,
+              //       width: 0.06 * size.width,
+              //       height: 0.06 * size.width,
+              //     ),
+              //     RegularText(
+              //       'star_board_title'.tr,
+              //       style: TextStyle(
+              //           fontSize: Fontsize.smallest, color: AppColor.yellow),
+              //     )
+              //   ],
+              // ),
+              // SizedBox(
+              //   width: 0.05 * size.height,
+              // ),
               GestureDetector(
                 onTap: () async {
                   await LibFunction.effectConfirmPop();

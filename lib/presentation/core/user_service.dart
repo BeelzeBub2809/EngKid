@@ -114,8 +114,24 @@ class UserService extends GetxService {
       loginId: "sample_login_id",
       grade: "Grade 5",
       school: "Sample School",
-      avatar: "sample_base64_avatar",
+      avatar: "https://thumbs.dreamstime.com/b/vectorial-blank-face-avatar-7046081.jpg",
       surveyPassed: true,
+    );
+
+    _childProfiles.value = const ChildProfiles(
+      childProfiles: [
+        Child(
+          id: 1,
+          userId: "sample_user_id",
+          name: "Sample Name",
+          classname: "Sample Class",
+          loginId: "sample_login_id",
+          grade: "Grade 5",
+          school: "Sample School",
+          avatar: "https://thumbs.dreamstime.com/b/vectorial-blank-face-avatar-7046081.jpg",
+          surveyPassed: true,
+        ),
+      ],
     );
   }
 

@@ -255,23 +255,23 @@ class Header extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ImageButton(
-                onTap: () {
-                  // userService.onPressStarBoard(isValidate: false);
-                },
-                pathImage: LocalImage.numOfStar,
-                width: 0.06 * size.width,
-                height: 0.06 * size.width,
-              ),
-              RegularText('star_board_title'.tr, style: TextStyle(fontSize: Fontsize.smaller, color: AppColor.yellow),)
-            ],
-          ),
-          SizedBox(
-            width: 0.02 * size.height,
-          ),
+          // Column(
+          //   mainAxisSize: MainAxisSize.min,
+          //   children: [
+          //     ImageButton(
+          //       onTap: () {
+          //         // userService.onPressStarBoard(isValidate: false);
+          //       },
+          //       pathImage: LocalImage.numOfStar,
+          //       width: 0.06 * size.width,
+          //       height: 0.06 * size.width,
+          //     ),
+          //     RegularText('star_board_title'.tr, style: TextStyle(fontSize: Fontsize.smaller, color: AppColor.yellow),)
+          //   ],
+          // ),
+          // SizedBox(
+          //   width: 0.02 * size.height,
+          // ),
           GestureDetector(
             onTap: () {
               userService.onPressProfile();
