@@ -18,7 +18,6 @@ class MyLibraryScreen extends GetView<MyLibraryController>{
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final TopicService topicService = Get.find<TopicService>();
-
     return Scaffold(
       body: Container(
         width: size.width,

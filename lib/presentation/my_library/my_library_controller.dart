@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/domain/grade/entities/grade/grade.dart';
 import 'package:EngKid/presentation/core/topic_service.dart';
@@ -19,6 +20,10 @@ class MyLibraryController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     _topicService.isCaculator = Get.arguments ?? true;
+    final gotFromStorage = await _topicService.getGradesFromStorage(isAwait: true);
+    if (!gotFromStorage) {
+      await _topicService.getLibrary();
+    }
     Future.delayed(const Duration(milliseconds: 1000), () {
       LibFunction.playAudioLocal(LocalAudio.chooseGrade);
     });
