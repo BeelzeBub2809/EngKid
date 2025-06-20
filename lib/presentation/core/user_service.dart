@@ -70,7 +70,7 @@ class UserService extends GetxService {
   final Rx<ChildProfiles> _childProfiles = const ChildProfiles().obs;
   final Rx<Child> _currentUser = const Child().obs;
   late StarSetting _starSetting = const StarSetting();
-  late ReadingSequenceSetting _readingSequenceSetting =
+  final ReadingSequenceSetting _readingSequenceSetting =
       const ReadingSequenceSetting();
 
   final Rx<AppSetting> _appSetting = const AppSetting().obs;

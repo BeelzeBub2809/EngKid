@@ -73,19 +73,19 @@ class ElibraryService extends GetxService {
         "id": 1,
         "name": "Science",
         "icon": "https://static.vecteezy.com/system/resources/previews/000/551/469/original/dynamic-atom-molecule-science-symbol-vector-icon.jpg",
-        "thmbImg": "https://mir-s3-cdn-cf.behance.net/project_modules/fs/cc4c5131516629.565451f6bd878.png"
+        "thmb_img": "https://mir-s3-cdn-cf.behance.net/project_modules/fs/cc4c5131516629.565451f6bd878.png"
       },
       {
         "id": 2,
         "name": "Mathematics",
         "icon": "https://www.pngkit.com/png/full/137-1372107_calculator-icon-math-icon-png.png",
-        "thmbImg": "https://cdn.dribbble.com/users/730703/screenshots/2457647/field.jpg"
+        "thmb_img": "https://cdn.dribbble.com/users/730703/screenshots/2457647/field.jpg"
       },
       {
         "id": 3,
         "name": "History",
         "icon": "https://icon-library.com/images/history-icon/history-icon-28.jpg",
-        "thmbImg": "https://www.aiobot.com/wp-content/uploads/2021/11/Adidas-Yeezy-1050-Boot-AIO-Bot.jpg"
+        "thmb_img": "https://www.aiobot.com/wp-content/uploads/2021/11/Adidas-Yeezy-1050-Boot-AIO-Bot.jpg"
       }
     ];
     _categoryList.clear(); // Clear existing items in the list

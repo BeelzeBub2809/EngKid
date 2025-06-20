@@ -40,11 +40,12 @@ class ElibraryScreen extends GetView<ElibraryController> {
                               url: elibraryService
                                   .categoryList[elibraryService.categoryIndex]
                                   .thmbImg,
+                              boxFit: BoxFit.fitWidth,
                             )
                           : Image.asset(LocalImage.elibraryBackground,
                               width: size.width,
                               height: size.height,
-                              fit: BoxFit.fill))),
+                              fit: BoxFit.fitWidth))),
             ),
             Column(children: [
               Header(controller: controller),
@@ -643,18 +644,18 @@ class ElibraryScreen extends GetView<ElibraryController> {
                       color: Colors.black38, child: const LoadingDialog())
                   : const Text(''),
             ),
-            DownloadLesson(
-                controller: controller,
-                size: size,
-                index: elibraryService.bookIndex),
-
-            Obx(
-               () => Positioned(
-                  left: 0.71 * size.width,
-                  top: 0.062 * size.width,
-                  child: RegularText( !controller.isDownload ? 'download'.tr : '',
-                    style: TextStyle(color: AppColor.red, fontSize: Fontsize.small),)),
-            ),
+            // DownloadLesson(
+            //     controller: controller,
+            //     size: size,
+            //     index: elibraryService.bookIndex),
+            //
+            // Obx(
+            //    () => Positioned(
+            //       left: 0.71 * size.width,
+            //       top: 0.062 * size.width,
+            //       child: RegularText( !controller.isDownload ? 'download'.tr : '',
+            //         style: TextStyle(color: AppColor.red, fontSize: Fontsize.small),)),
+            // ),
           ],
         ),
       ),
@@ -839,7 +840,7 @@ class Header extends StatelessWidget {
           SizedBox(
             width: 0.02 * size.width,
           ),
-          DownloadAll(controller: controller),
+          // DownloadAll(controller: controller),
           GestureDetector(
             onTap: () {
               userService.onPressProfile();

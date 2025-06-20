@@ -138,7 +138,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
 //
     }
     _unCompleteQuestions
-        .add(Question(typeCode: 'read', question: contentReadGame));
+        .add(const Question(typeCode: 'read', question: "This is reading content"));
     _unCompleteQuestions.addAll(quiz.questions.sublist(0));
 
     _unCompleteQuestions.add(const Question(typeCode: 'achieve_star'));

@@ -23,80 +23,33 @@ class CacheImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final futureFile = LibFunction.getSingleFile(url);
-    // final List<String> fileType = url.split('.');
 
-    // switch (fileType[fileType.length - 1]) {
-    //   case 'svg':
-    //     if (!kIsWeb) {
-    //       return FutureBuilder<File>(
-    //         future: futureFile,
-    //         builder: (context, snapshot) {
-    //           if (snapshot.hasData) {
-    //             return SvgPicture.file(
-    //               snapshot.data!,
-    //               width: width,
-    //               height: height,
-    //             );
-    //           }
-    //           return const SizedBox();
-    //         },
-    //       );
-    //     }
-    //     return FutureBuilder<File>(
-    //       future: futureFile,
-    //       builder: (context, snapshot) {
-    //         if (snapshot.hasData) {
-    //           return Image.file(
-    //             snapshot.data!,
-    //             width: width,
-    //             height: height,
-    //             fit: BoxFit.cover,
-    //           );
-    //         }
-    //         return const SizedBox();
-    //       },
-    //     );
-    //   default:
+    // If it's an SVG
     if (IMUtils.isSvg(url)) {
       return SvgPicture.network(
         url,
         width: width,
         height: height,
         placeholderBuilder: (context) => const CircularProgressIndicator(),
+        fit: boxFit,
       );
-    }
-    // else {
-    //   return FadeInImage.assetNetwork(
-    //     width: width,
-    //     height: height,
-    //     image: url,
-    //     placeholder: LocalImage.loginBg,
-    //     imageErrorBuilder: (context, url, error) {
-    //       return Image.asset(
-    //         LocalImage.loginBg,
-    //         width: width,
-    //         height: height,
-    //       );
-    //     },
-    //     fit: boxFit,
-    //   );
-    // }
-    return FutureBuilder<File>(
-      future: futureFile,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Image.file(
-            snapshot.data!,
+    } else {
+      print("CacheImage: $url");
+      return FadeInImage.assetNetwork(
+        width: width,
+        height: height,
+        image: url,
+        placeholder: LocalImage.backgroundBlue,
+        imageErrorBuilder: (context, url, error) {
+          return Image.asset(
+            LocalImage.backgroundBlue,
             width: width,
             height: height,
-            fit: boxFit,
           );
-        }
-        return const SizedBox();
-      },
-    );
-    //   }
+        },
+        fit: boxFit,
+      );
+    }
   }
 }
 
