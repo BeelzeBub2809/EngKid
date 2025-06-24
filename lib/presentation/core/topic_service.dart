@@ -119,6 +119,15 @@ class TopicService extends GetxService {
       }
       return true;
     } else {
+      if (_networkService.networkConnection.value) {
+        if (isAwait == true) {
+          await getLibrary();
+        } else {
+          getLibrary();
+        }
+      }else{
+        LibFunction.toast('require_network_to_get_grades');
+      }
       return false;
     }
   }

@@ -1,4 +1,6 @@
 import 'package:EngKid/domain/core/entities/app_setting/entities/entities.dart';
+import 'package:EngKid/presentation/declare_parent_code/declare_parent_code_binding.dart';
+import 'package:EngKid/presentation/declare_parent_code/declare_parent_code_ui.dart';
 import 'package:EngKid/presentation/e_library/e_library_binding.dart';
 import 'package:EngKid/presentation/e_library/e_library_ui.dart';
 import 'package:EngKid/presentation/home/home_screen_binding.dart';
@@ -19,6 +21,8 @@ import 'package:EngKid/presentation/reading_space/reading_space_binding.dart';
 import 'package:EngKid/presentation/reading_space/reading_space_ui.dart';
 import 'package:EngKid/presentation/register/register_binding.dart';
 import 'package:EngKid/presentation/register/register_ui.dart';
+import 'package:EngKid/presentation/validate_parent/validate_parent_binding.dart';
+import 'package:EngKid/presentation/validate_parent/validate_parent_ui.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,7 +69,7 @@ class _MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           locale: LocalizationService.locale,
           translations: LocalizationService(),
-          initialRoute: AppRoute.home,
+          initialRoute: AppRoute.login,
           theme: ThemeData.light().copyWith(
             scrollbarTheme: ScrollbarThemeData(
               thumbVisibility: MaterialStateProperty.all(false),
@@ -136,6 +140,16 @@ class _MyAppState extends State<MyApp> {
               name: AppRoute.lesson,
               page: () => QuestionScreen(),
               binding: QuestionBinding(),
+            ),
+            GetPage(
+              name: AppRoute.declareParentCode,
+              page: () => const DeclareParentCodeScreen(),
+              binding: DeclareParentCodeBinding(),
+            ),
+            GetPage(
+              name: AppRoute.validateParentCode,
+              page: () => const ValidateParentScreen(),
+              binding: ValidateParentBinding(),
             ),
           ],
         ),
