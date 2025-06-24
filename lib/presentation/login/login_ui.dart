@@ -193,7 +193,7 @@ class LoginScreen extends GetView<LoginController> {
                     text: 'login',
                     pathImage: LocalImage.shapeButton,
                     onTap: () {
-                      Get.to(() => const MyLibraryScreen());
+                      controller.onLogin(context);
                     },
                     isUpperCase: true,
                     width: size.width * 0.18,

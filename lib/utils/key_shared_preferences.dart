@@ -25,4 +25,6 @@ class KeySharedPreferences {
   static const idsTopicLearned = "ids_topic_learned";
   static const readingSequenceSetting = "reading_sequence_setting";
   static const loginRecord = "login_record_id";
+  static const chooseParentCode = "choose_parent_code";
+  static const parentCode = "parent_code";
 }

@@ -84,7 +84,21 @@ class LoginController extends GetxController {
     _userService.identifier = username;
 
     try {
-      final Login userProfile = await loginUsecases.login(username);
+      // final Login userProfile = await loginUsecases.login(username);
+      //sample user profile for demonstration
+      const userProfile = Login(
+        id: 1, // Mocked ID for demonstration
+        surveyPassed: true, // Example value
+        name: 'John Doe',
+        username: 'johndoe',
+        email: 'johndoe@example.com',
+        phone: '1234567890',
+        roleId: '1',
+        role: 'Admin',
+        image: 'https://example.com/image.jpg',
+        token: 'mocked_token',
+        loginRecord: 123,
+      );
       _configureUserProfile(userProfile);
       Get.back();
     } catch (error) {
@@ -135,12 +149,12 @@ class LoginController extends GetxController {
     // _userService.getStarSetting();
 
     Get.back(); //hide loading modal
-    // if (!_userService.checkValidSafetyCode()) {
-    //   Get.offNamed(
-    //     // AppRoute.declareParentCode,
-    //   );
-    // } else {
-    //   // Get.offAllNamed(AppRoute.kidSpace);
-    // }
+    if (!_userService.checkValidSafetyCode()) {
+      Get.offNamed(
+        AppRoute.declareParentCode,
+      );
+    } else {
+      Get.offAllNamed(AppRoute.home);
+    }
   }
 }

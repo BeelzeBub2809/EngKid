@@ -7,6 +7,9 @@ class AppRoute {
   static const myLibrary = "/my_library";
   static const readingSpace = "/reading_space";
 
+  static const declareParentCode = '/declare-parent-code';
+  static const validateParentCode = '/validate-parent-code';
+
   //report routes
   static const report = '/report';
   static const personalInfo = '/report_personal_info';

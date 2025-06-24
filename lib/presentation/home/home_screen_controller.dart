@@ -55,27 +55,29 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
   ].obs;
 
   void onPressTo(Menu menu) async {
-    await LibFunction.effectConfirmPop();
     handleGetData(menu.to);
-    // if (!menu.needValidateParent && !menu.requireValidate) {
-    //   if (menu.to == "") {
-    //     LibFunction.toast('is_updating');
-    //     return;
-    //   }
-    //   Get.toNamed(menu.to, arguments: menu.arguments);
-    // } else if (menu.needValidateParent) {
-    //   if (menu.to == "") {
-    //     LibFunction.toast('is_updating');
-    //     return;
-    //   }
-    // } else {
-    //   if (menu.to == "") {
-    //     LibFunction.toast('is_updating');
-    //     return;
-    //   }
-    //   Get.toNamed(menu.to, arguments: menu.arguments);
-    // }
-    Get.toNamed(menu.to, arguments: menu.arguments);
+
+    if (!menu.needValidateParent && !menu.requireValidate) {
+      if (menu.to == "") {
+        LibFunction.toast('is_updating');
+        return;
+      }
+      Get.toNamed(menu.to, arguments: menu.arguments);
+    } else if (menu.needValidateParent) {
+      if (menu.to == "") {
+        LibFunction.toast('is_updating');
+        return;
+      }
+      if (await _userService.validateParent()) {
+        Get.toNamed(menu.to, arguments: menu.arguments);
+      }
+    } else {
+      if (menu.to == "") {
+        LibFunction.toast('is_updating');
+        return;
+      }
+      Get.toNamed(menu.to, arguments: menu.arguments);
+    }
   }
 
   @override
@@ -106,7 +108,9 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
   void handleGetData(String to) {
     switch (to) {
         case AppRoute.myLibrary:
-        _topicService.getGradesFromStorage();
+        _topicService.getGradesFromStorage(
+          isAwait: true,
+        );
         break;
     }
   }

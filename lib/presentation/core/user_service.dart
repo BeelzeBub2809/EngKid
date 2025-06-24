@@ -155,6 +155,27 @@ class UserService extends GetxService {
     }
   }
 
+  Future<bool?> loadChooseParentCodeFromStorage() async {
+    bool? chooseParentCode = _preferencesManager.getBool(KeySharedPreferences.chooseParentCode);
+    print('chooseParentCode: $chooseParentCode');
+    if(chooseParentCode != null) {
+      return chooseParentCode;
+    }else {
+      return null;
+    }
+  }
+
+  Future<List<String>?> loadParentCodeFromStorage() async {
+    List<String>? parentCode = _preferencesManager.getStringList(KeySharedPreferences.parentCode);
+    print('parentCode: $parentCode');
+    if(parentCode != null) {
+      return parentCode;
+    }else{
+      return null;
+    }
+
+  }
+
   void getIdentifier() async {
     final String? tmp = _preferencesManager.getString(
       KeySharedPreferences.identifier,
@@ -216,6 +237,20 @@ class UserService extends GetxService {
     await _preferencesManager.putString(
       key: KeySharedPreferences.starSetting,
       value: jsonEncode(_starSetting.toJson()),
+    );
+  }
+
+  Future<void> saveChooseParentToStorage(bool chooseParentCode) async {
+    await _preferencesManager.putBool(
+      key: KeySharedPreferences.chooseParentCode,
+      value: chooseParentCode,
+    );
+  }
+
+  Future<void> saveParentCodeToStorage(List<String> parentCode) async {
+    await _preferencesManager.putStringList(
+      key: KeySharedPreferences.parentCode,
+      value: parentCode,
     );
   }
 
@@ -310,6 +345,44 @@ class UserService extends GetxService {
     return safetyCode != null;
   }
 
+  void changeUserProfile({
+    required UserDataUpdateType type,
+    required dynamic value,
+  }) async {
+    switch (type) {
+      case UserDataUpdateType.surveyPassed:
+      // print('API result');
+      // print(currentUser.id);
+      //   await appUseCases.updateUserSurveyStatus(currentUser.id, '1');
+        // print('API result');
+        // print(result);
+        _userLogin(
+          _userLogin.value.copyWith(surveyPassed: value),
+        );
+        _currentUser(currentUser.copyWith(surveyPassed: value));
+        final int index = _childProfiles.value.childProfiles
+            .indexWhere((element) => element.id == _currentUser.value.id);
+        if (index != -1) {
+          final List<Child> tmp = List.from(_childProfiles.value.childProfiles);
+          tmp[index] = currentUser.copyWith(surveyPassed: value);
+          _childProfiles(childProfiles.copyWith(childProfiles: tmp));
+          await saveChildProfilesToStorage();
+        }
+        await saveCurrentUserToStorage();
+
+        await saveUserLoginToStorage();
+        break;
+
+      case UserDataUpdateType.parentCode:
+        _preferencesManager.putString(
+            key: KeySharedPreferences.safetyCode, value: value);
+
+        break;
+      default:
+        break;
+    }
+  }
+
   void changeLanguage(Language language) {
     // LocalizationService.changeLocale(language);
     _appSetting(_appSetting.value.copyWith(language: language));
@@ -375,15 +448,27 @@ class UserService extends GetxService {
     saveSettingsToStorage();
   }
 
+  Future<bool> validateParent() async {
+    final isParent = await Get.toNamed(AppRoute.validateParentCode);
+    if (isParent['result'] == true) {
+      return true;
+    } else {
+      if (isParent['message'].toString().isNotEmpty) {
+        LibFunction.toast(isParent['message'].toString());
+      }
+      return false;
+    }
+  }
+
   void onPressProfile() async {
-    // if (await validateParent()) {
-    // await LibFunction.effectConfirmPop();
-    Get.dialog(
-      const DialogChangeAcc(),
-      barrierDismissible: false,
-      barrierColor: null,
-    );
-    // }
+    if (await validateParent()) {
+      await LibFunction.effectConfirmPop();
+      Get.dialog(
+        const DialogChangeAcc(),
+        barrierDismissible: false,
+        barrierColor: null,
+      );
+    }
   }
 
   double getAchievedStar(int attempt) {
