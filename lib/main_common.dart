@@ -43,7 +43,10 @@ import 'package:wakelock/wakelock.dart';
 Future<void> mainCommon(FlavorConfig config) async {
   WidgetsFlutterBinding.ensureInitialized();
   await Injection.inject(config.baseUrl);
-
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
   //keep the screen on
   Wakelock.enable();
 

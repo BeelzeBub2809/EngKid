@@ -458,12 +458,16 @@ class IMUtils {
   static bool isNotNullEmptyStr(String? str) => null != str && "" != str.trim();
 
   static bool checkPhone(String phoneNumber) {
-    final regex = RegExp(r'^(0[3|5|7|8|9])+([0-9]{8,9})$');
-    return regex.hasMatch(phoneNumber);
+    //check valid phone number here
+    // final regex = RegExp(r'^(0[3|5|7|8|9])+([0-9]{8,9})$');
+    // return regex.hasMatch(phoneNumber);
+    return true;
   }
   static bool checkLoginId(String loginId) {
 
-    return RegExp(r'^.{6,}$').hasMatch(loginId) && RegExp(r'[0-9]').hasMatch(loginId);
+    //validate username here
+    // return RegExp(r'^.{6,}$').hasMatch(loginId) && RegExp(r'[0-9]').hasMatch(loginId);
+    return true;
   }
   static bool isSvg(String url) {
     return url.toLowerCase().endsWith(".svg");
