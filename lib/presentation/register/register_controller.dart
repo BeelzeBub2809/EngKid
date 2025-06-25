@@ -151,41 +151,12 @@ class RegisterController extends GetxController {
     super.onClose();
   }
 
-  void resendOTP() {
-    timeController.start();
-    _isResend.value = false;
-
-    Future.delayed(const Duration(milliseconds: 50), () {
-      timeController.start();
-    });
-  }
-
-  void activeIsResend() {
-    _isResend.value = true;
-  }
-
   void isDisableButton() {
     _isDisable.value = false;
   }
 
   void isActiveButton() {
     _isDisable.value = true;
-  }
-
-  void setFalseIsShowCaptcha() {
-    _isShowCaptcha.value = false;
-    print('_isCheckCaptcha.value : ${_isCheckCaptcha.value}');
-  }
-
-  void setIsCheckCaptcha() {
-    _isCheckCaptcha.value = true;
-    print('_isCheckCaptcha.value : ${_isCheckCaptcha.value}');
-    Get.back();
-  }
-
-  void setFalseIsCheckCaptcha() {
-    _isCheckCaptcha.value = false;
-    print('_isCheckCaptcha.value : ${_isCheckCaptcha.value}');
   }
 
   // validate fe
@@ -221,11 +192,7 @@ class RegisterController extends GetxController {
         _validateNameParents.value.isEmpty &&
         _validateGmail.value.isEmpty &&
         _validateSex.value.isEmpty &&
-        _validateIdLogin.value.isEmpty &&
-        _validateDisability.value.isEmpty &&
-        _validateProvinces.value.isEmpty &&
-        _validateWards.value.isEmpty &&
-        _validateAddress.value.isEmpty;
+        _validateIdLogin.value.isEmpty;
   }
 
   // validate be
@@ -239,7 +206,8 @@ class RegisterController extends GetxController {
     };
 
     try {
-      final statusCode = await loginUsecases.checkSignUp(body);
+      // final statusCode = await loginUsecases.checkSignUp(body);
+      const statusCode = 0;
       print('sign up check : $statusCode');
 
       if (statusCode == 1) {
@@ -262,22 +230,6 @@ class RegisterController extends GetxController {
     }
   }
 
-  // check otp
-  Future<dynamic> checkOtp() async {
-    Map<String, dynamic> body = {
-      'OTP': pinPutController.toString(),
-    };
-    print('bodyOTP : ${body}');
-    try {
-      bool data = await loginUsecases.checkOtp(body);
-      print('check otp : $data');
-      return data;
-    } catch (e) {
-      print('Error check otp : $e');
-      LibFunction.toast('OTP không đúng');
-    }
-  }
-
   // check otp và create account
   void signUpAccount() async {
     Map<String, dynamic> body = {
@@ -289,27 +241,14 @@ class RegisterController extends GetxController {
     };
 
     try {
-      bool isCheckOtp = await checkOtp();
-      if (isCheckOtp) {
-        final data = await loginUsecases.signUp(body);
-        print('dataSignUp : ${data}');
-        if (data != null) {
-          LibFunction.toast('Đăng ký thành công');
-          closeScreenOrientation();
-          Future.delayed(const Duration(milliseconds: 300), () {
-            // Get.toNamed(AppRoute.addChildAccount, arguments: {
-            //   'router': '1',
-            //   'listSchool': _listSchool.value,
-            //   'idProvinces': selectedProvinces['id'],
-            //   'idWards': selectedWards['id'],
-            //   'id': data['id']
-            // });
-          });
-
-          resetAll();
-        }
-      } else {
-        LibFunction.toast('OTP không đúng');
+      // final data = await loginUsecases.signUp(body);
+      const data = true; // Mocked data for demonstration
+      print('dataSignUp : ${data}');
+      if (data) {
+        LibFunction.toast('Đăng ký thành công');
+        closeScreenOrientation();
+        // resetAll();
+        Get.back();
       }
     } catch (e) {
       print('Error SignUp : $e');
@@ -334,10 +273,6 @@ class RegisterController extends GetxController {
       return await checkSignUpInfo();
     }
     return false;
-  }
-
-  void onChangeValueOTP(String value) {
-    _pinPutController.value = value;
   }
 
   void onChangeInput({required String input, required RegisterInputType type}) {
@@ -370,9 +305,6 @@ class RegisterController extends GetxController {
     _sex.value = gender;
   }
 
-  void selectDisability(String disability) {
-    _disability.value = disability;
-  }
 }
 
 class ConfigFormData {
