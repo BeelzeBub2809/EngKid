@@ -1,3 +1,6 @@
+import 'package:EngKid/data/core/remote/api/topic_api/topic_api.dart';
+import 'package:EngKid/data/topic_reading/topic_reading_repo.dart';
+import 'package:EngKid/domain/topic/topic_reading_usecases.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/data/core/remote/api/user_api/user_api.dart';
 import 'package:EngKid/data/core/remote/api/auth_api/auth_api.dart';
@@ -26,6 +29,14 @@ class UseCaseModule {
       () => LoginUsecases(
         LoginRepositoryImp(
           authApi: getIt.get<AuthApi>(),
+        ),
+      ),
+      fenix: true,
+    );
+    Get.lazyPut<TopicReadingUsecases>(
+          () => TopicReadingUsecases(
+        TopicReadingRepositoryImp(
+          topicApi: getIt.get<TopicApi>(),
         ),
       ),
       fenix: true,

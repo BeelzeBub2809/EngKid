@@ -538,135 +538,137 @@ class ShapeTopic extends StatelessWidget {
               fontWeight: FontWeight.w800,
             ),
           ),
-          Center(
-            child: SizedBox(
-              width: size.width * 0.29,
-              height: size.height * 0.5,
-              child: RawScrollbar(
-                controller: controller.scrollControllerTopic,
-                thumbColor: AppColor.red,
-                trackColor: AppColor.gray,
-                thumbVisibility: true,
-                padding: EdgeInsets.only(
-                  top: 0.03 * size.height,
-                  bottom: 0.01 * size.height,
-                  right: -0.01 * size.width,
-                ),
-                thickness: 0.008 * size.width,
-                interactive: true,
-                radius: Radius.circular(0.008 * 2 * size.width),
-                child: SingleChildScrollView(
+          Obx(() {
+            final topics = controller.topics;
+            final selectedIndex = controller.topicIndex;
+            return Center(
+              child: SizedBox(
+                width: size.width * 0.29,
+                height: size.height * 0.5,
+                child: RawScrollbar(
                   controller: controller.scrollControllerTopic,
-                  child: Column(
-                    children: List.generate(
-                        readingSpaceController.topics.length,
-                        (index) {
-                      return GestureDetector(
-                        onTap: () {
-                          readingSpaceController.onChangeTopicReadings(
-                              index);
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: 0.01 * size.height),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Obx(
-                                  () => Container(
-                                    decoration: BoxDecoration(
-                                      image: index == readingSpaceController.topicIndex
-                                          ? const DecorationImage(
-                                              image: AssetImage(
-                                                  LocalImage.topicImageChoosed),
-                                              fit: BoxFit.fill,
-                                            )
-                                          : const DecorationImage(
-                                              image: AssetImage(
-                                                  LocalImage.topicImage),
-                                              fit: BoxFit.fill,
-                                            ),
-                                      border: index == readingSpaceController.topicIndex
-                                          ? Border.all(
+                  thumbColor: AppColor.red,
+                  trackColor: AppColor.gray,
+                  thumbVisibility: true,
+                  padding: EdgeInsets.only(
+                    top: 0.03 * size.height,
+                    bottom: 0.01 * size.height,
+                    right: -0.01 * size.width,
+                  ),
+                  thickness: 0.008 * size.width,
+                  interactive: true,
+                  radius: Radius.circular(0.008 * 2 * size.width),
+                  child: SingleChildScrollView(
+                    controller: controller.scrollControllerTopic,
+                    child: Column(
+                      children: List.generate(
+                          readingSpaceController.topics.length,
+                              (index) {
+                            return GestureDetector(
+                              onTap: () {
+                                readingSpaceController.onChangeTopicReadings(
+                                    index);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(bottom: 0.01 * size.height),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          image: index == readingSpaceController.topicIndex
+                                              ? const DecorationImage(
+                                            image: AssetImage(
+                                                LocalImage.topicImageChoosed),
+                                            fit: BoxFit.fill,
+                                          )
+                                              : const DecorationImage(
+                                            image: AssetImage(
+                                                LocalImage.topicImage),
+                                            fit: BoxFit.fill,
+                                          ),
+                                          border: index == readingSpaceController.topicIndex
+                                              ? Border.all(
                                               color: const Color.fromARGB(
                                                   255, 63, 195, 131),
                                               width: 1.5)
-                                          : null,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(0.06 *
-                                              size.width) //                 <--- border radius here
+                                              : null,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(0.06 *
+                                                  size.width) //                 <--- border radius here
                                           ),
-                                    ),
-                                    width: 0.06 * size.width,
-                                    height: 0.06 * size.width,
-                                    child: Center(
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(
-                                            0.05 * size.width),
-                                        child: CacheImage(
-                                          url: readingSpaceController.topics[index].icon,
-                                          width: 0.05 * size.width,
-                                          height: 0.05 * size.width,
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 0.01 * size.width,
-                                ),
-                                Obx(() => Container(
-                                      decoration: BoxDecoration(
-                                          image: index ==
-                                                  readingSpaceController.topicIndex
-                                              ? const DecorationImage(
-                                                  image: AssetImage(LocalImage
-                                                      .topicNameChoosed),
-                                                  fit: BoxFit.fill,
-                                                )
-                                              : const DecorationImage(
-                                                  image: AssetImage(
-                                                      LocalImage.topicName),
-                                                  fit: BoxFit.fill,
-                                                )),
-                                      width: 0.22 * size.width,
-                                      height: 0.1 * size.height,
-                                      padding: EdgeInsets.only(
-                                          left: 0.01 * size.width),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: RegularText(
-                                              readingSpaceController
-                                                  .topics[index]
-                                                  .name,
-                                              maxLines: 1,
-                                              textAlign: TextAlign.left,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w700),
+                                        width: 0.06 * size.width,
+                                        height: 0.06 * size.width,
+                                        child: Center(
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                                0.05 * size.width),
+                                            child: CacheImage(
+                                              url: readingSpaceController.topics[index].icon,
+                                              width: 0.05 * size.width,
+                                              height: 0.05 * size.width,
                                             ),
                                           ),
-                                          if (index == readingSpaceController.topicIndex)
-                                            Image.asset(
-                                              LocalImage.menuSelected,
-                                              width: size.height * 0.1,
-                                              height: size.width * 0.025,
-                                            )
-                                        ],
+                                        ),
                                       ),
-                                    ))
-                              ]),
-                        ),
-                      );
-                    }),
+                                      SizedBox(
+                                        width: 0.01 * size.width,
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            image: index ==
+                                                readingSpaceController.topicIndex
+                                                ? const DecorationImage(
+                                              image: AssetImage(LocalImage
+                                                  .topicNameChoosed),
+                                              fit: BoxFit.fill,
+                                            )
+                                                : const DecorationImage(
+                                              image: AssetImage(
+                                                  LocalImage.topicName),
+                                              fit: BoxFit.fill,
+                                            )),
+                                        width: 0.22 * size.width,
+                                        height: 0.1 * size.height,
+                                        padding: EdgeInsets.only(
+                                            left: 0.01 * size.width),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: RegularText(
+                                                readingSpaceController
+                                                    .topics[index]
+                                                    .name,
+                                                maxLines: 1,
+                                                textAlign: TextAlign.left,
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w700),
+                                              ),
+                                            ),
+                                            if (index == readingSpaceController.topicIndex)
+                                              Image.asset(
+                                                LocalImage.menuSelected,
+                                                width: size.height * 0.1,
+                                                height: size.width * 0.025,
+                                              )
+                                          ],
+                                        ),
+                                      )
+                                    ]),
+                              ),
+                            );
+                          }),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
+            );
+          })
         ],
       ),
     );

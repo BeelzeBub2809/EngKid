@@ -129,34 +129,9 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     _readingSequence.value =
         _userService.readingSequenceSetting.readingSequenceSetting;
     WidgetsBinding.instance.addObserver(this);
-
+    final res = await _topicService.getAllTopic();
     // get topics
-    _topics.value = [
-      const Topic(
-        id: 1,
-        name: "Topic 1",
-        icon: "https://cdn-icons-png.flaticon.com/512/5656/5656829.png",
-        thmbImg: LocalImage.backgroundBlue,
-      ),
-      const Topic(
-        id: 1,
-        name: "Topic 2",
-        icon: "https://cdn-icons-png.flaticon.com/512/5656/5656829.png",
-        thmbImg: LocalImage.backgroundBlue,
-      ),
-      const Topic(
-        id: 1,
-        name: "Topic 3",
-        icon: "https://cdn-icons-png.flaticon.com/512/5656/5656829.png",
-        thmbImg: LocalImage.backgroundBlue,
-      ),
-      const Topic(
-        id: 1,
-        name: "Topic 4",
-        icon: "https://cdn-icons-png.flaticon.com/512/5656/5656829.png",
-        thmbImg: LocalImage.backgroundBlue,
-      ),
-    ];
+    _topics.value = res;
 
     // get readings
     _readings.value = [
