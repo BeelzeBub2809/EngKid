@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:EngKid/data/core/remote/api/topic_api/topic_api.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:EngKid/data/core/local/share_preferences_manager.dart';
@@ -20,6 +21,7 @@ class ApiModule {
     // register api
     getIt.registerSingleton(UserApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(AuthApi(dio, baseUrl: dio.options.baseUrl));
+    getIt.registerSingleton(TopicApi(dio, baseUrl: dio.options.baseUrl));
   }
 
   static FutureOr<Dio> setup(String baseUrl) async {
@@ -36,8 +38,8 @@ class ApiModule {
         onRequest: (options, handler) {
           options.headers['Content-Type'] = 'application/json';
 
-          final String? storageToken =
-              preferencesManager.getString(KeySharedPreferences.token);
+          final String? storageToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksImVtYWlsIjoidHVhbmNheWRhMzJAZ21haWwuY29tIiwiaWF0IjoxNzUxNTEyNDIyLCJleHAiOjE3NTE1NDg0MjJ9.tJOyRupgV5SeqRatC6aqWKDSY-JP5-G9BNoPukeQlwE";
+              // preferencesManager.getString(KeySharedPreferences.token);
 
           if (storageToken != null && storageToken.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $storageToken';

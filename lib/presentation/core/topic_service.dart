@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:EngKid/data/topic_reading/topic_reading_request/topic_reading_request.dart';
+import 'package:EngKid/domain/topic/topic_reading_usecases.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/data/core/local/share_preferences_manager.dart';
@@ -22,12 +24,14 @@ class TopicService extends GetxService {
   TopicService({required this.appUseCases});
 
   final UserService _userService = Get.find<UserService>();
+  final TopicReadingUsecases _topicReadingUsecases = Get.find<TopicReadingUsecases>();
   final _preferencesManager = getIt.get<SharedPreferencesManager>();
   final NetworkService _networkService = Get.find<NetworkService>();
 
   final RxInt _topicIndex = 0.obs;
   final RxBool _isGetTopicReadings = false.obs;
   final RxList<Grade> _grades = RxList<Grade>.empty(growable: true);
+  final RxList<Topic> _topicReading = RxList<Topic>.empty(growable: true);
   final Rx<ProgressGrade> _progressGrade = const ProgressGrade().obs;
   final Rx<Lesson> _topicReadings = const Lesson().obs;
   final RxString _topicBg = "".obs;
@@ -60,7 +64,21 @@ class TopicService extends GetxService {
   }
 
   // Other api ==============================================
-
+  Future<List<Topic>> getAllTopic() async {
+    try {
+      final request = TopicReadingRequest(
+        pageNumb: 1,
+        pageSize: 10,
+        searchTerm: '',
+        sort: null,
+      );
+      final result = await _topicReadingUsecases.getAll(request.toJson());
+      _topicReading.assignAll(result);
+      return _topicReading;
+    } catch (e) {
+      rethrow;
+    }
+  }
   // Grades ==============================================
   Future<void> getLibrary() async {
     try {
