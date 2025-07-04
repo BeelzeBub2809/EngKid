@@ -41,8 +41,6 @@ class MyLibraryController extends GetxController {
       await LibFunction.effectConfirmPop();
       if (_networkService.networkConnection.value) {
         _topicService.currentGrade = grade;
-
-        // await _topicService.getProgressGrade(grade.id);
         Get.toNamed(AppRoute.readingSpace);
       } else if (grade.id == _topicService.currentGrade.id) {
         Get.toNamed(AppRoute.readingSpace);

@@ -79,6 +79,16 @@ class TopicService extends GetxService {
       rethrow;
     }
   }
+
+  Future<List<Topic>> getTopicByGrade() async {
+    try {
+      final result = await _topicReadingUsecases.getByGrade(currentGrade.id);
+      _topicReading.assignAll(result);
+      return _topicReading;
+    } catch (e) {
+      rethrow;
+    }
+  }
   // Grades ==============================================
   Future<void> getLibrary() async {
     try {

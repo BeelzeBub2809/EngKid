@@ -38,7 +38,7 @@ class ApiModule {
         onRequest: (options, handler) {
           options.headers['Content-Type'] = 'application/json';
 
-          final String? storageToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksImVtYWlsIjoidHVhbmNheWRhMzJAZ21haWwuY29tIiwiaWF0IjoxNzUxNTEyNDIyLCJleHAiOjE3NTE1NDg0MjJ9.tJOyRupgV5SeqRatC6aqWKDSY-JP5-G9BNoPukeQlwE";
+          final String? storageToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksImVtYWlsIjoidHVhbmNheWRhMzJAZ21haWwuY29tIiwiaWF0IjoxNzUxNTkyMDI0LCJleHAiOjE3NTE2MjgwMjR9.ilrFnPW29z3y0ZgJaUzNYn8pEvNGGZnI9jo9FVxYDzg";
               // preferencesManager.getString(KeySharedPreferences.token);
 
           if (storageToken != null && storageToken.isNotEmpty) {
