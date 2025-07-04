@@ -71,10 +71,10 @@ class LoginController extends GetxController {
   // }
 
   Future<void> onLogin(BuildContext context) async {
-    if (username == "") {
-      LibFunction.toast('Vui lòng nhập mã ID để đăng nhập!');
-      return;
-    }
+    // if (username == "") {
+    //   LibFunction.toast('Vui lòng nhập mã ID để đăng nhập!');
+    //   return;
+    // }
     LibFunction.showLoading();
     await LibFunction.effectConfirmPop();
     // await _preferencesManager.putString(

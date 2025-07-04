@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:EngKid/domain/ebook/ebook_usecases.dart';
+import 'package:EngKid/domain/ebook/entities/ebook.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -76,10 +78,9 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
     super.onInit();
     LibFunction.playAudioLocal(LocalAudio.chooseLesson);
     if (_networkService.networkConnection.value) {
-      await _elibraryService.getAllElibraryBooks();
       await _elibraryService.getElibraryCategory();
-      await _elibraryService.onChangeCategory(
-          0, _elibraryService.categoryList[0].id);
+      await _elibraryService.getAllElibraryBooks();
+      await _elibraryService.onChangeCategory(0, _elibraryService.categoryList[0].id);
     }
   }
 
@@ -102,7 +103,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
 
   Future<dynamic> onPressBook(int index) async {
     if (!getQuizsFromStorage()) {
-      await handleShowDownload(_elibraryService.bookList[_elibraryService.bookIndex].reading_video);
+      await handleShowDownload(_elibraryService.bookList[_elibraryService.bookIndex].file);
     } else {
       startBook(_elibraryService.bookIndex);
     }
@@ -164,7 +165,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
       handleChangeProgressBar();
       // saveQuizDownloaded();
       await LibFunction.getSingleFile(
-          _elibraryService.bookList[index].reading_video);
+          _elibraryService.bookList[index].file);
       await _elibraryService.saveBookToStorage();
       _loadingProgress.value = 100;
       await Future.delayed(const Duration(milliseconds: 1000));
@@ -204,7 +205,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
     await Get.dialog(
       DialogDownloadWarning(onTapContinue: () async {
         //start delete
-        for (Elibrary reading in _elibraryService.allBookList) {
+        for (EBook reading in _elibraryService.bookList) {
           if (_isBookDownloaded[reading.id] == true) {
             // print(reading.name);
             String? isVideoDownloaded = _preferencesManager.getString(
@@ -215,7 +216,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
             }
           }
         }
-        for (Elibrary reading in _elibraryService.allBookList) {
+        for (EBook reading in _elibraryService.bookList) {
           String? isVideoDownloaded = _preferencesManager.getString(
             "${_userService.currentUser.id}_${reading.id}_bookdatafile.json",
           );
@@ -224,7 +225,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
               isVideoDownloaded == null) {
             // print(reading.name);
             _isMultipleDownloading[reading.id] = true;
-            await LibFunction.getSingleFile(reading.reading_video);
+            await LibFunction.getSingleFile(reading.file);
 
             await _preferencesManager.putString(
               key:
@@ -254,14 +255,14 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
         Get.dialog(const LoadingDialog());
         showToastWidget(ToastDialog("delete_4".tr),
             duration: const Duration(seconds: 2));
-        for (Elibrary reading in _elibraryService.allBookList) {
+        for (EBook reading in _elibraryService.bookList) {
           if (_isBookDownloaded[reading.id] == true) {
             // await deleteQuizFromStorage(reading.id);
             // final Quiz datafile = await _topicService.getQuiz(reading.id);
             String bookKey =
                 "${_userService.currentUser.id}_${reading.id}_bookdatafile.json";
             await _preferencesManager.remove(bookKey);
-            await LibFunction.removeFileCache(reading.reading_video);
+            await LibFunction.removeFileCache(reading.file);
 
             // print('ngu');
             // _isBookDownloaded[reading.id] = false;
@@ -285,7 +286,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
   }
 
   void setIsVideoDownloaded() async {
-    for (Elibrary book in _elibraryService.allBookList) {
+    for (EBook book in _elibraryService.bookList) {
       String? isBookDownloaded = _preferencesManager.getString(
         "${_userService.currentUser.id}_${book.id}_bookdatafile.json",
       );
@@ -310,14 +311,14 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
     _isDownloadedScreen.value = value;
 
     _elibraryService.downloadAllReadingList.clear();
-    for (Elibrary elibrary in _elibraryService.allBookList) {
+    for (EBook elibrary in _elibraryService.bookList) {
       if (_isVideoDownloaded[elibrary.id] == value) {
         _elibraryService.downloadAllReadingList.add(elibrary);
       }
     }
   }
 
-  void handleDeleteSingle(Elibrary elibrary) async {
+  void handleDeleteSingle(EBook elibrary) async {
     bool isContinue = false;
     await Get.dialog(
       DialogDelete(onTapContinue: () async {
@@ -330,7 +331,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
           String bookKey =
               "${_userService.currentUser.id}_${elibrary.id}_bookdatafile.json";
           await _preferencesManager.remove(bookKey);
-          await LibFunction.removeFileCache(elibrary.reading_video);
+          await LibFunction.removeFileCache(elibrary.file);
           // await LibFunction.removeFileCache(datafile.reading.video);
           _isVideoDownloaded[elibrary.id] = false;
           // _isBookDownloaded[elibrary.id] = false;

@@ -93,10 +93,10 @@ class ElibraryVideoController extends GetxController {
       if (_networkService.networkConnection.value) {
         await elibraryService.updateStatus(studentId, book.id, 1);
       }
-      if (elibraryService.bookList[elibraryService.bookIndex].status == false) {
+      if (elibraryService.bookList[elibraryService.bookIndex].isActive == false) {
         elibraryService.bookList[elibraryService.bookIndex] = elibraryService
             .bookList[elibraryService.bookIndex]
-            .copyWith(status: true);
+            .copyWith(isActive: true);
         elibraryService.completedBook = elibraryService.completedBook + 1;
         elibraryService.completedBook =
             min(elibraryService.completedBook, elibraryService.totalBook);

@@ -1,6 +1,12 @@
+import 'package:EngKid/data/core/remote/api/ebook_category_api/ebook_category_api.dart';
 import 'package:EngKid/data/core/remote/api/topic_api/topic_api.dart';
+import 'package:EngKid/data/ebook_category/ebook_category_repo.dart';
 import 'package:EngKid/data/topic_reading/topic_reading_repo.dart';
+import 'package:EngKid/domain/ebook_category/ebook_category_usecase.dart';
 import 'package:EngKid/domain/topic/topic_reading_usecases.dart';
+import 'package:EngKid/data/core/remote/api/ebook_api/ebook_api.dart';
+import 'package:EngKid/data/ebook/ebook_repo.dart';
+import 'package:EngKid/domain/ebook/ebook_usecases.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/data/core/remote/api/user_api/user_api.dart';
 import 'package:EngKid/data/core/remote/api/auth_api/auth_api.dart';
@@ -34,9 +40,25 @@ class UseCaseModule {
       fenix: true,
     );
     Get.lazyPut<TopicReadingUsecases>(
-          () => TopicReadingUsecases(
+      () => TopicReadingUsecases(
         TopicReadingRepositoryImp(
           topicApi: getIt.get<TopicApi>(),
+        ),
+      ),
+      fenix: true,
+    );
+    Get.lazyPut<EBookUsecases>(
+      () => EBookUsecases(
+        EbookRepoImp(
+          eBookApi: getIt.get<EBookApi>(),
+        ),
+      ),
+      fenix: true,
+    );
+    Get.lazyPut<EBookCategoryUsecases>(
+      () => EBookCategoryUsecases(
+        EbookCategoryRepoImp(
+          eBookCateApi: getIt.get<EBookCategoryApi>(),
         ),
       ),
       fenix: true,
