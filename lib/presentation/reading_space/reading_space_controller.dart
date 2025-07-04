@@ -129,7 +129,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     _readingSequence.value =
         _userService.readingSequenceSetting.readingSequenceSetting;
     WidgetsBinding.instance.addObserver(this);
-    final res = await _topicService.getAllTopic();
+    final res = await _topicService.getTopicByGrade();
     // get topics
     _topics.value = res;
 

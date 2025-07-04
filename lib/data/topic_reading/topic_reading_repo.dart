@@ -41,4 +41,35 @@ class TopicReadingRepositoryImp implements TopicReadingRepository {
       return [];
     }
   }
+
+  @override
+  Future<List<Topic>> getByGrade(int gradeId) async {
+    try {
+
+      final ApiResponseObject response = await topicApi.getByGrade(gradeId);
+
+      final data = response.data;
+
+      if (response.result && data != null) {
+        final List<dynamic> records = data;
+        final topics = records.map((e) => Topic.fromJson(e)).toList();
+        return topics;
+      } else {
+        return [];
+      }
+    } catch (e, stackTrace) {
+      if (e is DioException) {
+        print('[TopicRepository] DioException occurred:');
+        print('  → Type: ${e.type}');
+        print('  → Message: ${e.message}');
+        print('  → Response: ${e.response?.data}');
+        print('  → StatusCode: ${e.response?.statusCode}');
+        print('  → StackTrace: $stackTrace');
+      } else {
+        print('[TopicRepository] Unknown exception: $e');
+        print('[TopicRepository] StackTrace: $stackTrace');
+      }
+      return [];
+    }
+  }
 }

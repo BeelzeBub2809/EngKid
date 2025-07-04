@@ -10,4 +10,6 @@ abstract class TopicApi {
 
   @POST('reading-category/all')
   Future<ApiResponseObject> getAll(@Body() Map<String, dynamic> body);
+  @POST('reading-category/grade/{grade_id}')
+  Future<ApiResponseObject> getByGrade(@Path("grade_id") int gradeId);
 }
