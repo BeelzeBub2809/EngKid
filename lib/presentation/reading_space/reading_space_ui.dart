@@ -911,7 +911,7 @@ class Header extends StatelessWidget {
                                 ],
                               ),
                               RegularText(
-                                userService.currentUser.grade,
+                                userService.currentUser.gradeId.toString(),
                                 style: TextStyle(
                                   color: AppColor.gray,
                                   fontWeight: FontWeight.w800,

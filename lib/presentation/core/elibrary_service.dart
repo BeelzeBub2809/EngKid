@@ -98,7 +98,7 @@ class ElibraryService extends GetxService {
   }
 
   Future<dynamic> getAllElibraryBooks() async {
-    final book = await eBookUsecases.getByCategoryAndStudentM(1);
+    final book = await eBookUsecases.getByCategoryAndStudentM(_userService.currentUser.id);
     _isGetAllElibraryBooks.value = true;
     // final data =
     //     {

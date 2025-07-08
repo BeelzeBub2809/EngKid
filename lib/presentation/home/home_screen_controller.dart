@@ -126,23 +126,28 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
   void onPressLibrary() async {
     if (_userService.userLogin.roleId == "2") return;
     if (_userService.currentUser.surveyPassed) {
-      if (isElibraryOpen == false) {
-        if (_networkService.networkConnection.value) {
-          isElibraryOpen = true;
-          Get.toNamed(
-            AppRoute.eLibrary,
-            arguments: [true, true],
-          );
-        } else {
-          LibFunction.toast('require_network_to_elibrary');
-        }
-      } else {
-        Get.toNamed(
-          AppRoute.eLibrary,
-          arguments: [true, true],
-        );
-      }
-    } else {
+      isElibraryOpen = true;
+      Get.toNamed(AppRoute.eLibrary, arguments: [true, true]);
+    }
+
+    // if (_userService.currentUser.surveyPassed) {
+    //   if (isElibraryOpen == false) {
+    //     if (_networkService.networkConnection.value) {
+    //       isElibraryOpen = true;
+    //       Get.toNamed(
+    //         AppRoute.eLibrary,
+    //         arguments: [true, true],
+    //       );
+    //     } else {
+    //       LibFunction.toast('require_network_to_elibrary');
+    //     }
+    //   } else {
+    //     Get.toNamed(
+    //       AppRoute.eLibrary,
+    //       arguments: [true, true],
+    //     );
+    //   }
+    // } else {
       // Get.toNamed(
       //   AppRoute.safetyGuide,
       //   arguments: [
@@ -151,7 +156,7 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
       //     true
       //   ], // allow button back and to learn, go to elibrary
       // );
-    }
+    // }
   }
 
   int indexCurrentUserInChildProfiles() {

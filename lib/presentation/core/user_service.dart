@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:EngKid/domain/core/entities/child_profile/child_profiles_usecase.dart';
+import 'package:EngKid/domain/core/entities/child_profile/child_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/data/core/local/share_preferences_manager.dart';
@@ -42,8 +44,9 @@ enum UserDataUpdateType {
 
 class UserService extends GetxService {
   final AppUseCases appUseCases;
+  final ChildProfilesUsecases childProfilesUsecases;
 
-  UserService({required this.appUseCases});
+  UserService({required this.appUseCases, required this.childProfilesUsecases});
 
   final _preferencesManager = getIt.get<SharedPreferencesManager>();
   final NetworkService _networkService = Get.find<NetworkService>();
@@ -101,38 +104,19 @@ class UserService extends GetxService {
   }
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     debugPrint('Init User Service');
     getRemoteLanguages();
+    // if (_networkService.networkConnection.value) {
+      final result = await childProfilesUsecases.getAllKid(1);
 
-    _currentUser.value = const Child(
-      id: 1,
-      userId: "sample_user_id",
-      name: "Sample Name",
-      classname: "Sample Class",
-      loginId: "sample_login_id",
-      grade: "Grade 5",
-      school: "Sample School",
-      avatar: "https://thumbs.dreamstime.com/b/vectorial-blank-face-avatar-7046081.jpg",
-      surveyPassed: true,
-    );
+      if(result.childProfiles.isNotEmpty){
+        _currentUser.value = result.childProfiles[0];
 
-    _childProfiles.value = const ChildProfiles(
-      childProfiles: [
-        Child(
-          id: 1,
-          userId: "sample_user_id",
-          name: "Sample Name",
-          classname: "Sample Class",
-          loginId: "sample_login_id",
-          grade: "Grade 5",
-          school: "Sample School",
-          avatar: "https://thumbs.dreamstime.com/b/vectorial-blank-face-avatar-7046081.jpg",
-          surveyPassed: true,
-        ),
-      ],
-    );
+        _childProfiles.value = result;
+      }
+    // }
   }
 
   String getPhotoBase64(Map<String, dynamic> public) {
