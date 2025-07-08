@@ -870,7 +870,7 @@ class _DialogELibraryDownloadAll extends State<DialogELibraryDownloadAll> {
                                                                         url: elibraryService
                                                                             .downloadAllReadingList[
                                                                                 index]
-                                                                            .thum_img,
+                                                                            .file,
                                                                         width:
                                                                             size.width *
                                                                                 0.1,
@@ -905,7 +905,7 @@ class _DialogELibraryDownloadAll extends State<DialogELibraryDownloadAll> {
                                                                                   RegularText(
                                                                                 elibraryService
                                                                                     .downloadAllReadingList[index]
-                                                                                    .name,
+                                                                                    .title,
                                                                                 maxLines:
                                                                                     2,
                                                                                 textAlign:
@@ -926,9 +926,7 @@ class _DialogELibraryDownloadAll extends State<DialogELibraryDownloadAll> {
                                                                           GestureDetector(
                                                                             onTap:
                                                                                 () {
-                                                                              if (widget
-                                                                                  .controller
-                                                                                  .isDownloadedScreen) {
+                                                                              if (widget.controller.isDownloadedScreen) {
                                                                                 // bool currentStatus = widget.controller.isDownloaded[readingId] ?? false;
                                                                                 // if(widget.controller.isMultipleDownloading[readingId] == false) {
                                                                                 //   widget.controller
@@ -936,13 +934,9 @@ class _DialogELibraryDownloadAll extends State<DialogELibraryDownloadAll> {
                                                                                 //       readingId,
                                                                                 //       currentStatus);
                                                                                 // }
-                                                                                widget
-                                                                                    .controller
-                                                                                    .handleDeleteSingle(elibraryService.downloadAllReadingList[index]);
+                                                                                widget.controller.handleDeleteSingle(elibraryService.downloadAllReadingList[index]);
                                                                               } else {
-                                                                                int readingId = elibraryService
-                                                                                    .downloadAllReadingList[index]
-                                                                                    .id;
+                                                                                int readingId = elibraryService.downloadAllReadingList[index].id;
                                                                                 bool
                                                                                     currentStatus =
                                                                                     widget.controller.isBookDownloaded[readingId] ?? false;

@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'package:EngKid/data/core/remote/api/ebook_category_api/ebook_category_api.dart';
 import 'package:EngKid/data/core/remote/api/topic_api/topic_api.dart';
+import 'package:EngKid/data/core/remote/api/ebook_api/ebook_api.dart';
+import 'package:EngKid/domain/ebook_category/entities/ebook_category.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:EngKid/data/core/local/share_preferences_manager.dart';
@@ -22,6 +25,8 @@ class ApiModule {
     getIt.registerSingleton(UserApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(AuthApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(TopicApi(dio, baseUrl: dio.options.baseUrl));
+    getIt.registerSingleton(EBookApi(dio, baseUrl: dio.options.baseUrl));
+    getIt.registerSingleton(EBookCategoryApi(dio, baseUrl: dio.options.baseUrl));
   }
 
   static FutureOr<Dio> setup(String baseUrl) async {

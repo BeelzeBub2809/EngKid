@@ -39,7 +39,7 @@ class ElibraryScreen extends GetView<ElibraryController> {
                               height: size.height,
                               url: elibraryService
                                   .categoryList[elibraryService.categoryIndex]
-                                  .thmbImg,
+                                  .imageUrl,
                               boxFit: BoxFit.fitWidth,
                             )
                           : Image.asset(LocalImage.elibraryBackground,
@@ -87,138 +87,116 @@ class ElibraryScreen extends GetView<ElibraryController> {
               child: Stack(
                 children: [
                   Container(
-                      width: size.width * 0.30,
-                      height: size.height * 0.85,
-                      padding: EdgeInsets.fromLTRB(
-                          size.width * 0.025,
-                          size.height * 0.2,
-                          size.width * 0.05,
-                          size.height * 0.1),
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(LocalImage.categoryElibrary),
-                          fit: BoxFit.fill,
-                        ),
+                    width: size.width * 0.30,
+                    height: size.height * 0.85,
+                    padding: EdgeInsets.fromLTRB(
+                        size.width * 0.025,
+                        size.height * 0.2,
+                        size.width * 0.05,
+                        size.height * 0.1),
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(LocalImage.categoryElibrary),
+                        fit: BoxFit.fill,
                       ),
-                      child: Obx(
-                        () => SingleChildScrollView(
-                          controller: controller.scrollControllerCategory,
-                          child: Column(
-                            children: [
-                              ...List.generate(
-                                  elibraryService.categoryList.length, (index) {
-                                return Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        elibraryService.onChangeCategory(
-                                            index,
-                                            elibraryService
-                                                .categoryList[index].id);
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Obx(
-                                            () => Container(
-                                              decoration: BoxDecoration(
-                                                image: index ==
-                                                        elibraryService
-                                                            .categoryIndex
-                                                    ? const DecorationImage(
-                                                        image: AssetImage(LocalImage
-                                                            .topicImageChoosed),
-                                                        fit: BoxFit.fill,
-                                                      )
-                                                    : const DecorationImage(
-                                                        image: AssetImage(
-                                                            LocalImage
-                                                                .topicImage),
-                                                        fit: BoxFit.fill,
-                                                      ),
-                                                border: index ==
-                                                        elibraryService
-                                                            .categoryIndex
-                                                    ? Border.all(
-                                                        color: const Color
-                                                            .fromARGB(
-                                                            255, 63, 195, 131),
-                                                        width: 1.5)
-                                                    : null,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(0.06 *
-                                                        size.width) //                 <--- border radius here
-                                                    ),
-                                              ),
-                                              width: 0.045 * size.width,
-                                              height: 0.045 * size.width,
-                                              child: Center(
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          0.05 * size.width),
-                                                  child: CacheImage(
-                                                    url: elibraryService
-                                                        .categoryList[index]
-                                                        .icon,
-                                                    width: 0.05 * size.width,
-                                                    height: 0.05 * size.width,
+                    ),
+                    child: Obx(
+                      () => SingleChildScrollView(
+                        controller: controller.scrollControllerCategory,
+                        child: Column(
+                          children: [
+                            ...List.generate(elibraryService.categoryList.length, (index) {
+                              return Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      elibraryService.onChangeCategory(
+                                        index,
+                                        elibraryService.categoryList[index].id
+                                      );
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Obx(
+                                          () => Container(
+                                            decoration: BoxDecoration(
+                                              image: index == elibraryService.categoryIndex
+                                                ? const DecorationImage(
+                                                    image: AssetImage(LocalImage.topicImageChoosed),
+                                                    fit: BoxFit.fill,
+                                                  )
+                                                : const DecorationImage(
+                                                    image: AssetImage(LocalImage.topicImage),
+                                                    fit: BoxFit.fill,
                                                   ),
+                                              border: index == elibraryService.categoryIndex
+                                                ? Border.all(
+                                                    color: const Color.fromARGB(255, 63, 195, 131),
+                                                    width: 1.5
+                                                )
+                                                : null,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(0.06 * size.width)
+                                              ),
+                                            ),
+                                            width: 0.045 * size.width,
+                                            height: 0.045 * size.width,
+                                            child: Center(
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(0.05 * size.width),
+                                                child: CacheImage(
+                                                  url: elibraryService.categoryList[index].iconUrl,
+                                                  width: 0.05 * size.width,
+                                                  height: 0.05 * size.width,
                                                 ),
                                               ),
                                             ),
                                           ),
-                                          SizedBox(
-                                            width: 0.01 * size.width,
+                                        ),
+                                        SizedBox(
+                                          width: 0.01 * size.width,
+                                        ),
+                                        Obx(() => Container(
+                                          decoration: BoxDecoration(
+                                            image: index == elibraryService.categoryIndex
+                                              ? const DecorationImage(
+                                                image: AssetImage(LocalImage.topicNameChoosed),
+                                                fit: BoxFit.fill,
+                                              )
+                                              : const DecorationImage(
+                                                  image: AssetImage(LocalImage.topicName),
+                                                  fit: BoxFit.fill,
+                                                )
                                           ),
-                                          Obx(() => Container(
-                                                decoration: BoxDecoration(
-                                                    image: index ==
-                                                            elibraryService
-                                                                .categoryIndex
-                                                        ? const DecorationImage(
-                                                            image: AssetImage(
-                                                                LocalImage
-                                                                    .topicNameChoosed),
-                                                            fit: BoxFit.fill,
-                                                          )
-                                                        : const DecorationImage(
-                                                            image: AssetImage(
-                                                                LocalImage
-                                                                    .topicName),
-                                                            fit: BoxFit.fill,
-                                                          )),
-                                                width: 0.165 * size.width,
-                                                height: 0.09 * size.height,
-                                                padding: EdgeInsets.only(
-                                                    left: 0.01 * size.width),
-                                                child: Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: RegularText(
-                                                    elibraryService
-                                                        .categoryList[index]
-                                                        .name,
-                                                    maxLines: 1,
-                                                    textAlign: TextAlign.left,
-                                                    style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w700),
-                                                  ),
-                                                ),
-                                              ))
-                                        ],
-                                      ),
+                                          width: 0.165 * size.width,
+                                          height: 0.09 * size.height,
+                                          padding: EdgeInsets.only(left: 0.01 * size.width),
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: RegularText(
+                                              elibraryService.categoryList[index].title,
+                                              maxLines: 1,
+                                              textAlign: TextAlign.left,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w700
+                                              ),
+                                            ),
+                                          ),
+                                        ))
+                                      ],
                                     ),
-                                    SizedBox(
-                                      height: size.height * 0.02,
-                                    )
-                                  ],
-                                );
-                              })
-                            ],
-                          ),
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.02,
+                                  )
+                                ],
+                              );
+                            })
+                          ],
                         ),
-                      )),
+                      ),
+                    )),
                   Positioned(
                     top: size.height * 0.07,
                     left: size.width * 0.1,
@@ -235,411 +213,342 @@ class ElibraryScreen extends GetView<ElibraryController> {
               ),
             ),
             Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, size.height * 0.02),
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(0, 0, 0, size.height * 0.02),
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      width: size.width * 0.4,
+                      height: size.height * 0.9,
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: size.width * 0.35,
+                        height: size.height * 0.85,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(LocalImage.bookElibrary),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(size.width * 0.035, size.height * 0.05, 0, 0),
+                      child: Obx(
+                        () => AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 500),
+                          child: GestureDetector(
+                            onTap: () {
+                              controller.handlePressingBook();
+                            },
+                            child: ClipRRect(
+                              key: UniqueKey(),
+                              borderRadius: BorderRadius.circular(30),
+                              child: elibraryService.selectedCateBooks.isNotEmpty
+                                ? CacheImage(
+                                    url: elibraryService.selectedCateBooks[elibraryService.bookIndex].image,
+                                    width: size.width * 0.35 * 0.9,
+                                    height: size.height * 0.85 * 0.95,
+                                  )
+                                : Image.asset(
+                                    LocalImage.sampleThumbnail,
+                                    width: size.width * 0.35 * 0.9,
+                                    height: size.height * 0.85 * 0.95,
+                                    fit: BoxFit.cover,
+                                  ),
+                            ),
+                          )),
+                      ),
+                    ),
+                    // Positioned(
+                    //   left: 0,
+                    //   bottom: 0,
+                    //   child: Container(
+                    //     width: size.width * 0.35 * 0.3,
+                    //     height: size.height * 0.85 * 0.35,
+                    //     decoration: const BoxDecoration(
+                    //       image: DecorationImage(
+                    //         image:
+                    //             AssetImage(LocalImage.mascotHappyReverse),
+                    //         fit: BoxFit.fill,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    Positioned(
+                      top: size.height * 0.85 * 0.025,
+                      right: size.width * 0.35 * 0.2,
+                      child: Stack(
+                        children: [
+                          Obx(
+                            () => Container(
+                              width: size.width * 0.35 * 0.1,
+                              height: size.height * 0.85 * 0.125,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image:
+                                    !elibraryService.selectedCateBooks.isNotEmpty ||elibraryService.selectedCateBooks[elibraryService.bookIndex].isActive
+                                      ? const AssetImage(LocalImage.lessonCompleted)
+                                      : const AssetImage(LocalImage.lessonProgress),
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Positioned.fill(
+                          //   child: GestureDetector(
+                          //     onTap: () {
+                          //     },
+                          //     child: Container(
+                          //       color: Colors.black.withOpacity(0.5),
+                          //       child: const Center(
+                          //
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                    ),
+                    Obx(() => controller.isPressingBook
+                      ? Container(
                           width: size.width * 0.4,
                           height: size.height * 0.9,
                           alignment: Alignment.center,
-                          child: Container(
-                            width: size.width * 0.35,
-                            height: size.height * 0.85,
-                            decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(LocalImage.bookElibrary),
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(
-                              size.width * 0.035, size.height * 0.05, 0, 0),
-                          child: Obx(
-                            () => AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 500),
-                                child: GestureDetector(
-                                  onTap: () {
+                          child: Stack(
+                            children: [
+                              GestureDetector(
+                                  onTap: () async {
                                     controller.handlePressingBook();
                                   },
-                                  child: ClipRRect(
-                                    key: UniqueKey(),
-                                    borderRadius: BorderRadius.circular(30),
-                                    child: elibraryService
-                                                .bookList.isNotEmpty ==
-                                            true
-                                        ? CacheImage(
-                                            url: elibraryService
-                                                .bookList[
-                                                    elibraryService.bookIndex]
-                                                .thum_img,
-                                            width: size.width * 0.35 * 0.9,
-                                            height: size.height * 0.85 * 0.95,
-                                          )
-                                        : Image.asset(
-                                            LocalImage.sampleThumbnail,
-                                            width: size.width * 0.35 * 0.9,
-                                            height: size.height * 0.85 * 0.95,
-                                            fit: BoxFit.cover,
-                                          ),
-                                  ),
-                                )),
-                          ),
-                        ),
-                        // Positioned(
-                        //   left: 0,
-                        //   bottom: 0,
-                        //   child: Container(
-                        //     width: size.width * 0.35 * 0.3,
-                        //     height: size.height * 0.85 * 0.35,
-                        //     decoration: const BoxDecoration(
-                        //       image: DecorationImage(
-                        //         image:
-                        //             AssetImage(LocalImage.mascotHappyReverse),
-                        //         fit: BoxFit.fill,
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-                        Positioned(
-                          top: size.height * 0.85 * 0.025,
-                          right: size.width * 0.35 * 0.2,
-                          child: Stack(
-                            children: [
-                              Obx(
-                                () => Container(
-                                  width: size.width * 0.35 * 0.1,
-                                  height: size.height * 0.85 * 0.125,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: elibraryService
-                                                      .bookList.isNotEmpty ==
-                                                  false ||
-                                              elibraryService
-                                                      .bookList[elibraryService
-                                                          .bookIndex]
-                                                      .status ==
-                                                  true
-                                          ? const AssetImage(
-                                              LocalImage.lessonCompleted)
-                                          : const AssetImage(
-                                              LocalImage.lessonProgress),
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              // Positioned.fill(
-                              //   child: GestureDetector(
-                              //     onTap: () {
-                              //     },
-                              //     child: Container(
-                              //       color: Colors.black.withOpacity(0.5),
-                              //       child: const Center(
-                              //
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                            ],
-                          ),
-                        ),
-                        Obx(() => controller.isPressingBook
-                            ? Container(
-                                width: size.width * 0.4,
-                                height: size.height * 0.9,
-                                alignment: Alignment.center,
-                                child: Stack(
-                                  children: [
-                                    GestureDetector(
-                                        onTap: () async {
-                                          controller.handlePressingBook();
-                                        },
-                                        child: AnimatedOpacity(
-                                            duration:
-                                                const Duration(seconds: 3),
-                                            opacity: 1.0,
-                                            child: Opacity(
-                                              opacity:
-                                                  0.5, // Set the desired opacity here
-                                              child: Container(
-                                                width: size.width * 0.35,
-                                                height: size.height * 0.85,
-                                                decoration: const BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: AssetImage(LocalImage
-                                                        .bookElibraryDark),
-                                                    fit: BoxFit.fill,
-                                                  ),
-                                                ),
-                                              ),
-                                            ))),
-                                    Positioned(
-                                      bottom: size.height * 0.32,
-                                      right: size.width * 0.13,
-                                      child: Column(
-                                        children: [
-                                          ImageButton(
-                                            onTap: () async {
-                                              await controller.onPressBook(
-                                                  elibraryService.bookIndex);
-                                            },
-                                            semantics: 'play',
-                                            pathImage: LocalImage.playButton,
-                                            width: size.width * 0.35 * 0.25,
-                                            height: size.height * 0.85 * 0.25,
-                                          ),
-                                          RegularText('play'.tr, style: TextStyle(fontSize: Fontsize.large, color: AppColor.red),)
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ))
-                            : const SizedBox())
-                      ],
-                    ))),
-            Align(
-                alignment: Alignment.bottomRight,
-                child: Stack(
-                  children: <Widget>[
-                    SizedBox(
-                      width: size.width * 0.35,
-                      height: size.height * 0.85,
-                    ),
-                    Positioned(
-                      bottom: size.height * 0.075,
-                      right: size.width * 0.01,
-                      child: Container(
-                          padding: EdgeInsets.fromLTRB(
-                              size.width * 0.02, size.height * 0.11, 10, 10),
-                          width: size.width * 0.30,
-                          height: size.height * 0.7,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(LocalImage.boxElibrary),
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                          child: Obx(
-                            () => SingleChildScrollView(
-                              controller: controller.scrollControllerBook,
-                              child: Column(
-                                children: [
-                                  ...List.generate(
-                                      elibraryService.bookList.length, (index) {
-                                    return Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            elibraryService.onChangeBook(index);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Obx(
-                                                () => SizedBox(
-                                                  width: 0.06 * size.width,
-                                                  height: 0.0605 * size.width,
-                                                  child: Center(
-                                                      child: Stack(
-                                                    children: <Widget>[
-                                                      Container(
-                                                        width:
-                                                            size.width * 0.06,
-                                                        height:
-                                                            size.width * 0.06,
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: Container(
-                                                          width:
-                                                              size.width * 0.06,
-                                                          height:
-                                                              size.width * 0.06,
-                                                          decoration:
-                                                              const BoxDecoration(
-                                                            image:
-                                                                DecorationImage(
-                                                              image: AssetImage(
-                                                                  LocalImage
-                                                                      .bookSmallElibrary),
-                                                              fit: BoxFit.fill,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                          padding: EdgeInsets
-                                                              .fromLTRB(
-                                                                  size.width *
-                                                                      0.0015,
-                                                                  size.height *
-                                                                      0.0015,
-                                                                  0,
-                                                                  0),
-                                                          child: ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        4), // Adjust the radius as needed
-                                                            child: elibraryService
-                                                                        .bookList
-                                                                        .isNotEmpty ==
-                                                                    true
-                                                                ? CacheImage(
-                                                                    url: elibraryService
-                                                                        .bookList[
-                                                                            index]
-                                                                        .thum_img,
-                                                                    width: size
-                                                                            .width *
-                                                                        0.054,
-                                                                    height: size
-                                                                            .width *
-                                                                        0.058,
-                                                                  )
-                                                                : Image.asset(
-                                                                    LocalImage
-                                                                        .sampleThumbnail,
-                                                                    width: size
-                                                                            .width *
-                                                                        0.045,
-                                                                    height: size
-                                                                            .width *
-                                                                        0.057,
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                  ),
-                                                          )),
-                                                      Positioned(
-                                                        top: 0,
-                                                        right: 5,
-                                                        child: Container(
-                                                          width: size.width *
-                                                              0.015,
-                                                          height: size.height *
-                                                              0.04,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            image:
-                                                                DecorationImage(
-                                                              image: elibraryService
-                                                                          .bookList[
-                                                                              index]
-                                                                          .status ==
-                                                                      true
-                                                                  ? const AssetImage(
-                                                                      LocalImage
-                                                                          .lessonCompleted)
-                                                                  : const AssetImage(
-                                                                      LocalImage
-                                                                          .lessonProgress),
-                                                              fit: BoxFit.fill,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 0.01 * size.width,
-                                              ),
-                                              Obx(() => Container(
-                                                    width: 0.165 * size.width,
-                                                    height: 0.09 * size.height,
-                                                    padding: EdgeInsets.only(
-                                                        left:
-                                                            0.01 * size.width),
-                                                    child: Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: RegularText(
-                                                          elibraryService
-                                                              .bookList[index]
-                                                              .name,
-                                                          maxLines: 2,
-                                                          textAlign:
-                                                              TextAlign.left,
-                                                          style: index ==
-                                                                  elibraryService
-                                                                      .bookIndex
-                                                              ? const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700,
-                                                                  color: Colors
-                                                                      .deepOrange)
-                                                              : const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700,
-                                                                  color: Colors
-                                                                      .black)),
-                                                    ),
-                                                  ))
-                                            ],
+                                  child: AnimatedOpacity(
+                                      duration:
+                                          const Duration(seconds: 3),
+                                      opacity: 1.0,
+                                      child: Opacity(
+                                        opacity:
+                                            0.5, // Set the desired opacity here
+                                        child: Container(
+                                          width: size.width * 0.35,
+                                          height: size.height * 0.85,
+                                          decoration: const BoxDecoration(
+                                            image: DecorationImage(
+                                              image: AssetImage(LocalImage
+                                                  .bookElibraryDark),
+                                              fit: BoxFit.fill,
+                                            ),
                                           ),
                                         ),
-                                        SizedBox(
-                                          height: size.height * 0.02,
-                                        )
-                                      ],
-                                    );
-                                  })
-                                ],
-                              ),
-                            ),
-                          )),
-                    ),
-                    Positioned(
-                      top: size.height * 0.015,
-                      right: size.width * 0.025,
-                      child: Container(
-                          width: size.width * 0.25,
-                          height: size.height * 0.15,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(LocalImage.bookBarElibrary),
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                          child: Stack(
-                            children: [
+                                      ))),
                               Positioned(
-                                  top: size.height * 0.025,
-                                  left: size.width * 0.1,
-                                  child: Obx(
-                                    () => RegularText(
-                                      "${elibraryService.completedBook}/${elibraryService.totalBook}",
-                                      style: TextStyle(
-                                          color: Colors.orange,
-                                          fontSize: Fontsize.large,
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.center,
+                                bottom: size.height * 0.32,
+                                right: size.width * 0.13,
+                                child: Column(
+                                  children: [
+                                    ImageButton(
+                                      onTap: () async {
+                                        await controller.onPressBook(elibraryService.bookIndex);
+                                      },
+                                      semantics: 'play',
+                                      pathImage: LocalImage.playButton,
+                                      width: size.width * 0.35 * 0.25,
+                                      height: size.height * 0.85 * 0.25,
                                     ),
-                                  )),
-                              Positioned(
-                                top: size.height * 0.08,
-                                left: size.width * 0.1,
-                                child: RegularText(
-                                  "book_number".tr,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: Fontsize.smaller,
-                                      fontWeight: FontWeight.bold),
+                                    RegularText('play'.tr, style: TextStyle(fontSize: Fontsize.large, color: AppColor.red),)
+                                  ],
                                 ),
                               )
                             ],
-                          )),
-                    )
+                          ))
+                      : const SizedBox())
                   ],
-                )),
+                ))),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Stack(
+                children: <Widget>[
+                  SizedBox(
+                    width: size.width * 0.35,
+                    height: size.height * 0.85,
+                  ),
+                  Positioned(
+                    bottom: size.height * 0.075,
+                    right: size.width * 0.01,
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(size.width * 0.02, size.height * 0.11, 10, 10),
+                      width: size.width * 0.30,
+                      height: size.height * 0.7,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(LocalImage.boxElibrary),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      child: Obx(
+                        () => SingleChildScrollView(
+                          controller: controller.scrollControllerBook,
+                          child: Column(
+                            children: [
+                              ...List.generate(elibraryService.selectedCateBooks.length, (index) {
+                                return Column(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        elibraryService.onChangeBook(index);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Obx(
+                                            () => SizedBox(
+                                              width: 0.06 * size.width,
+                                              height: 0.0605 * size.width,
+                                              child: Center(
+                                                child: Stack(
+                                                  children: <Widget>[
+                                                  Container(
+                                                    width: size.width * 0.06,
+                                                    height: size.width * 0.06,
+                                                    alignment: Alignment.center,
+                                                    child: Container(
+                                                      width: size.width * 0.06,
+                                                      height: size.width * 0.06,
+                                                      decoration: const BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: AssetImage(LocalImage.bookSmallElibrary),
+                                                          fit: BoxFit.fill,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.fromLTRB(size.width * 0.0015, size.height * 0.0015, 0, 0),
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(4), // Adjust the radius as needed
+                                                      child: elibraryService.selectedCateBooks.isNotEmpty
+                                                        ? CacheImage(
+                                                            url: elibraryService.selectedCateBooks[index].image,
+                                                            width: size.width *0.054,
+                                                            height: size.width * 0.058,
+                                                          )
+                                                        : Image.asset(
+                                                            LocalImage.sampleThumbnail,
+                                                            width: size.width * 0.045,
+                                                            height: size.width * 0.057,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                    )
+                                                  ),
+                                                  Positioned(
+                                                    top: 0,
+                                                    right: 5,
+                                                    child: Container(
+                                                      width: size.width * 0.015,
+                                                      height: size.height * 0.04,
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: elibraryService.selectedCateBooks[index].isActive
+                                                            ? const AssetImage(LocalImage.lessonCompleted)
+                                                            : const AssetImage(LocalImage.lessonProgress),
+                                                          fit: BoxFit.fill,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                                )
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 0.01 * size.width,
+                                          ),
+                                          Obx(
+                                            () => Container(
+                                              width: 0.165 * size.width,
+                                              height: 0.09 * size.height,
+                                              padding: EdgeInsets.only(
+                                                left: 0.01 * size.width,
+                                              ),
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: RegularText(
+                                                  elibraryService.selectedCateBooks[index].title,
+                                                  maxLines: 2,
+                                                  textAlign: TextAlign.left,
+                                                  style: index == elibraryService.bookIndex
+                                                    ? const TextStyle(
+                                                        fontWeight: FontWeight.w700,
+                                                        color: Colors.deepOrange,
+                                                      )
+                                                    : const TextStyle(
+                                                        fontWeight: FontWeight.w700,
+                                                        color: Colors.black,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: size.height * 0.02,
+                                    )
+                                  ],
+                                );
+                              })
+                            ],
+                          ),
+                        ),
+                      )
+                    ),
+                  ),
+                  Positioned(
+                    top: size.height * 0.015,
+                    right: size.width * 0.025,
+                    child: Container(
+                        width: size.width * 0.25,
+                        height: size.height * 0.15,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(LocalImage.bookBarElibrary),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        child: Stack(
+                          children: [
+                            Positioned(
+                                top: size.height * 0.025,
+                                left: size.width * 0.1,
+                                child: Obx(
+                                  () => RegularText(
+                                    "${elibraryService.completedBook}/${elibraryService.totalBook}",
+                                    style: TextStyle(
+                                        color: Colors.orange,
+                                        fontSize: Fontsize.large,
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                )),
+                            Positioned(
+                              top: size.height * 0.08,
+                              left: size.width * 0.1,
+                              child: RegularText(
+                                "book_number".tr,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: Fontsize.smaller,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                          ],
+                        )),
+                  )
+                ],
+              )),
             Obx(
-              () => elibraryService.isGetCategoryReadings ||
-                      elibraryService.isChangeBook
+              () => elibraryService.isGetCategoryReadings || elibraryService.isChangeBook
                   ? Container(
                       color: Colors.black38, child: const LoadingDialog())
                   : const Text(''),
@@ -763,24 +672,23 @@ class DownloadLesson extends StatelessWidget {
                               ],
                             )
                           : Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ImageButton(
-                                      onTap: (){
-                                        controller.onPressDownload(index);
-                                      },
-                                      semantics: 'download',
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ImageButton(
+                                    onTap: (){
+                                      controller.onPressDownload(index);
+                                    },
+                                    semantics: 'download',
 
-                                      pathImage: LocalImage.downloadButton,
-                                      width: 0.5 * size.height,
-                                      height: 0.5 * size.height,
-                                    ),
-                                    SizedBox(height: 0.03 * size.height,),
-                                    RegularText('download'.tr, style: TextStyle(color: Colors.white, fontSize: Fontsize.bigger, fontWeight: FontWeight.bold),)
-                                  ],
-                                ),
-
+                                    pathImage: LocalImage.downloadButton,
+                                    width: 0.5 * size.height,
+                                    height: 0.5 * size.height,
+                                  ),
+                                  SizedBox(height: 0.03 * size.height,),
+                                  RegularText('download'.tr, style: TextStyle(color: Colors.white, fontSize: Fontsize.bigger, fontWeight: FontWeight.bold),)
+                                ],
+                              ),
                             ),
                     ),
                   ],

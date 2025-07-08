@@ -13,7 +13,7 @@ class AppBinding extends Bindings {
     Get.put(NetworkService());
     Get.put(UserService(appUseCases: Get.find()));
     Get.put(TopicService(appUseCases: Get.find()));
-    Get.put(ElibraryService(appUseCases: Get.find()));
+    Get.put(ElibraryService(appUseCases: Get.find(), eBookUsecases: Get.find(), eBookCategoryUsecases: Get.find()));
     Get.put(QuizUseCases());
     // Get.put(PurchaseService(appUseCases: Get.find()));
   }

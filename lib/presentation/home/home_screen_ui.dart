@@ -33,12 +33,12 @@ class HomeScreen extends GetView<HomeScreenController> {
     //List menu on the right side edge of the screen
     final List<MenuRight> menuRights = [
       MenuRight(
-          label: "share",
-          count: 0,
-          icon: LocalImage.iconShare,
-          onTap: () {
-            controller.shareMyApp();
-          }),
+        label: "share",
+        count: 0,
+        icon: LocalImage.iconShare,
+        onTap: () {
+          controller.shareMyApp();
+        }),
     ];
     if (screenWidth < 900) {
       fSize = Fontsize.small;
@@ -131,83 +131,55 @@ class HomeScreen extends GetView<HomeScreenController> {
                                                     width: 0.24 * size.height,
                                                     height: 0.24 * size.height,
                                                     decoration:
-                                                        const BoxDecoration(
-                                                      color: Color(0XFFfdf1ce),
-                                                      shape: BoxShape.circle,
-                                                    ),
+                                                      const BoxDecoration(
+                                                        color: Color(0XFFfdf1ce),
+                                                        shape: BoxShape.circle,
+                                                      ),
                                                     child: Center(
                                                       child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(0.23 *
-                                                                    size.height),
+                                                        borderRadius: BorderRadius.circular(0.23 *size.height),
                                                         child: CacheImage(
-                                                          url: userService
-                                                              .childProfiles
-                                                              .childProfiles[
-                                                                  index]
-                                                              .avatar,
-                                                          width: 0.23 *
-                                                              size.height,
-                                                          height: 0.23 *
-                                                              size.height,
+                                                          url: userService.childProfiles.childProfiles[index].avatar,
+                                                          width: 0.23 * size.height,
+                                                          height: 0.23 * size.height,
                                                         ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                                 Positioned.fill(
-                                                    child: Align(
-                                                  alignment:
-                                                      Alignment.bottomCenter,
-                                                  child: ImageText(
-                                                    pathImage:
-                                                        LocalImage.shapeName,
-                                                    text: userService
-                                                        .childProfiles
-                                                        .childProfiles[index]
-                                                        .name,
-                                                    style: TextStyle(
-                                                      color: AppColor.gray,
-                                                      fontSize: fSize,
-                                                      height: 1.2,
+                                                  child: Align(
+                                                    alignment: Alignment.bottomCenter,
+                                                    child: ImageText(
+                                                      pathImage: LocalImage.shapeName,
+                                                      text: userService.childProfiles.childProfiles[index].name,
+                                                      style: TextStyle(
+                                                        color: AppColor.gray,
+                                                        fontSize: fSize,
+                                                        height: 1.2,
+                                                      ),
+                                                      textAlign: TextAlign.center,
+                                                      width: 0.23 * size.width,
+                                                      height: 0.1 * size.height,
+                                                      onTap: controller.copyDeviceTokenToClipboard,
                                                     ),
-                                                    textAlign: TextAlign.center,
-                                                    width: 0.23 * size.width,
-                                                    height: 0.1 * size.height,
-                                                    onTap: controller
-                                                        .copyDeviceTokenToClipboard,
-                                                  ),
-                                                ))
+                                                  )
+                                                )
                                               ],
                                             );
                                           },
-                                          index: userService.userLogin.roleId ==
-                                                  "2"
-                                              ? 0
-                                              : controller
-                                                  .indexCurrentUserInChildProfiles(),
+                                          index: userService.userLogin.roleId == "2" ? 0: controller.indexCurrentUserInChildProfiles(),
                                           onIndexChanged: (int index) {
-                                            if (userService.userLogin.roleId ==
-                                                "2") {
+                                            if (userService.userLogin.roleId == "2") {
                                               return;
                                             }
-
-                                            controller.onChangeChild(userService
-                                                .childProfiles
-                                                .childProfiles[index]);
+                                            controller.onChangeChild(userService.childProfiles.childProfiles[index]);
                                           },
-                                          itemCount:
-                                              userService.userLogin.roleId ==
-                                                      "2"
-                                                  ? 1
-                                                  : userService.childProfiles
-                                                      .childProfiles.length,
+                                          itemCount: userService.userLogin.roleId == "2" ? 1 : userService.childProfiles.childProfiles.length,
                                           control: SwiperControlCustom(
                                             width: 0.035 * size.width,
                                             height: 0.035 * size.width,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
+                                            crossAxisAlignment:CrossAxisAlignment.center,
                                           ),
                                         ),
                                       )
@@ -293,20 +265,14 @@ class HomeScreen extends GetView<HomeScreenController> {
                                         children: [
                                           Obx(
                                             () => badges.Badge(
-                                              showBadge: controller
-                                                      .menus[index].count !=
-                                                  0,
-                                              position:
-                                                  badges.BadgePosition.topEnd(
-                                                      top: -5, end: -5),
-                                              badgeStyle:
-                                                  const badges.BadgeStyle(
+                                              showBadge: controller.menus[index].count != 0,
+                                              position: badges.BadgePosition.topEnd(top: -5, end: -5),
+                                              badgeStyle: const badges.BadgeStyle(
                                                 badgeColor: AppColor.red,
                                                 shape: badges.BadgeShape.circle,
                                               ),
                                               badgeContent: Text(
-                                                renderNumberBadges(controller
-                                                    .menus[index].count),
+                                                renderNumberBadges(controller.menus[index].count),
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.white,
@@ -317,8 +283,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                                                 width: size.width * 0.06,
                                                 height: size.width * 0.06,
                                                 child: ImageButton(
-                                                  pathImage: controller
-                                                      .menus[index].pathImage,
+                                                  pathImage: controller.menus[index].pathImage,
                                                   onTap: () {
                                                     controller.onPressTo(
                                                       controller.menus[index],
@@ -382,15 +347,12 @@ class HomeScreen extends GetView<HomeScreenController> {
                             color: Colors.black,
                             fontSize: Fontsize.small,
                             fontWeight: FontWeight.bold,
-                          ),),
+                          )
+                        ,),
 
                         Container(
                           margin: EdgeInsets.symmetric(
-                            vertical: LibFunction.scaleForCurrentValue(
-                              size,
-                              16,
-                              desire: 1,
-                            ),
+                            vertical: LibFunction.scaleForCurrentValue(size, 16,desire: 1,),
                           ),
                           // padding: EdgeInsets.symmetric(
                           //   vertical: LibFunction.scaleForCurrentValue(
@@ -402,7 +364,8 @@ class HomeScreen extends GetView<HomeScreenController> {
                           decoration: BoxDecoration(
                               // color: Colors.black.withOpacity(0.1),
                               color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(100)),
+                              borderRadius: BorderRadius.circular(100)
+                          ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -411,31 +374,18 @@ class HomeScreen extends GetView<HomeScreenController> {
                                 onTap: el.onTap,
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        LibFunction.scaleForCurrentValue(
-                                      size,
-                                      8,
-                                    ),
-                                    vertical: LibFunction.scaleForCurrentValue(
-                                      size,
-                                      24,
-                                      desire: 1,
-                                    ),
+                                    horizontal:LibFunction.scaleForCurrentValue(size,8,),
+                                    vertical: LibFunction.scaleForCurrentValue(size,24,desire: 1,),
                                   ),
                                   child: Column(
                                     children: [
                                       Padding(
                                         padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              LibFunction.scaleForCurrentValue(
-                                            size,
-                                            8,
-                                          ),
+                                          horizontal: LibFunction.scaleForCurrentValue(size, 8,),
                                         ),
                                         child: badges.Badge(
                                           showBadge: el.count != 0,
-                                          position: badges.BadgePosition.topEnd(
-                                              top: -5, end: -5),
+                                          position: badges.BadgePosition.topEnd( top: -5, end: -5),
                                           badgeStyle: const badges.BadgeStyle(
                                             badgeColor: AppColor.red,
                                             shape: badges.BadgeShape.circle,
@@ -450,18 +400,8 @@ class HomeScreen extends GetView<HomeScreenController> {
                                           ),
                                           child: Image.asset(
                                             el.icon,
-                                            width: LibFunction
-                                                .scaleForCurrentValue(
-                                              size,
-                                              112,
-                                              desire: 0,
-                                            ),
-                                            height: LibFunction
-                                                .scaleForCurrentValue(
-                                              size,
-                                              112,
-                                              desire: 0,
-                                            ),
+                                            width: LibFunction.scaleForCurrentValue(size,112, desire: 0,),
+                                            height: LibFunction.scaleForCurrentValue( size, 112,desire: 0,),
                                           ),
                                         ),
                                       ),
