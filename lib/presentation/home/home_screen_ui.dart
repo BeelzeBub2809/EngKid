@@ -122,22 +122,21 @@ class HomeScreen extends GetView<HomeScreenController> {
                                         width: 0.3 * size.width,
                                         height: 0.32 * size.height,
                                         child: Swiper(
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
+                                          itemBuilder: (BuildContext context, int index) {
                                             return Stack(
                                               children: [
                                                 Center(
                                                   child: Container(
                                                     width: 0.24 * size.height,
                                                     height: 0.24 * size.height,
-                                                    decoration:
-                                                      const BoxDecoration(
-                                                        color: Color(0XFFfdf1ce),
-                                                        shape: BoxShape.circle,
-                                                      ),
+
+                                                    decoration: const BoxDecoration(
+                                                      color: Color(0XFFfdf1ce),
+                                                      shape: BoxShape.circle,
+                                                    ),
                                                     child: Center(
                                                       child: ClipRRect(
-                                                        borderRadius: BorderRadius.circular(0.23 *size.height),
+                                                        borderRadius: BorderRadius.circular(0.23 * size.height),
                                                         child: CacheImage(
                                                           url: userService.childProfiles.childProfiles[index].avatar,
                                                           width: 0.23 * size.height,
@@ -149,7 +148,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                                                 ),
                                                 Positioned.fill(
                                                   child: Align(
-                                                    alignment: Alignment.bottomCenter,
+                                                    alignment:Alignment.bottomCenter,
                                                     child: ImageText(
                                                       pathImage: LocalImage.shapeName,
                                                       text: userService.childProfiles.childProfiles[index].name,
@@ -163,19 +162,24 @@ class HomeScreen extends GetView<HomeScreenController> {
                                                       height: 0.1 * size.height,
                                                       onTap: controller.copyDeviceTokenToClipboard,
                                                     ),
-                                                  )
-                                                )
+
+                                                ))
                                               ],
                                             );
                                           },
-                                          index: userService.userLogin.roleId == "2" ? 0: controller.indexCurrentUserInChildProfiles(),
+                                          index: userService.userLogin.roleId == "2"
+                                            ? 0
+                                            : controller.indexCurrentUserInChildProfiles(),
                                           onIndexChanged: (int index) {
                                             if (userService.userLogin.roleId == "2") {
                                               return;
                                             }
                                             controller.onChangeChild(userService.childProfiles.childProfiles[index]);
                                           },
-                                          itemCount: userService.userLogin.roleId == "2" ? 1 : userService.childProfiles.childProfiles.length,
+                                          itemCount:
+                                            userService.userLogin.roleId == "2"
+                                              ? 1
+                                              : userService.childProfiles.childProfiles.length,
                                           control: SwiperControlCustom(
                                             width: 0.035 * size.width,
                                             height: 0.035 * size.width,

@@ -484,7 +484,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
           if (_remainingTime == 25 * 60) {
             int loginRecordId = _preferencesManager.getInt(
               KeySharedPreferences.loginRecord +
-                  _userService.currentUser.userId,
+                  _userService.currentUser.userId.toString(),
             )!;
             // _userService.updateLoginRecord(loginRecordId, false, false, true);
           }

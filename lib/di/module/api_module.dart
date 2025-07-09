@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:EngKid/data/core/remote/api/ebook_category_api/ebook_category_api.dart';
+import 'package:EngKid/data/core/remote/api/child_api/child_api.dart';
 import 'package:EngKid/data/core/remote/api/topic_api/topic_api.dart';
 import 'package:EngKid/data/core/remote/api/ebook_api/ebook_api.dart';
 import 'package:EngKid/domain/ebook_category/entities/ebook_category.dart';
@@ -27,6 +28,7 @@ class ApiModule {
     getIt.registerSingleton(TopicApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(EBookApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(EBookCategoryApi(dio, baseUrl: dio.options.baseUrl));
+    getIt.registerSingleton(ChildApi(dio, baseUrl: dio.options.baseUrl));
   }
 
   static FutureOr<Dio> setup(String baseUrl) async {

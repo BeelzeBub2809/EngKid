@@ -437,7 +437,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
       if(videoDuration > 0){
         if(_doQuizDuration.toInt() == videoDuration.toInt()){
           int loginRecordId = _preferencesManager.getInt(
-            KeySharedPreferences.loginRecord+_userService.currentUser.userId,
+            KeySharedPreferences.loginRecord+_userService.currentUser.userId.toString(),
           )!;
           // _userService.updateLoginRecord(loginRecordId, true, false, true);
         }
@@ -473,7 +473,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
   Future<void> submitCompletedQuestion()async {
     //call api submit time doing question
     int loginRecordId = _preferencesManager.getInt(
-      KeySharedPreferences.loginRecord + _userService.currentUser.userId,
+      KeySharedPreferences.loginRecord + _userService.currentUser.userId.toString(),
     )!;
     // _userService.updateLoginRecord(loginRecordId, true, true, true);
 

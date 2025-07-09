@@ -47,7 +47,7 @@ class PersonalInfoController extends GetxController {
     debugPrint("Init Personal Info Controller");
 
     _userService.userInfos.asMap().forEach((index, value) {
-      if (value.value.user.id == int.parse(_userService.currentUser.userId)) {
+      if (value.value.user.id == _userService.currentUser.userId) {
         indexChild.value = index;
         userInfo(value.value);
         _parentName.value = _userService.userLogin.name;

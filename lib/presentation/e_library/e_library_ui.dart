@@ -803,7 +803,7 @@ class Header extends StatelessWidget {
                         RegularText(
                           // "grade",
                           // data: const {"grade": '3'},
-                          userService.currentUser.grade ?? '',
+                          userService.currentUser.gradeId.toString() ?? '',
                           style: TextStyle(
                             color: AppColor.gray,
                             fontWeight: FontWeight.w800,

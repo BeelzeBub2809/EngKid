@@ -18,9 +18,7 @@ class EbookRepoImp implements EbookRepoitory {
     final List<dynamic> data = response.data;
 
     if (data != null) {
-      print(data);
       final List<EBook> books = data.map((e) => EBook.fromJson(e)).toList() as List<EBook>;
-      print(books);
       return books;
     } else {
       return [];
