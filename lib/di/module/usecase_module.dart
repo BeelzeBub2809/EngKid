@@ -1,10 +1,13 @@
 import 'package:EngKid/data/core/remote/api/ebook_category_api/ebook_category_api.dart';
+import 'package:EngKid/data/core/remote/api/reading_api/reading_api.dart';
 import 'package:EngKid/data/child/child_repo.dart';
 import 'package:EngKid/data/core/remote/api/child_api/child_api.dart';
 import 'package:EngKid/data/core/remote/api/topic_api/topic_api.dart';
 import 'package:EngKid/data/ebook_category/ebook_category_repo.dart';
+import 'package:EngKid/data/reading/reading_repo.dart';
 import 'package:EngKid/data/topic_reading/topic_reading_repo.dart';
 import 'package:EngKid/domain/ebook_category/ebook_category_usecase.dart';
+import 'package:EngKid/domain/reading/reading_usecases.dart';
 import 'package:EngKid/domain/core/entities/child_profile/child_profiles_usecase.dart';
 import 'package:EngKid/domain/topic/topic_reading_usecases.dart';
 import 'package:EngKid/data/core/remote/api/ebook_api/ebook_api.dart';
@@ -62,6 +65,14 @@ class UseCaseModule {
       () => EBookCategoryUsecases(
         EbookCategoryRepoImp(
           eBookCateApi: getIt.get<EBookCategoryApi>(),
+        ),
+      ),
+      fenix: true,
+    );
+    Get.lazyPut<ReadingUsecases>(
+          () => ReadingUsecases(
+        ReadingRepositoryImp(
+          readingApi: getIt.get<ReadingApi>(),
         ),
       ),
       fenix: true,

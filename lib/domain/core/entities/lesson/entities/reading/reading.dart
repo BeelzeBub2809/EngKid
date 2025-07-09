@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, invalid_annotation_target
 
+import 'package:EngKid/utils/images.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'reading.freezed.dart';
@@ -9,12 +10,12 @@ part 'reading.g.dart';
 class Reading with _$Reading {
   const factory Reading({
     @Default(-1) int id,
-    @Default(0) int stars,
+    @Default(5) int stars,
     @JsonKey(name: 'achieved_stars') @Default(0.0) double achievedStars,
-    @Default(0.0) double maxAchievedStars,
-    @Default("") String name,
+    @JsonKey(name: 'max_achieved_stars') @Default(0.0) double maxAchievedStars,
+    @JsonKey(name: 'title') @Default("") String name,
     @JsonKey(name: 'thum_img') @Default("") String thumImg,
-    @Default("") String background,
+    @Default(LocalImage.backgroundBlue) String background,
     @JsonKey(name: 'reading_video') @Default("") String readingVideo,
     @JsonKey(name: 'is_action_game') @Default(false) bool isActionGame,
     @JsonKey(name: 'is_locked') @Default(true) bool isLocked,

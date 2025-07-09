@@ -129,75 +129,12 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     _readingSequence.value =
         _userService.readingSequenceSetting.readingSequenceSetting;
     WidgetsBinding.instance.addObserver(this);
-    final res = await _topicService.getTopicByGrade();
     // get topics
+    final res = await _topicService.getTopicByGrade();
     _topics.value = res;
-
-    // get readings
-    _readings.value = [
-      const Reading(
-        id: 1,
-        name: "Reading 1",
-        thumImg: 'https://m.media-amazon.com/images/I/41wt2QdOFuL._SL500_.jpg',
-        background: LocalImage.backgroundBlue,
-        readingVideo: "https://youtu.be/OrDB4jpA1g8",
-        stars: 5,
-        achievedStars: 5,
-        maxAchievedStars: 5,
-        isActionGame: true,
-        isLocked: false,
-        totalQuiz: 5,
-        totalCompleteQuiz: 5,
-        percentage: 100,
-      ),
-      const Reading(
-        id: 2,
-        name: "Reading 2",
-        thumImg: 'https://d2n9ha3hrkss16.cloudfront.net/uploads/stage/stage_image/37837/optimized_large_thumb_stage.jpg',
-        background: LocalImage.backgroundBlue,
-        readingVideo: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
-        stars: 5,
-        achievedStars: 3,
-        maxAchievedStars: 3,
-        isActionGame: true,
-        isLocked: false,
-        totalQuiz: 5,
-        totalCompleteQuiz: 3,
-        percentage: 60,
-      ),
-      const Reading(
-        id: 3,
-        name: "Reading 3",
-        thumImg: 'https://img.freepik.com/premium-photo/children-s-storybook-cover-design_968502-387.jpg',
-        background: LocalImage.backgroundBlue,
-        readingVideo: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
-        stars: 5,
-        achievedStars: 3,
-        maxAchievedStars: 3,
-        isActionGame: true,
-        isLocked: false,
-        totalQuiz: 5,
-        totalCompleteQuiz: 3,
-        percentage: 60,
-      ),
-      const Reading(
-        id: 4,
-        name: "Reading 4",
-        thumImg: 'https://img.freepik.com/premium-photo/children-s-storybook-cover-design_968502-1232.jpg',
-        background: LocalImage.backgroundBlue,
-        readingVideo: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
-        stars: 5,
-        achievedStars: 3,
-        maxAchievedStars: 3,
-        isActionGame: true,
-        isLocked: false,
-        totalQuiz: 5,
-        totalCompleteQuiz: 3,
-        percentage: 60,
-      ),
-    ];
-
     _topicIndex.value = 0;
+    final readingRes =await _topicService.getReadingByTopic(_topicIndex.value + 1);
+    _readings.value = readingRes;
   }
 
   Future<void> onPressLesson(
@@ -1003,7 +940,9 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     return false;
   }
 
-  void onChangeTopicReadings(int index){
+  void onChangeTopicReadings(int index) async {
     _topicIndex.value = index;
+    final readingRes =await _topicService.getReadingByTopic(index + 1);
+    _readings.value = readingRes;
   }
 }

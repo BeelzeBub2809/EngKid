@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:EngKid/data/reading/reading_request/reading_by_topic_request.dart';
 import 'package:EngKid/data/topic_reading/topic_reading_request/topic_reading_request.dart';
+import 'package:EngKid/domain/reading/reading_usecases.dart';
 import 'package:EngKid/domain/topic/topic_reading_usecases.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,6 +27,7 @@ class TopicService extends GetxService {
 
   final UserService _userService = Get.find<UserService>();
   final TopicReadingUsecases _topicReadingUsecases = Get.find<TopicReadingUsecases>();
+  final ReadingUsecases _readingUsecases = Get.find<ReadingUsecases>();
   final _preferencesManager = getIt.get<SharedPreferencesManager>();
   final NetworkService _networkService = Get.find<NetworkService>();
 
@@ -32,6 +35,7 @@ class TopicService extends GetxService {
   final RxBool _isGetTopicReadings = false.obs;
   final RxList<Grade> _grades = RxList<Grade>.empty(growable: true);
   final RxList<Topic> _topicReading = RxList<Topic>.empty(growable: true);
+  final RxList<Reading> _readings = RxList<Reading>.empty(growable: true);
   final Rx<ProgressGrade> _progressGrade = const ProgressGrade().obs;
   final Rx<Lesson> _topicReadings = const Lesson().obs;
   final RxString _topicBg = "".obs;
@@ -80,6 +84,23 @@ class TopicService extends GetxService {
     }
   }
 
+  Future<List<Reading>> getReadingByTopic(int cateId) async {
+    try {
+      final request = ReadingByTopicRequest(
+        categoryId: cateId,
+        studentId: 1,
+      );
+
+      final result = await _readingUsecases.getByCateAndStudent(request.toJson());
+      _readings.assignAll(result);
+      return _readings;
+    } catch (e, stackTrace) {
+      debugPrint('[ReadingService] ❌ Error: $e');
+      debugPrint('[ReadingService] ❌ StackTrace: $stackTrace');
+      rethrow;
+    }
+  }
+  // Grades ==============================================
   Future<List<Topic>> getTopicByGrade() async {
     try {
       final result = await _topicReadingUsecases.getByGrade(currentGrade.id);
@@ -89,7 +110,6 @@ class TopicService extends GetxService {
       rethrow;
     }
   }
-  // Grades ==============================================
   Future<void> getLibrary() async {
     try {
       const imageUrl = "assets/images";
