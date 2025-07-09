@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'package:EngKid/data/core/remote/api/ebook_category_api/ebook_category_api.dart';
 import 'package:EngKid/data/core/remote/api/child_api/child_api.dart';
+import 'package:EngKid/data/core/remote/api/ebook_category_api/ebook_category_api.dart';
+import 'package:EngKid/data/core/remote/api/reading_api/reading_api.dart';
 import 'package:EngKid/data/core/remote/api/topic_api/topic_api.dart';
 import 'package:EngKid/data/core/remote/api/ebook_api/ebook_api.dart';
 import 'package:EngKid/domain/ebook_category/entities/ebook_category.dart';
@@ -29,6 +30,7 @@ class ApiModule {
     getIt.registerSingleton(EBookApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(EBookCategoryApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(ChildApi(dio, baseUrl: dio.options.baseUrl));
+    getIt.registerSingleton(ReadingApi(dio, baseUrl: dio.options.baseUrl));
   }
 
   static FutureOr<Dio> setup(String baseUrl) async {
@@ -45,7 +47,7 @@ class ApiModule {
         onRequest: (options, handler) {
           options.headers['Content-Type'] = 'application/json';
 
-          final String? storageToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksImVtYWlsIjoidHVhbmNheWRhMzJAZ21haWwuY29tIiwiaWF0IjoxNzUxNTkyMDI0LCJleHAiOjE3NTE2MjgwMjR9.ilrFnPW29z3y0ZgJaUzNYn8pEvNGGZnI9jo9FVxYDzg";
+          final String? storageToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksImVtYWlsIjoidHVhbmNheWRhMzJAZ21haWwuY29tIiwiaWF0IjoxNzUyMDU2NTE2LCJleHAiOjE3NTIxNDI5MTZ9.fX3vDIWu0oh4-8lVm0qj3_4vFe9_0isN5L0l0zCt3a0";
               // preferencesManager.getString(KeySharedPreferences.token);
 
           if (storageToken != null && storageToken.isNotEmpty) {

@@ -1,0 +1,10 @@
+import 'package:EngKid/domain/core/entities/lesson/entities/entities.dart';
+import 'package:EngKid/domain/reading/reading_repository.dart';
+
+class ReadingUsecases {
+  final ReadingRepository _readingRepository;
+  ReadingUsecases(this._readingRepository);
+
+  Future<List<Reading>> getByCateAndStudent(Map<String, dynamic> body) async =>
+      _readingRepository.getByCateAndStudent(body);
+}
