@@ -98,40 +98,8 @@ class ElibraryService extends GetxService {
   }
 
   Future<dynamic> getAllElibraryBooks() async {
-    final book = await eBookUsecases.getByCategoryAndStudentM(_userService.currentUser.userId);
     _isGetAllElibraryBooks.value = true;
-    // final data =
-    //     {
-    //       "books": [
-    //         {
-    //           "id": 1,
-    //           "name": "Science Book 1",
-    //           "categories": "Category A",
-    //           "thum_img": "https://images-na.ssl-images-amazon.com/images/I/91Qu7aSa0aL.jpg",
-    //           "background": "https://example.com/science_background.jpg",
-    //           "reading_video": "https://example.com/science_video.mp4",
-    //           "status": true
-    //         },
-    //         {
-    //           "id": 2,
-    //           "name": "Science Book 2",
-    //           "categories": "Category B",
-    //           "thum_img": "https://lifeatthezoo.com/wp/wp-content/uploads/2015/12/science-activities-books-for-kids.jpg",
-    //           "background": "https://example.com/science_background2.jpg",
-    //           "reading_video": "https://example.com/science_video2.mp4",
-    //           "status": true
-    //         },
-    //         {
-    //           "id": 3,
-    //           "name": "Math Book 1",
-    //           "categories": "Category C",
-    //           "thum_img": "https://media.karousell.com/media/photos/products/2025/6/9/grade_9_mathematics_textbook_1749446506_2d158f5d.jpg",
-    //           "background": "https://example.com/math_background.jpg",
-    //           "reading_video": "https://example.com/math_video.mp4",
-    //           "status": true
-    //         }
-    //       ]
-    //     };
+    final book = await eBookUsecases.getByCategoryAndStudentM(_userService.currentUser.userId);
     _isGetAllElibraryBooks.value = false;
     _bookList.addAll(book);
   }

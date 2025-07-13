@@ -65,7 +65,7 @@ void _showDropdownMenu(
   });
 }
 
-class ElibraryVideoScreen extends StatelessWidget {
+class ElibraryVideoScreen extends GetView<ElibraryVideoController> {
   ElibraryVideoScreen({super.key});
   final ElibraryService elibraryService = Get.find<ElibraryService>();
   final ElibraryVideoController controller =

@@ -21,6 +21,7 @@ class AppRoute {
 
   //e library routes
   static const eLibrary = '/e_library';
+  static const eLibraryVideo = '/e_library_video';
 
   //quiz routes
   static const quizNestedRouteKey = 1;
