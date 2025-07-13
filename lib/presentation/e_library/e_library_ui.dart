@@ -348,7 +348,7 @@ class ElibraryScreen extends GetView<ElibraryController> {
                                   children: [
                                     ImageButton(
                                       onTap: () async {
-                                        await controller.onPressBook(elibraryService.bookIndex);
+                                        controller.startBook(elibraryService.bookIndex);
                                       },
                                       semantics: 'play',
                                       pathImage: LocalImage.playButton,

@@ -3,6 +3,8 @@ import 'package:EngKid/presentation/declare_parent_code/declare_parent_code_bind
 import 'package:EngKid/presentation/declare_parent_code/declare_parent_code_ui.dart';
 import 'package:EngKid/presentation/e_library/e_library_binding.dart';
 import 'package:EngKid/presentation/e_library/e_library_ui.dart';
+import 'package:EngKid/presentation/e_library/e_library_video_binding.dart';
+import 'package:EngKid/presentation/e_library/e_library_video_ui.dart';
 import 'package:EngKid/presentation/home/home_screen_binding.dart';
 import 'package:EngKid/presentation/home/home_screen_ui.dart';
 import 'package:EngKid/presentation/management_space/management_space_binding.dart';
@@ -138,6 +140,11 @@ class _MyAppState extends State<MyApp> {
               name: AppRoute.eLibrary,
               page: () => const ElibraryScreen(),
               binding: ElibraryBinding(),
+            ),
+            GetPage(
+              name: AppRoute.eLibraryVideo,
+              page: () => ElibraryVideoScreen(),
+              binding: ElibraryVideoBinding(),
             ),
             GetPage(
               name: AppRoute.lesson,

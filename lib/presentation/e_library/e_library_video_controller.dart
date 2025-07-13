@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:EngKid/domain/ebook/entities/ebook.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/file.dart';
 import 'package:get/get.dart';
@@ -12,7 +13,7 @@ import '../core/elibrary_service.dart';
 import '../core/network_service.dart';
 
 class ElibraryVideoController extends GetxController {
-  final Elibrary book;
+  final EBook book;
   final ElibraryService elibraryService = Get.find<ElibraryService>();
   final NetworkService _networkService = Get.find<NetworkService>();
 
@@ -42,15 +43,17 @@ class ElibraryVideoController extends GetxController {
 
   Future<void> _initData() async {
     try {
-      if (book.reading_video == "") {
+      if (book.file == "") {
         LibFunction.toast("timeout_video_initialize");
         Get.back();
         return;
       }
-      final File video = await LibFunction.getSingleFile(book.reading_video);
-      print('videoPath : ${video}');
+      // final File video = await LibFunction.getSingleFile(book.reading_video);
+      // print('videoPath : ${video}');
+      //
+      // _videoController = VideoPlayerController.file(video);
 
-      _videoController = VideoPlayerController.file(video);
+      _videoController = VideoPlayerController.networkUrl(Uri.parse(book.file));
 
       await _videoController!.initialize().timeout(const Duration(seconds: 10));
       await _videoController!.play();

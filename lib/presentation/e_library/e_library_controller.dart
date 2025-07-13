@@ -152,10 +152,10 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
   }
 
   void startBook(index) {
-    // Get.toNamed(
-    //   AppRoute.eLibraryVideo,
-    //   arguments: _elibraryService.bookList[index],
-    // );
+    Get.toNamed(
+      AppRoute.eLibraryVideo,
+      arguments: _elibraryService.selectedCateBooks[index],
+    );
   }
 
   void onPressDownload(index) async {
