@@ -7,7 +7,6 @@ part 'child.g.dart';
 @freezed
 class Child with _$Child {
   const factory Child({
-    @Default(-1) int id,
     @JsonKey(name: 'user_id') @Default(1) int userId,
     @Default("") String name,
     @JsonKey(name: 'grade_id') @Default(1) int gradeId,

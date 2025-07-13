@@ -210,60 +210,51 @@ class ReportController extends GetxController {
       try {
         late List<History> dataWeek = [];
         if (_networkService.networkConnection.value) {
-          // dataWeek = await _userService.getReadingHistory(
-          //   studentId: _userService.currentUser.id,
-          //   startDate: DateFormat('yyyy-MM-dd')
-          //       .format(firstDayOfCurrentWeek)
-          //       .toString(),
-          //   endDate: DateFormat('yyyy-MM-dd')
-          //       .format(lastDayOfCurrentWeek)
-          //       .toString(),
-          // );
+          dataWeek = await _userService.getReadingHistory(
+            _userService.currentUser.userId,
+            DateFormat('yyyy-MM-dd')
+                .format(firstDayOfCurrentWeek)
+                .toString(),
+            DateFormat('yyyy-MM-dd')
+                .format(lastDayOfCurrentWeek)
+                .toString(),
+          );
         } else {
-          dataWeek =
-              LibFunction.getHistoryFromStorage(KeySharedPreferences.timeYear);
+          dataWeek = LibFunction.getHistoryFromStorage(KeySharedPreferences.timeYear);
         }
         if ("${((currentDate.difference(DateTime(now.year, 1, 1)).inDays + 1) / 7).ceil() + 1}" ==
             "${((now.difference(DateTime(now.year, 1, 1)).inDays + 1) / 7).ceil() + 1}") {
           isShowThis.value = true;
         }
-
         daysOfWeek.asMap().forEach((index, value) {
           for (final History history in dataWeek) {
             final DateTime date = LibFunction.parseDate(history.date);
-            final String weekOfCurrentDate =
-                "${((currentDate.difference(DateTime(now.year, 1, 1)).inDays + 1) / 7).ceil() + 1}";
-            final String weekOfHistoryDate =
-                "${((LibFunction.parseDate(history.date).difference(DateTime(now.year, 1, 1)).inDays + 1) / 7).ceil() + 1}";
-            if (index == LibFunction.getIndexDayInWeek(date) &&
-                weekOfCurrentDate == weekOfHistoryDate) {
+            if (index == LibFunction.getIndexDayInWeek(date)) {
               final List<String> arr = history.duration.split(":");
               final double duration = arr.isNotEmpty ? double.parse(arr[0]) : 0;
               if (daysOfWeek[index].value + duration > maxY) {
                 maxY = daysOfWeek[index].value + duration;
               }
-
               daysOfWeek[index] = daysOfWeek[index].copyWith(
                 value: daysOfWeek[index].value + duration,
-                isHighlight: history.date ==
-                        DateFormat('dd/MM/yyyy').format(now).toString()
-                    ? true
-                    : false,
+                isHighlight: history.date == DateFormat('dd/MM/yyyy').format(now).toString(),
               );
             }
           }
         });
-
         totalReaded.value = getTotalReaded(dataWeek);
         totalTime.value = sumTime(dataWeek);
         final int totalDayReaded = getDayReaded(dataWeek);
-        averageTime.value =
-            totalDayReaded != 0 ? totalTime.value / totalDayReaded : 0;
+        averageTime.value = totalDayReaded != 0 ? totalTime.value / totalDayReaded : 0;
       } catch (e) {
-        //
+        print("-----ERROR-----");
+        print(e);
+        print("-------");
       }
     } catch (e) {
-      //
+      print("-----ERROR-----");
+      print(e);
+      print("-------");
     }
 
     isLoading.value = false;
@@ -274,8 +265,6 @@ class ReportController extends GetxController {
       isLoading.value = true;
       final DateTime now = DateTime.now();
 
-      String nowWeek =
-          "${DateFormat('yyyy').format(now)}-${((now.difference(DateTime(now.year, 1, 1)).inDays + 1) / 7).ceil()}";
       // this month
       final DateTime firstDayOfMonth =
           DateTime.utc(currentDate.year, currentDate.month, 1);
@@ -289,50 +278,33 @@ class ReportController extends GetxController {
       try {
         late List<History> dataMonth = [];
         if (_networkService.networkConnection.value) {
-          // dataMonth = await _userService.getReadingHistory(
-          //   studentId: _userService.currentUser.id,
-          //   startDate:
-          //       DateFormat('yyyy-MM-dd').format(firstDayOfMonth).toString(),
-          //   endDate: DateFormat('yyyy-MM-dd').format(lastDayOfMonth).toString(),
-          // );
+          dataMonth = await _userService.getReadingHistory(
+            _userService.currentUser.userId,
+            DateFormat('yyyy-MM-dd').format(firstDayOfMonth).toString(),
+            DateFormat('yyyy-MM-dd').format(lastDayOfMonth).toString(),
+          );
         } else {
-          dataMonth =
-              LibFunction.getHistoryFromStorage(KeySharedPreferences.timeYear);
+          dataMonth = LibFunction.getHistoryFromStorage(KeySharedPreferences.timeYear);
         }
         totalReaded.value = getTotalReaded(dataMonth);
-
-        int dayOfYear = firstDayOfMonth.difference(startDateOfYear).inDays + 1;
-
-        final String weekFirstOfMonth =
-            "${DateFormat('yyyy').format(firstDayOfMonth)}-${(dayOfYear / 7).ceil()}";
-
-        final Map<String, double> thisWeeklyData = {weekFirstOfMonth: 0};
-        List.generate(
-            3,
-            (index) => thisWeeklyData[
-                "${DateFormat('yyyy').format(firstDayOfMonth)}-${(dayOfYear / 7).ceil() + index + 1}"] = 0);
+        final Map<String, double> thisWeeklyData = {};
+        List.generate( 4, (index) =>
+          thisWeeklyData["${index}"] = 0
+        );
 
         for (final History history in dataMonth) {
           final DateTime date = LibFunction.parseDate(history.date);
-          final int tmp = date.difference(startDateOfYear).inDays + 1;
+          final int currentWeek = LibFunction.getWeekNumberForDate(date, weeksOfMonth);
+          final List<String> arr = history.duration.split(":");
+          final double duration = arr.isNotEmpty ? double.parse(arr[0]) : 0;
 
-          if ((tmp / 7).ceil() >= (dayOfYear / 7).ceil() &&
-              date.month == firstDayOfMonth.month) {
-            final String week =
-                "${DateFormat('yyyy').format(date)}-${(tmp / 7).ceil()}";
-
-            // Tính toán tổng số liệu cho từng tuần
-            // Định dạng ngày thành chuỗi "yyyy-w" (vd: "2023-21")
-            final List<String> arr = history.duration.split(":");
-            final double duration = arr.isNotEmpty ? double.parse(arr[0]) : 0;
-            if (thisWeeklyData.containsKey(week)) {
-              thisWeeklyData[week] = thisWeeklyData[week]! + duration;
-            } else {
-              final MapEntry<String, dynamic> lastEntry =
-                  thisWeeklyData.entries.last;
-              final String lastKey = lastEntry.key;
-              thisWeeklyData[lastKey] = thisWeeklyData[lastKey]! + duration;
-            }
+          if(currentWeek < weeksOfMonth.length){
+            thisWeeklyData[currentWeek.toString()] = thisWeeklyData[currentWeek.toString()]! + duration;
+          } else {
+            final MapEntry<String, dynamic> lastEntry =
+                thisWeeklyData.entries.last;
+            final String lastKey = lastEntry.key;
+            thisWeeklyData[lastKey] = thisWeeklyData[lastKey]! + duration;
           }
         }
 
@@ -341,6 +313,8 @@ class ReportController extends GetxController {
           for (var k in sortedKeysWeek) k: thisWeeklyData[k]
         };
         List<MapEntry<String, dynamic>> list = sortedMapWeek.entries.toList();
+
+        int nowWeek = LibFunction.getWeekNumberForDate(DateTime.now(), weeksOfMonth);
         weeksOfMonth.asMap().forEach((index, value) {
           final double val = double.parse(list[index].value.toString());
           if (val > maxY) {
@@ -348,16 +322,14 @@ class ReportController extends GetxController {
           }
 
           weeksOfMonth[index] = weeksOfMonth[index].copyWith(
-            value: val,
             subText: index == weeksOfMonth.length - 1
                 ? '22-${DateFormat('dd').format(lastDayOfMonth)}'
                 : weeksOfMonth[index].subText,
-            isHighlight: list[index].key == nowWeek ||
-                    (!isShowThis.value && index == weeksOfMonth.length - 1)
-                ? true
-                : false,
+            isHighlight: index == nowWeek || nowWeek == weeksOfMonth.length,
+            value: val,
           );
         });
+
         if (currentDate.month == now.month) {
           isShowThis.value = true;
         }
@@ -367,10 +339,14 @@ class ReportController extends GetxController {
         averageTime.value =
             totalDayReaded != 0 ? totalTime.value / totalDayReaded : 0;
       } catch (e) {
-        //
+        print("-----ERROR-----");
+        print(e);
+        print("-------");
       }
     } catch (e) {
-      //
+      print("-----ERROR-----");
+      print(e);
+      print("-------");
     }
 
     isLoading.value = false;
@@ -389,11 +365,11 @@ class ReportController extends GetxController {
       try {
         late List<History> dataYear = [];
         if (_networkService.networkConnection.value) {
-          // dataYear = await _userService.getReadingHistory(
-          //   studentId: _userService.currentUser.id,
-          //   startDate: DateFormat('yyyy-MM-dd').format(startOfYear).toString(),
-          //   endDate: DateFormat('yyyy-MM-dd').format(endOfYear).toString(),
-          // );
+          dataYear = await _userService.getReadingHistory(
+            _userService.currentUser.userId,
+            DateFormat('yyyy-MM-dd').format(startOfYear).toString(),
+            DateFormat('yyyy-MM-dd').format(endOfYear).toString(),
+          );
           if (isSave) {
             LibFunction.saveHistoryStorage(
                 KeySharedPreferences.timeYear, dataYear);
@@ -458,7 +434,7 @@ class ReportController extends GetxController {
   int getTotalReaded(List<History> data) {
     final dataUniq = HashSet<History>(
       // or LinkedHashSet
-      equals: (a, b) => a.readingTopic == b.readingTopic,
+      equals: (a, b) => a.readingId == b.readingId,
       hashCode: (a) => a.readingTopic.hashCode,
     )..addAll(data);
     return dataUniq.length;

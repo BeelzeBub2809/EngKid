@@ -75,7 +75,7 @@ class QuizUseCases {
     if (_networkService.networkConnection.value) {
       try {
         final Map<String, dynamic> map = {};
-        map['student_id'] = _userService.currentUser.id;
+        map['student_id'] = _userService.currentUser.userId;
         map['reading_id'] = readingId;
         map["mark[$questionId]"] = mark;
         if (data["isFile"] == true) {
@@ -125,7 +125,7 @@ class QuizUseCases {
     required Map<String, dynamic> data,
   }) async {
     final String keyReading =
-        "reading_${_userService.currentUser.id}_${readingId}_${LibFunction.startOfDateNow().millisecondsSinceEpoch}";
+        "reading_${_userService.currentUser.userId}_${readingId}_${LibFunction.startOfDateNow().millisecondsSinceEpoch}";
     final String? questionAnswer = _preferencesManager.getString(
       keyReading,
     );
@@ -195,7 +195,7 @@ class QuizUseCases {
       History(
         date: date,
         star: star,
-        readingId: readingId.toString(),
+        readingId: readingId,
         readingTopic: readingName,
       ),
     );

@@ -8,12 +8,13 @@ part 'history.g.dart';
 @freezed
 class History with _$History {
   const factory History({
-    @Default("") String date,
-    @Default(0) int time,
+    @Default(-1) int id,
+    @JsonKey(name: "kid_reading_id") @Default(-1) int readingId,
+    @JsonKey(name: "title") @Default("") String readingTopic,
+    @JsonKey(name: "date_reading") @Default("") String date,
     @Default(0) double star,
     @Default("") String duration,
-    @JsonKey(name: "reading_topic") @Default("") String readingTopic,
-    @JsonKey(name: "reading_id") @Default("") String readingId,
+    @JsonKey(name: "is_completed") @Default(0) int isCompleted,
   }) = _History;
   factory History.fromJson(Map<String, dynamic> json) =>
       _$HistoryFromJson(json);

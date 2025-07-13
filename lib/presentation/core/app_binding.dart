@@ -11,7 +11,7 @@ class AppBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(NetworkService());
-    Get.put(UserService(appUseCases: Get.find(), childProfilesUsecases: Get.find()));
+    Get.put(UserService(appUseCases: Get.find(), childProfilesUsecases: Get.find(), starBoardUseCases: Get.find()));
     Get.put(TopicService(appUseCases: Get.find()));
     Get.put(ElibraryService(appUseCases: Get.find(), eBookUsecases: Get.find(), eBookCategoryUsecases: Get.find()));
     Get.put(QuizUseCases());

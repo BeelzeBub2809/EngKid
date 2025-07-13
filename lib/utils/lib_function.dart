@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:EngKid/domain/core/entities/day_of/day_of.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/file.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -402,5 +403,26 @@ class LibFunction {
     }
 
     return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  static int getWeekNumberForDate(DateTime date, List<DayOf> weekDefinitions) {
+    final int dayOfMonth = date.day;
+    try {
+      for (int i = 0; i < weekDefinitions.length; i++) {
+        final String subText = weekDefinitions[i].subText;
+        final List<String> rangeParts = subText.split('-');
+        if (rangeParts.length == 2) {
+          final int startDay = int.tryParse(rangeParts[0]) ?? 0;
+          final int endDay = int.tryParse(rangeParts[1]) ?? 0;
+
+          if (dayOfMonth >= startDay && dayOfMonth <= endDay) {
+            return i;
+          }
+        }
+      }
+      return weekDefinitions.length - 1;
+    } catch (e) {
+      return weekDefinitions.length - 1;
+    }
   }
 }

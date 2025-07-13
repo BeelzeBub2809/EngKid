@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:EngKid/domain/core/entities/child_profile/child_profiles_usecase.dart';
 import 'package:EngKid/domain/core/entities/child_profile/child_repository.dart';
+import 'package:EngKid/domain/start_board/star_board_usecases.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/data/core/local/share_preferences_manager.dart';
@@ -45,8 +46,8 @@ enum UserDataUpdateType {
 class UserService extends GetxService {
   final AppUseCases appUseCases;
   final ChildProfilesUsecases childProfilesUsecases;
-
-  UserService({required this.appUseCases, required this.childProfilesUsecases});
+  final StarBoardUseCases starBoardUseCases;
+  UserService({required this.appUseCases, required this.childProfilesUsecases, required this.starBoardUseCases});
 
   final _preferencesManager = getIt.get<SharedPreferencesManager>();
   final NetworkService _networkService = Get.find<NetworkService>();
@@ -108,6 +109,8 @@ class UserService extends GetxService {
     super.onInit();
     debugPrint('Init User Service');
     getRemoteLanguages();
+
+    //TODO: cần lấy id parent cần sửa lại logic mới khởi động app đã gọi lấy child
     // if (_networkService.networkConnection.value) {
       final result = await childProfilesUsecases.getAllKid(1);
 
@@ -117,6 +120,16 @@ class UserService extends GetxService {
         _childProfiles.value = result;
       }
     // }
+  }
+
+  Future<List<History>> getReadingHistory(int studentId, String startDate, String endDate) async {
+    //TODO
+    //set loading is true
+    final List<History> data = await starBoardUseCases.getStarsHistory(studentId: studentId, startDate: startDate, endDate: endDate);
+
+    //set loading is false
+
+    return data;
   }
 
   String getPhotoBase64(Map<String, dynamic> public) {
@@ -304,7 +317,7 @@ class UserService extends GetxService {
   }
 
   Future<void> assignUseLogin(Login userLogin) async {
-    _userLogin(userLogin);
+    _userLogin.value = userLogin;
     await saveUserLoginToStorage();
   }
 
@@ -345,7 +358,7 @@ class UserService extends GetxService {
         );
         _currentUser(currentUser.copyWith(surveyPassed: value));
         final int index = _childProfiles.value.childProfiles
-            .indexWhere((element) => element.id == _currentUser.value.id);
+            .indexWhere((element) => element.userId == _currentUser.value.userId);
         if (index != -1) {
           final List<Child> tmp = List.from(_childProfiles.value.childProfiles);
           tmp[index] = currentUser.copyWith(surveyPassed: value);

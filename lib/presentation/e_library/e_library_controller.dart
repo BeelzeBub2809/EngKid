@@ -111,7 +111,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
 
   bool getQuizsFromStorage() {
     final String? book = _preferencesManager.getString(
-      "${_userService.currentUser.id}_${_elibraryService.bookList[_elibraryService.bookIndex].id}_bookdatafile.json",
+      "${_userService.currentUser.userId}_${_elibraryService.bookList[_elibraryService.bookIndex].id}_bookdatafile.json",
     );
 
     if (book != null) {
@@ -209,7 +209,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
           if (_isBookDownloaded[reading.id] == true) {
             // print(reading.name);
             String? isVideoDownloaded = _preferencesManager.getString(
-              "${_userService.currentUser.id}_${reading.id}_bookdatafile.json",
+              "${_userService.currentUser.userId}_${reading.id}_bookdatafile.json",
             );
             if (isVideoDownloaded == null) {
               _isMultipleDownloading[reading.id] = true;
@@ -218,7 +218,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
         }
         for (EBook reading in _elibraryService.bookList) {
           String? isVideoDownloaded = _preferencesManager.getString(
-            "${_userService.currentUser.id}_${reading.id}_bookdatafile.json",
+            "${_userService.currentUser.userId}_${reading.id}_bookdatafile.json",
           );
 
           if (_isBookDownloaded[reading.id] == true &&
@@ -229,7 +229,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
 
             await _preferencesManager.putString(
               key:
-                  "${_userService.currentUser.id}_${reading.id}_bookdatafile.json",
+                  "${_userService.currentUser.userId}_${reading.id}_bookdatafile.json",
               value: jsonEncode(reading.toJson()),
             );
             _elibraryService.downloadAllReadingList.remove(reading);
@@ -260,7 +260,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
             // await deleteQuizFromStorage(reading.id);
             // final Quiz datafile = await _topicService.getQuiz(reading.id);
             String bookKey =
-                "${_userService.currentUser.id}_${reading.id}_bookdatafile.json";
+                "${_userService.currentUser.userId}_${reading.id}_bookdatafile.json";
             await _preferencesManager.remove(bookKey);
             await LibFunction.removeFileCache(reading.file);
 
@@ -288,7 +288,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
   void setIsVideoDownloaded() async {
     for (EBook book in _elibraryService.bookList) {
       String? isBookDownloaded = _preferencesManager.getString(
-        "${_userService.currentUser.id}_${book.id}_bookdatafile.json",
+        "${_userService.currentUser.userId}_${book.id}_bookdatafile.json",
       );
       if (isBookDownloaded != null) {
         _isBookDownloaded[book.id] = true;
@@ -329,7 +329,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
             duration: const Duration(seconds: 2));
         if (_isBookDownloaded[elibrary.id] == true) {
           String bookKey =
-              "${_userService.currentUser.id}_${elibrary.id}_bookdatafile.json";
+              "${_userService.currentUser.userId}_${elibrary.id}_bookdatafile.json";
           await _preferencesManager.remove(bookKey);
           await LibFunction.removeFileCache(elibrary.file);
           // await LibFunction.removeFileCache(datafile.reading.video);
