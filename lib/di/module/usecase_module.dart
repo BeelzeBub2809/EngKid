@@ -2,13 +2,16 @@ import 'package:EngKid/data/core/remote/api/ebook_category_api/ebook_category_ap
 import 'package:EngKid/data/core/remote/api/reading_api/reading_api.dart';
 import 'package:EngKid/data/child/child_repo.dart';
 import 'package:EngKid/data/core/remote/api/child_api/child_api.dart';
+import 'package:EngKid/data/core/remote/api/student_reading_api/student_reading_api.dart';
 import 'package:EngKid/data/core/remote/api/topic_api/topic_api.dart';
 import 'package:EngKid/data/ebook_category/ebook_category_repo.dart';
 import 'package:EngKid/data/reading/reading_repo.dart';
+import 'package:EngKid/data/star_board/star_board_repo.dart';
 import 'package:EngKid/data/topic_reading/topic_reading_repo.dart';
 import 'package:EngKid/domain/ebook_category/ebook_category_usecase.dart';
 import 'package:EngKid/domain/reading/reading_usecases.dart';
 import 'package:EngKid/domain/core/entities/child_profile/child_profiles_usecase.dart';
+import 'package:EngKid/domain/start_board/star_board_responsitory.dart';
 import 'package:EngKid/domain/topic/topic_reading_usecases.dart';
 import 'package:EngKid/data/core/remote/api/ebook_api/ebook_api.dart';
 import 'package:EngKid/data/ebook/ebook_repo.dart';
@@ -81,6 +84,14 @@ class UseCaseModule {
           () => ChildProfilesUsecases(
             ChildRepositoryImp(
           childApi: getIt.get<ChildApi>(),
+        ),
+      ),
+      fenix: true,
+    );
+    Get.lazyPut<StarBoardUseCases>(
+          () => StarBoardUseCases(
+        StarBoardRepoImp(
+          studentReadingApi: getIt.get<StudentReadingApi>(),
         ),
       ),
       fenix: true,

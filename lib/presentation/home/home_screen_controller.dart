@@ -161,7 +161,7 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
 
   int indexCurrentUserInChildProfiles() {
     return _userService.childProfiles.childProfiles
-        .indexWhere((element) => element.id == _userService.currentUser.id);
+        .indexWhere((element) => element.userId == _userService.currentUser.userId);
   }
 
   void onChangeChild(Child child) async {

@@ -150,7 +150,7 @@ class PersonalInfoController extends GetxController {
     final List<Child> ltsChildUpdate =
         getUserUpdateFromStorage(KeySharedPreferences.childsUpdate);
     final int index =
-        ltsChildUpdate.indexWhere((element) => element.id == user.id);
+        ltsChildUpdate.indexWhere((element) => element.userId == user.userId);
     if (index != -1) {
       ltsChildUpdate.removeAt(index);
     }

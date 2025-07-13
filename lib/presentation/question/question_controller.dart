@@ -455,14 +455,14 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     }
     if (!_topicService.isCaculator) return;
     await _preferencesManager.putDouble(
-      key: "${_userService.currentUser.id}_${readingId}_do_quiz_duration",
+      key: "${_userService.currentUser.userId}_${readingId}_do_quiz_duration",
       value: _doQuizDuration,
     );
   }
 
   double getTimeDoingQuizFromStorage() {
     final double? duration = _preferencesManager.getDouble(
-      "${_userService.currentUser.id}_${readingId}_do_quiz_duration",
+      "${_userService.currentUser.userId}_${readingId}_do_quiz_duration",
     );
     if (duration != null) {
       return duration;
@@ -488,14 +488,14 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     if (!_topicService.isCaculator) return;
 
     await _preferencesManager.putDouble(
-      key: "${_userService.currentUser.id}_${readingId}_duration",
+      key: "${_userService.currentUser.userId}_${readingId}_duration",
       value: _duration,
     );
   }
 
   double getTimeDurationFromStorage() {
     final double? duration = _preferencesManager.getDouble(
-      "${_userService.currentUser.id}_${readingId}_duration",
+      "${_userService.currentUser.userId}_${readingId}_duration",
     );
     if (duration != null) {
       return duration;

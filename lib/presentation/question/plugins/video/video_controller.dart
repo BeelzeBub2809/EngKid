@@ -263,12 +263,12 @@ class VideoController extends GetxController {
   Future<void> saveVideoLanguageToStorage(String language) async {
     if (languague == 'mo') {
       await _preferencesManager.putString(
-        key: "${_userService.currentUser.id}_${readingId}_video_mo.json",
+        key: "${_userService.currentUser.userId}_${readingId}_video_mo.json",
         value: question.video_mong,
       );
     } else {
       await _preferencesManager.putString(
-        key: "${_userService.currentUser.id}_${readingId}_video_vi.json",
+        key: "${_userService.currentUser.userId}_${readingId}_video_vi.json",
         value: question.video,
       );
     }
@@ -276,7 +276,7 @@ class VideoController extends GetxController {
 
   bool getLanguageVideoFromStorage() {
     final String? video = _preferencesManager.getString(
-      "${_userService.currentUser.id}_${readingId}_video_mo.json",
+      "${_userService.currentUser.userId}_${readingId}_video_mo.json",
     );
 
     if (video != null) {
