@@ -534,7 +534,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     super.onClose();
   }
 
-  void handleShowDownloadAll(ReadingSpaceController controller) {
+    void handleShowDownloadAll(ReadingSpaceController controller) {
     checkIsDownloaded();
     setIsVideoDownloaded();
     handleChangeDownloadedScreen(false);
