@@ -11,7 +11,7 @@ class Child with _$Child {
     @Default("") String name,
     @JsonKey(name: 'grade_id') @Default(1) int gradeId,
     @JsonKey(name: 'image') @Default("") String avatar,
-    @JsonKey(name: 'is_survey_passed') @Default(false) bool surveyPassed,
+    @JsonKey(name: 'is_passed_survey') @Default(0) int surveyPassed,
   }) = _Child;
   factory Child.fromJson(Map<String, dynamic> json) => _$ChildFromJson(json);
 }

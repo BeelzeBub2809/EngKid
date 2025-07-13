@@ -125,7 +125,7 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
 
   void onPressLibrary() async {
     if (_userService.userLogin.roleId == "2") return;
-    if (_userService.currentUser.surveyPassed) {
+    if (_userService.currentUser.surveyPassed == 1) {
       isElibraryOpen = true;
       Get.toNamed(AppRoute.eLibrary, arguments: [true, true]);
     }

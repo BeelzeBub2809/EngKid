@@ -553,18 +553,19 @@ class ElibraryScreen extends GetView<ElibraryController> {
                       color: Colors.black38, child: const LoadingDialog())
                   : const Text(''),
             ),
-            // DownloadLesson(
-            //     controller: controller,
-            //     size: size,
-            //     index: elibraryService.bookIndex),
-            //
-            // Obx(
-            //    () => Positioned(
-            //       left: 0.71 * size.width,
-            //       top: 0.062 * size.width,
-            //       child: RegularText( !controller.isDownload ? 'download'.tr : '',
-            //         style: TextStyle(color: AppColor.red, fontSize: Fontsize.small),)),
-            // ),
+            DownloadLesson(
+              controller: controller,
+              size: size,
+              index: elibraryService.bookIndex
+            ),
+
+            Obx(
+               () => Positioned(
+                  left: 0.71 * size.width,
+                  top: 0.062 * size.width,
+                  child: RegularText( !controller.isDownload ? 'download'.tr : '',
+                    style: TextStyle(color: AppColor.red, fontSize: Fontsize.small),)),
+            ),
           ],
         ),
       ),
@@ -572,7 +573,7 @@ class ElibraryScreen extends GetView<ElibraryController> {
   }
 }
 
-class DownloadLesson extends StatelessWidget {
+class DownloadLesson extends StatelessWidget  {
   const DownloadLesson(
       {super.key,
       required this.controller,
@@ -592,109 +593,104 @@ class DownloadLesson extends StatelessWidget {
     return Obx(
       () => controller.isDownload
           ? Positioned.fill(
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () async {
-                  await LibFunction.effectConfirmPop();
-                  controller.isDownload = false;
-                },
-                child: Stack(
-                  children: [
-                    Obx(
-                      () => !controller.loadingVideo
-                          ? Container(
-                              color: Colors.black,
-                              child: Image.memory(
-                                controller.thumbVideo!,
-                                width: size.width,
-                                height: size.height,
-                              ),
-                            )
-                          : const SizedBox(),
-                    ),
-                    Container(
-                      width: size.width,
-                      height: size.height,
-                      color: Colors.black38,
-                      child: controller.isDownloading
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                LoadingAnimationWidget.inkDrop(
-                                  color: Colors.white,
-                                  size: 100,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () async {
+                await LibFunction.effectConfirmPop();
+                controller.isDownload = false;
+              },
+              child: Stack(
+                children: [
+                  Obx(
+                    () => !controller.loadingVideo
+                      ? Container(
+                          color: Colors.black,
+                          child: Image.memory(
+                            controller.thumbVideo!,
+                            width: size.width,
+                            height: size.height,
+                          ),
+                        )
+                      : const SizedBox(),
+                  ),
+                  Container(
+                    width: size.width,
+                    height: size.height,
+                    color: Colors.black38,
+                    child: controller.isDownloading
+                      ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          LoadingAnimationWidget.inkDrop(
+                            color: Colors.white,
+                            size: 100,
+                          ),
+                          SizedBox(
+                            height: 0.08 * size.height,
+                          ),
+                          Stack(
+                            children: [
+                              Container(
+                                width: 0.5 * size.width,
+                                height: 0.07 * size.height,
+                                margin: EdgeInsets.only(bottom: 0.035 * size.height),
+                                decoration: BoxDecoration(
+                                  color: AppColor.yellow,
+                                  borderRadius: BorderRadius.circular(0.035 * size.height),
                                 ),
-                                SizedBox(
-                                  height: 0.08 * size.height,
-                                ),
-                                Stack(
+                                child: Stack(
                                   children: [
-                                    Container(
-                                      width: 0.5 * size.width,
-                                      height: 0.07 * size.height,
-                                      margin: EdgeInsets.only(
-                                          bottom: 0.035 * size.height),
-                                      decoration: BoxDecoration(
-                                        color: AppColor.yellow,
-                                        borderRadius: BorderRadius.circular(
-                                            0.035 * size.height),
+                                    AnimatedContainer(
+                                      width: getWidthProgress(
+                                        size.width * 0.5,
+                                        controller.loadingProgress,
                                       ),
-                                      child: Stack(
-                                        children: [
-                                          AnimatedContainer(
-                                            width: getWidthProgress(
-                                              size.width * 0.5,
-                                              controller.loadingProgress,
-                                            ),
-                                            height: 0.07 * size.height,
-                                            duration: const Duration(
-                                                milliseconds: 500),
-                                            decoration: BoxDecoration(
-                                              color: AppColor.blue,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      0.035 * size.height),
-                                            ),
-                                          ),
-                                          Align(
-                                              child: RegularText(
-                                            "${controller.loadingProgress}%",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: Fontsize.small),
-                                          )),
-                                        ],
+                                      height: 0.07 * size.height,
+                                      duration: const Duration(milliseconds: 500),
+                                      decoration: BoxDecoration(
+                                        color: AppColor.blue,
+                                        borderRadius: BorderRadius.circular(0.035 * size.height),
                                       ),
                                     ),
+                                    Align(
+                                      child: RegularText("${controller.loadingProgress}%",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: Fontsize.small
+                                      ),
+                                    )),
                                   ],
                                 ),
-                              ],
-                            )
-                          : Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ImageButton(
-                                    onTap: (){
-                                      controller.onPressDownload(index);
-                                    },
-                                    semantics: 'download',
-
-                                    pathImage: LocalImage.downloadButton,
-                                    width: 0.5 * size.height,
-                                    height: 0.5 * size.height,
-                                  ),
-                                  SizedBox(height: 0.03 * size.height,),
-                                  RegularText('download'.tr, style: TextStyle(color: Colors.white, fontSize: Fontsize.bigger, fontWeight: FontWeight.bold),)
-                                ],
                               ),
-                            ),
-                    ),
-                  ],
-                ),
+                            ],
+                          ),
+                        ],
+                        )
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ImageButton(
+                                onTap: (){
+                                  controller.onPressDownload(index);
+                                },
+                                semantics: 'download',
+
+                                pathImage: LocalImage.downloadButton,
+                                width: 0.5 * size.height,
+                                height: 0.5 * size.height,
+                              ),
+                              SizedBox(height: 0.03 * size.height,),
+                              RegularText('download'.tr, style: TextStyle(color: Colors.white, fontSize: Fontsize.bigger, fontWeight: FontWeight.bold),)
+                            ],
+                          ),
+                        ),
+                  ),
+                ],
               ),
-            )
+            ),
+          )
           : const Text(''),
     );
   }
