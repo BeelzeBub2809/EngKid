@@ -9,4 +9,6 @@ abstract class StudentReadingApi {
 
   @POST('student-reading/report')
   Future<ApiResponseObject> getReadingHistory(@Body() Map<String, dynamic> body);
+  @POST('student-reading/create')
+  Future<ApiResponseObject> submitReadingResult(@Body() Map<String, dynamic> body);
 }

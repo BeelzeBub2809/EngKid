@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:EngKid/data/reading/reading_request/reading_by_topic_request.dart';
 import 'package:EngKid/data/topic_reading/topic_reading_request/topic_reading_request.dart';
+import 'package:EngKid/domain/question/question_usecases.dart';
 import 'package:EngKid/domain/reading/reading_usecases.dart';
 import 'package:EngKid/domain/topic/topic_reading_usecases.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class TopicService extends GetxService {
   final UserService _userService = Get.find<UserService>();
   final TopicReadingUsecases _topicReadingUsecases = Get.find<TopicReadingUsecases>();
   final ReadingUsecases _readingUsecases = Get.find<ReadingUsecases>();
+  final QuestionUsecases _questionUsecases = Get.find<QuestionUsecases>();
   final _preferencesManager = getIt.get<SharedPreferencesManager>();
   final NetworkService _networkService = Get.find<NetworkService>();
 
@@ -36,6 +38,7 @@ class TopicService extends GetxService {
   final RxList<Grade> _grades = RxList<Grade>.empty(growable: true);
   final RxList<Topic> _topicReading = RxList<Topic>.empty(growable: true);
   final RxList<Reading> _readings = RxList<Reading>.empty(growable: true);
+  final RxList<Question> _questionList = RxList<Question>.empty(growable: true);
   final Rx<ProgressGrade> _progressGrade = const ProgressGrade().obs;
   final Rx<Lesson> _topicReadings = const Lesson().obs;
   final RxString _topicBg = "".obs;
@@ -68,6 +71,7 @@ class TopicService extends GetxService {
   }
 
   // Other api ==============================================
+
   Future<List<Topic>> getAllTopic() async {
     try {
       final request = TopicReadingRequest(
@@ -84,19 +88,48 @@ class TopicService extends GetxService {
     }
   }
 
+  Future<List<Question>> getQuestionOfReading(int readingId) async {
+    try {
+      final Map<String, dynamic> request = {
+        "readingId": readingId
+      };
+      final result = await _questionUsecases.getQuestionByReadingId(request);
+      print('📦 Result: ${jsonEncode(result)}');
+      _questionList.assignAll(result);
+      return _questionList;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> submitReadingResult(int kid_student_id, int kid_reading_id, int score, int is_completed, double duration) async {
+    try {
+      final Map<String, dynamic> request = {
+        "kid_student_id": kid_student_id,
+        "kid_reading_id": kid_reading_id,
+        "score": score,
+        "is_completed": is_completed,
+        "duration": duration
+      };
+      await _readingUsecases.submitReadingResult(request);
+    } catch (e){
+      rethrow;
+    }
+  }
+
   Future<List<Reading>> getReadingByTopic(int cateId) async {
     try {
       final request = ReadingByTopicRequest(
         categoryId: cateId,
-        studentId: 1,
+        studentId: 44,
       );
 
       final result = await _readingUsecases.getByCateAndStudent(request.toJson());
       _readings.assignAll(result);
       return _readings;
     } catch (e, stackTrace) {
-      debugPrint('[ReadingService] ❌ Error: $e');
-      debugPrint('[ReadingService] ❌ StackTrace: $stackTrace');
+      debugPrint('[ReadingService] Error: $e');
+      debugPrint('[ReadingService] StackTrace: $stackTrace');
       rethrow;
     }
   }
