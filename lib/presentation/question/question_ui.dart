@@ -317,6 +317,7 @@ class QuestionScreen extends GetView<QuestionController> {
                                 controller.isFullScreen = value;
                               },
                               readingId: controller.readingId,
+                              questionController: controller
                             ),
                           ),
                         ),

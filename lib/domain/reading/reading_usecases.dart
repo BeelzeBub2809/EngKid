@@ -7,4 +7,6 @@ class ReadingUsecases {
 
   Future<List<Reading>> getByCateAndStudent(Map<String, dynamic> body) async =>
       _readingRepository.getByCateAndStudent(body);
+  Future<void> submitReadingResult(Map<String, dynamic> body) async =>
+      _readingRepository.submitReadingResult(body);
 }

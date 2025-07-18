@@ -142,7 +142,20 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     await LibFunction.effectConfirmPop();
     readingData = reading;
     indexReading = index;
-
+    var questions = await _topicService.getQuestionOfReading(index + 1);
+    for (var q in questions) {
+      print('------------------------------');
+      print('📌 QuestionId: ${q.questionId}');
+      print('📝 Question: ${q.question}');
+      print('🔢 Type: ${q.type} (${q.typeCode})');
+      print('🎯 AchievedMark: ${q.achievedMark}');
+      print('🎵 Audio: ${q.audio}');
+      print('🖼️ Background: ${q.background}');
+      print('🧾 Options:');
+      for (var o in q.options) {
+        print('   - ${o.option} (Correct: ${o.isCorrect == 1 || o.isCorrect == '1'})');
+      }
+    }
     var currentQuiz = Quiz(
       reading: QuizReading(
         name: reading.name,
@@ -159,37 +172,38 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
               ),
 
       ),
-      questions: [
-        const Question(
-          questionId: 1,
-          type: 'Single Choice',
-          typeCode: 'S',
-          question: "What is the capital of France?",
-          options: [
-            Option(
-              optionId: 1,
-              option: "Paris",
-              isCorrect: '1',
-              image: "",
-            ),
-            Option(
-              optionId: 2,
-              option: "London",
-              isCorrect: '0',
-              image: "",
-            ),
-            Option(
-              optionId: 3,
-              option: "Berlin",
-              isCorrect: '0',
-              image: "",
-            ),
-          ],
-          achievedMark: 0.0,
-          background: "",
-          audio: "",
-        ),
-      ],
+      questions: questions,
+      // questions: [
+      //   const Question(
+      //     questionId: 1,
+      //     type: 'Single Choice',
+      //     typeCode: 'S',
+      //     question: "What is the capital of France?",
+      //     options: [
+      //       Option(
+      //         optionId: 1,
+      //         option: "Paris",
+      //         isCorrect: '1',
+      //         image: "",
+      //       ),
+      //       Option(
+      //         optionId: 2,
+      //         option: "London",
+      //         isCorrect: '0',
+      //         image: "",
+      //       ),
+      //       Option(
+      //         optionId: 3,
+      //         option: "Berlin",
+      //         isCorrect: '0',
+      //         image: "",
+      //       ),
+      //     ],
+      //     achievedMark: 0.0,
+      //     background: "",
+      //     audio: "",
+      //   ),
+      // ],
 
     );
     startLearning(currentQuiz, index);
