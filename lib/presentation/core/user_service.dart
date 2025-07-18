@@ -71,7 +71,9 @@ class UserService extends GetxService {
 
   set userInfos(List<Rx<UserInfo>> value) => _userInfos.assignAll(value);
   final List<Rx<Setting>> _settings = List<Rx<Setting>>.empty(growable: true);
+  // child profiles lưu danh sách các child của parent
   final Rx<ChildProfiles> _childProfiles = const ChildProfiles().obs;
+  // Current user là child hiện tại đang đăng nhập
   final Rx<Child> _currentUser = const Child().obs;
   late StarSetting _starSetting = const StarSetting();
   final ReadingSequenceSetting _readingSequenceSetting =
@@ -109,17 +111,89 @@ class UserService extends GetxService {
     super.onInit();
     debugPrint('Init User Service');
     getRemoteLanguages();
+  }
 
-    //TODO: cần lấy id parent cần sửa lại logic mới khởi động app đã gọi lấy child
-    // if (_networkService.networkConnection.value) {
-      final result = await childProfilesUsecases.getAllKid(1);
+  Future<UserInfo> getUserInfo(int id) async {
+    try {
+      return await appUseCases.getUserInfo(id);
+      // assignUsersProfile(userInfo);
+    } catch (e) {
+      rethrow;
+    }
+  }
 
-      if(result.childProfiles.isNotEmpty){
-        _currentUser.value = result.childProfiles[0];
+  Future<void> getChildProfiles(int parentUserId) async {
+    try {
+      final ChildProfiles childProfiles = await appUseCases.getChildProfiles(parentUserId);
+      _userInfos.assignAll([]);
+      final List<UserInfo> tmpUserInfo = [];
+      await Future.forEach(childProfiles.childProfiles, (Child child) async {
+        LibFunction.getFileStream(child.avatar);
+        try {
+          final UserInfo userInfo = await getUserInfo(child.id);
 
-        _childProfiles.value = result;
+          tmpUserInfo.add(userInfo);
+        } catch (e) {
+          //
+        }
+      });
+
+      assignUsersProfile(tmpUserInfo);
+
+      final String? tmp = _preferencesManager.getString(
+        KeySharedPreferences.currentUser,
+      );
+
+      if (tmp == null) {
+        if (childProfiles.childProfiles.isNotEmpty) {
+          _currentUser.value = childProfiles.childProfiles[0];
+          await saveCurrentUserToStorage();
+        }
+      } else {
+        final decodeCurrentUser =
+        Child.fromJson(jsonDecode(tmp) as Map<String, dynamic>);
+        final int index = childProfiles.childProfiles
+            .indexWhere((element) => element.id == decodeCurrentUser.id);
+        if (index != -1) {
+          _currentUser.value = decodeCurrentUser;
+        } else if (childProfiles.childProfiles.isNotEmpty) {
+          _currentUser.value = childProfiles.childProfiles[0];
+          await saveCurrentUserToStorage();
+        }
       }
-    // }
+
+      final String? tmpChildProfiles = _preferencesManager.getString(
+        KeySharedPreferences.childProfiles,
+      );
+      if (tmpChildProfiles != null) {
+        final decodeChildProfiles = ChildProfiles.fromJson(
+            jsonDecode(tmpChildProfiles) as Map<String, dynamic>);
+
+        final List<Child> mapChilds = childProfiles.childProfiles.toList();
+        await assignChildProfiles(
+            childProfiles.copyWith(childProfiles: mapChilds));
+      } else {
+        await assignChildProfiles(childProfiles);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateListChild(Child child) async {
+    final int index = _childProfiles.value.childProfiles
+        .indexWhere((element) => element.id == child.id);
+    if (index != -1) {
+      final List<Child> tmp = List.from(_childProfiles.value.childProfiles);
+      tmp[index] = child;
+      _childProfiles(_childProfiles.value.copyWith(childProfiles: tmp));
+      await saveChildProfilesToStorage();
+    }else{
+      // If the child is not found in the list, you might want to add it
+      _childProfiles(_childProfiles.value.copyWith(
+          childProfiles: [..._childProfiles.value.childProfiles, child]));
+      await saveChildProfilesToStorage();
+    }
   }
 
   Future<List<History>> getReadingHistory(int studentId, String startDate, String endDate) async {
@@ -185,7 +259,6 @@ class UserService extends GetxService {
   void updateUserService(
       {required String name, required String email, required String image}) {
     _userLogin(_userLogin.value.copyWith(
-      name: name,
       email: email,
       image: image,
     ));
@@ -252,6 +325,26 @@ class UserService extends GetxService {
   }
 
   // ===================================
+  bool getChildProfilesFromStorage() {
+    final String? childProfiles = _preferencesManager.getString(
+      KeySharedPreferences.childProfiles,
+    );
+    if (childProfiles != null) {
+      final decodeChildProfiles = ChildProfiles.fromJson(
+          jsonDecode(childProfiles) as Map<String, dynamic>);
+      _childProfiles(decodeChildProfiles);
+      final decodeUserLogin =
+          Login.fromJson(jsonDecode(_preferencesManager.getString(
+            KeySharedPreferences.userLogin,
+          )!) as Map<String, dynamic>);
+      if (_networkService.networkConnection.value) {
+        getChildProfiles(decodeUserLogin.id);
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   bool getUserInfosFromStorage() {
     final String? tmp = _preferencesManager.getString(
@@ -353,15 +446,10 @@ class UserService extends GetxService {
       //   await appUseCases.updateUserSurveyStatus(currentUser.id, '1');
         // print('API result');
         // print(result);
-        _userLogin(
-          _userLogin.value.copyWith(surveyPassed: value),
-        );
-        _currentUser(currentUser.copyWith(surveyPassed: value));
         final int index = _childProfiles.value.childProfiles
-            .indexWhere((element) => element.userId == _currentUser.value.userId);
+            .indexWhere((element) => element.id == _currentUser.value.id);
         if (index != -1) {
           final List<Child> tmp = List.from(_childProfiles.value.childProfiles);
-          tmp[index] = currentUser.copyWith(surveyPassed: value);
           _childProfiles(childProfiles.copyWith(childProfiles: tmp));
           await saveChildProfilesToStorage();
         }

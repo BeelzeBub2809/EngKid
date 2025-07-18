@@ -12,5 +12,6 @@ import 'package:EngKid/domain/topic/entities/entites.dart';
 import 'entities/lesson/lesson.dart';
 
 abstract class AppRepository {
-  // Future<UserInfo> getUserInfo(int id);
+  Future<UserInfo> getUserInfo(int id);
+  Future<ChildProfiles> getChildProfiles(int parentUserId);
 }

@@ -223,7 +223,7 @@ class PersonalInfoScreen extends GetView<PersonalInfoController> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: List.generate(
-                                  userService.userInfos.length,
+                                  userService.childProfiles.childProfiles.length,
                                       (index) => Padding(
                                     padding: EdgeInsets.symmetric(
                                       horizontal: LibFunction.scaleForCurrentValue(size, 5),
@@ -231,8 +231,8 @@ class PersonalInfoScreen extends GetView<PersonalInfoController> {
                                     child: GestureDetector(
                                       onTap: () {
                                         controller.onChangeChild(
-                                          userService.userInfos[index].value,
-                                          index,
+                                            userService.childProfiles.childProfiles[index].id,
+                                            index
                                         );
                                       },
                                       child: Obx(
@@ -365,10 +365,16 @@ class PersonalInfoScreen extends GetView<PersonalInfoController> {
                               children: [
                                 LabelValueInfo(
                                     label: 'child_name',
-                                    value: controller.userInfo.value.user.name),
+                                    value: userService
+                                        .childProfiles
+                                        .childProfiles[controller.indexChild.value]
+                                        .name),
                                 LabelValueInfo(
-                                  label: 'child_identifier',
-                                  value: controller.userInfo.value.user.identity,
+                                  label: 'gender:',
+                                  value: userService
+                                      .childProfiles
+                                      .childProfiles[controller.indexChild.value]
+                                      .gender,
                                 ),
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -395,7 +401,10 @@ class PersonalInfoScreen extends GetView<PersonalInfoController> {
                                           ),
                                         ),
                                         child: RegularText(
-                                          controller.userInfo.value.user.grade,
+                                          userService
+                                              .childProfiles
+                                              .childProfiles[controller.indexChild.value]
+                                              .gradeId.toString(),
                                           textAlign: TextAlign.start,
                                           style: TextStyle(
                                             color: AppColor.blue,
@@ -406,28 +415,6 @@ class PersonalInfoScreen extends GetView<PersonalInfoController> {
                                       ),
                                     ),
                                   ],
-                                ),
-                                LabelValueInfo(
-                                  label: 'class',
-                                  value:
-                                      controller.userInfo.value.user.classname,
-                                ),
-                                LabelValueInfo(
-                                  label: 'school',
-                                  value: controller.userInfo.value.user.school,
-                                ),
-                                LabelValueInfo(
-                                  label: 'enthnic',
-                                  value: controller.userInfo.value.user.ethnic,
-                                ),
-                                LabelValueInfo(
-                                  label: 'ward',
-                                  value: controller.userInfo.value.user.ward,
-                                ),
-                                LabelValueInfo(
-                                  label: 'district',
-                                  value:
-                                      controller.userInfo.value.user.district,
                                 ),
                               ],
                             ),

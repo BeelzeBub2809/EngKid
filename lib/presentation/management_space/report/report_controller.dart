@@ -211,7 +211,7 @@ class ReportController extends GetxController {
         late List<History> dataWeek = [];
         if (_networkService.networkConnection.value) {
           dataWeek = await _userService.getReadingHistory(
-            _userService.currentUser.userId,
+            _userService.currentUser.id,
             DateFormat('yyyy-MM-dd')
                 .format(firstDayOfCurrentWeek)
                 .toString(),
@@ -279,7 +279,7 @@ class ReportController extends GetxController {
         late List<History> dataMonth = [];
         if (_networkService.networkConnection.value) {
           dataMonth = await _userService.getReadingHistory(
-            _userService.currentUser.userId,
+            _userService.currentUser.id,
             DateFormat('yyyy-MM-dd').format(firstDayOfMonth).toString(),
             DateFormat('yyyy-MM-dd').format(lastDayOfMonth).toString(),
           );
@@ -366,7 +366,7 @@ class ReportController extends GetxController {
         late List<History> dataYear = [];
         if (_networkService.networkConnection.value) {
           dataYear = await _userService.getReadingHistory(
-            _userService.currentUser.userId,
+            _userService.currentUser.id,
             DateFormat('yyyy-MM-dd').format(startOfYear).toString(),
             DateFormat('yyyy-MM-dd').format(endOfYear).toString(),
           );

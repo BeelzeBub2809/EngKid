@@ -42,4 +42,19 @@ class ChildRepositoryImp implements ChildRepository {
       return new ChildProfiles();
     }
   }
+
+  @override
+  Future<dynamic> createChild(Map<String, dynamic> body) async {
+    try {
+      final ApiResponseObject response = await childApi.createChild(body);
+      if (response.result) {
+        return response.data;
+      } else {
+        throw response.message;
+      }
+    } catch (error) {
+      log('Error creating child: $error');
+      return Future.error(error);
+    }
+  }
 }

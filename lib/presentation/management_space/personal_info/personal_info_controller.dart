@@ -46,15 +46,15 @@ class PersonalInfoController extends GetxController {
     super.onInit();
     debugPrint("Init Personal Info Controller");
 
-    _userService.userInfos.asMap().forEach((index, value) {
-      if (value.value.user.id == _userService.currentUser.userId) {
+    _userService.childProfiles.childProfiles.asMap().forEach((index, value) {
+      if (value.id == _userService.currentUser.id) {
         indexChild.value = index;
-        userInfo(value.value);
-        _parentName.value = _userService.userLogin.name;
-        _parentPhone.value = value.value.parentInfo!.phone;
-        _imageUrlParent.value = _userService.userLogin.image;
       }
     });
+
+    _parentName.value = _userService.userLogin.email;
+    // _parentPhone.value = value.value.parentInfo!.phone;
+    _imageUrlParent.value = _userService.userLogin.image;
   }
 
   void onChangeInput(
@@ -76,9 +76,8 @@ class PersonalInfoController extends GetxController {
     return false;
   }
 
-  void onChangeChild(UserInfo uI, int index) {
+  void onChangeChild(int childId, index) {
     try {
-      userInfo.value = uI;
       indexChild.value = index;
     } catch (e) {
       LibFunction.toast('error_try_again');
@@ -150,7 +149,7 @@ class PersonalInfoController extends GetxController {
     final List<Child> ltsChildUpdate =
         getUserUpdateFromStorage(KeySharedPreferences.childsUpdate);
     final int index =
-        ltsChildUpdate.indexWhere((element) => element.userId == user.userId);
+        ltsChildUpdate.indexWhere((element) => element.id == user.id);
     if (index != -1) {
       ltsChildUpdate.removeAt(index);
     }

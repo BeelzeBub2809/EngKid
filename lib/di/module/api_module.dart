@@ -49,8 +49,7 @@ class ApiModule {
         onRequest: (options, handler) {
           options.headers['Content-Type'] = 'application/json';
 
-          final String? storageToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzksImVtYWlsIjoidHVhbmNheWRhMzJAZ21haWwuY29tIiwiaWF0IjoxNzUyMDU2NTE2LCJleHAiOjE3NTIxNDI5MTZ9.fX3vDIWu0oh4-8lVm0qj3_4vFe9_0isN5L0l0zCt3a0";
-              // preferencesManager.getString(KeySharedPreferences.token);
+          final String? storageToken = preferencesManager.getString(KeySharedPreferences.token);
 
           if (storageToken != null && storageToken.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $storageToken';

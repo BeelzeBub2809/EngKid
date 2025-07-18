@@ -1,4 +1,6 @@
 import 'package:EngKid/domain/core/entities/app_setting/entities/entities.dart';
+import 'package:EngKid/presentation/add_child_account/add_child_account_binding.dart';
+import 'package:EngKid/presentation/add_child_account/add_child_account_ui.dart';
 import 'package:EngKid/presentation/declare_parent_code/declare_parent_code_binding.dart';
 import 'package:EngKid/presentation/declare_parent_code/declare_parent_code_ui.dart';
 import 'package:EngKid/presentation/e_library/e_library_binding.dart';
@@ -11,6 +13,10 @@ import 'package:EngKid/presentation/management_space/management_space_binding.da
 import 'package:EngKid/presentation/management_space/management_space_ui.dart';
 import 'package:EngKid/presentation/management_space/personal_info/personal_info_binding.dart';
 import 'package:EngKid/presentation/management_space/personal_info/personal_info_ui.dart';
+import 'package:EngKid/presentation/management_space/profile/profile_child/profile_child_binding.dart';
+import 'package:EngKid/presentation/management_space/profile/profile_child/profile_child_ui.dart';
+import 'package:EngKid/presentation/management_space/profile/profile_parent/profile_parent_binding.dart';
+import 'package:EngKid/presentation/management_space/profile/profile_parent/profile_parent_ui.dart';
 import 'package:EngKid/presentation/management_space/report/report_binding.dart';
 import 'package:EngKid/presentation/management_space/report/report_ui.dart';
 import 'package:EngKid/presentation/management_space/setting/setting_binding.dart';
@@ -160,6 +166,21 @@ class _MyAppState extends State<MyApp> {
               name: AppRoute.validateParentCode,
               page: () => const ValidateParentScreen(),
               binding: ValidateParentBinding(),
+            ),
+            GetPage(
+                name: AppRoute.addChildrenCode,
+                page: () => const AddChildAccountScreen(),
+                binding: AddChildAccountBinding()
+            ),
+            GetPage(
+              name: AppRoute.profileParent,
+              page: () => const ProfileParentScreen(),
+              binding: ProfileParentBinding(),
+            ),
+            GetPage(
+              name: AppRoute.profileChild,
+              page: () => const ProfileChildScreen(),
+              binding: ProfileChildBindings(),
             ),
           ],
         ),

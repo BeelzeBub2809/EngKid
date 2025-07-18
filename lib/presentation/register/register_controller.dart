@@ -195,63 +195,32 @@ class RegisterController extends GetxController {
         _validateIdLogin.value.isEmpty;
   }
 
-  // validate be
-  Future<bool> checkSignUpInfo() async {
-    Map<String, dynamic> body = {
-      'name': _nameParents.value,
-      'email': _gmailAddress.value,
-      'phone': _phoneNumber.value,
-      'gender': _sex.value,
-      'parent_id': _loginId.value,
-    };
-
-    try {
-      // final statusCode = await loginUsecases.checkSignUp(body);
-      const statusCode = 0;
-      print('sign up check : $statusCode');
-
-      if (statusCode == 1) {
-        LibFunction.toast('Email đã tồn tại');
-        return false;
-      } else if (statusCode == 2) {
-        LibFunction.toast('Số điện thoại đã tồn tại');
-        return false;
-      } else if (statusCode == 3) {
-        LibFunction.toast('ID đã tồn tại');
-        return false;
-      }
-
-      _isShowCaptcha.value = true;
-      return true;
-    } catch (e) {
-      print('Error sign up check : $e');
-      LibFunction.toast('Đăng ký thất bại. Vui lòng thử lại sau');
-      return false;
-    }
-  }
-
   // check otp và create account
   void signUpAccount() async {
-    Map<String, dynamic> body = {
-      'name': _nameParents.value,
-      'email': _gmailAddress.value,
-      'phone': _phoneNumber.value,
-      'gender': _sex.value,
-      'parent_id': _loginId.value,
-    };
+    if (validateFormRegister()) {
+      Map<String, dynamic> body = {
+        'name': _nameParents.value,
+        'email': _gmailAddress.value,
+        'phone': _phoneNumber.value,
+        'gender': _sex.value,
+        'username': _loginId.value,
+        'password': _password.value,
+      };
 
-    try {
-      // final data = await loginUsecases.signUp(body);
-      const data = true; // Mocked data for demonstration
-      print('dataSignUp : ${data}');
-      if (data) {
-        LibFunction.toast('Đăng ký thành công');
-        closeScreenOrientation();
-        // resetAll();
-        Get.back();
+      try {
+        final data = await loginUsecases.signUp(body);
+        print('dataSignUp : ${data}');
+        if (data) {
+          LibFunction.toast('Đăng ký thành công');
+          closeScreenOrientation();
+          // resetAll();
+          Get.back();
+        }else{
+          LibFunction.toast('Đăng ký thất bại. Vui lòng thử lại sau');
+        }
+      } catch (e) {
+        LibFunction.toast(e.toString());
       }
-    } catch (e) {
-      print('Error SignUp : $e');
     }
   }
 
@@ -265,14 +234,6 @@ class RegisterController extends GetxController {
     _address.value = '';
     _isCheckCaptcha.value = false;
     _isShowCaptcha.value = false;
-  }
-
-  // validate fe và  be
-  Future<bool> validateSignUp() async {
-    if (validateFormRegister()) {
-      return await checkSignUpInfo();
-    }
-    return false;
   }
 
   void onChangeInput({required String input, required RegisterInputType type}) {
@@ -294,6 +255,12 @@ class RegisterController extends GetxController {
         break;
       case RegisterInputType.address:
         _address.value = input;
+        break;
+      case RegisterInputType.password:
+        _password.value = input;
+        break;
+      case RegisterInputType.confirmPassword:
+        _confirmPassword.value = input;
         break;
       default:
         break;

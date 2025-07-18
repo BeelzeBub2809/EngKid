@@ -7,4 +7,6 @@ class ChildProfilesUsecases {
 
   Future<ChildProfiles> getAllKid(int kidParentId) async =>
       _childRepository.getAllKid(kidParentId);
+  Future<dynamic> createChild(Map<String, dynamic> body) async =>
+      _childRepository.createChild(body);
 }

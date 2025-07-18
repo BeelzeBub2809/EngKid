@@ -99,7 +99,7 @@ class ElibraryService extends GetxService {
 
   Future<dynamic> getAllElibraryBooks() async {
     _isGetAllElibraryBooks.value = true;
-    final book = await eBookUsecases.getByCategoryAndStudentM(_userService.currentUser.userId);
+    final book = await eBookUsecases.getByCategoryAndStudentM(_userService.currentUser.id);
     _isGetAllElibraryBooks.value = false;
     _bookList.addAll(book);
   }
@@ -168,7 +168,7 @@ class ElibraryService extends GetxService {
   Future<void> saveBookToStorage() async {
     await _preferencesManager.putString(
       key:
-          "${_userService.currentUser.userId}_${bookList[bookIndex].id}_bookdatafile.json",
+          "${_userService.currentUser.id}_${bookList[bookIndex].id}_bookdatafile.json",
       value: jsonEncode(bookList[bookIndex].toJson()),
     );
   }

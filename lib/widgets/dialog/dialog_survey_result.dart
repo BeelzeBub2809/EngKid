@@ -145,10 +145,6 @@ class DialogSurveyResult extends StatelessWidget {
               onTap: () async {
                 if (isCorrect) {
                   await LibFunction.effectConfirmPop();
-                  if (_userService.currentUser.surveyPassed == 0) {
-                    // _userService.changeUserProfile(
-                    //     type: UserDataUpdateType.surveyPassed, value: true);
-                  }
                   Get.back(); // close dialog
                   if (!goLibrary) {
                     LibFunction.rePlayBackgroundSound();
