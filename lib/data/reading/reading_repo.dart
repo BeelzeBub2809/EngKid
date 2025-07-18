@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:EngKid/data/core/remote/api/reading_api/reading_api.dart';
+import 'package:EngKid/data/core/remote/api/student_reading_api/student_reading_api.dart';
 import 'package:EngKid/data/core/remote/api_response_object/api_response_object.dart';
 import 'package:EngKid/domain/core/entities/lesson/entities/entities.dart';
 import 'package:EngKid/domain/reading/reading_repository.dart';
@@ -10,7 +11,11 @@ import 'package:flutter/cupertino.dart';
 
 class ReadingRepositoryImp implements ReadingRepository {
   final ReadingApi readingApi;
-  ReadingRepositoryImp({required this.readingApi});
+  final StudentReadingApi studentReadingApi;
+  ReadingRepositoryImp({
+    required this.readingApi,
+    required this.studentReadingApi
+  });
 
   @override
   Future<List<Reading>> getByCateAndStudent(Map<String, dynamic> body) async {
@@ -38,6 +43,25 @@ class ReadingRepositoryImp implements ReadingRepository {
         print('[Repository] StackTrace: $stackTrace');
       }
       return [];
+    }
+  }
+
+  @override
+  Future<void> submitReadingResult(Map<String, dynamic> body) async {
+  try {
+    await studentReadingApi.submitReadingResult(body);
+  } catch (e, stackTrace) {
+    if (e is DioException) {
+      print('[Repository] DioException occurred:');
+      print('  → Type: ${e.type}');
+      print('  → Message: ${e.message}');
+      print('  → Response: ${e.response?.data}');
+      print('  → StatusCode: ${e.response?.statusCode}');
+      print('  → StackTrace: $stackTrace');
+    } else {
+      print('[Repository] Unknown exception: $e');
+      print('[Repository] StackTrace: $stackTrace');
+    }
     }
   }
 }

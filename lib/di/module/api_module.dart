@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:EngKid/data/core/remote/api/child_api/child_api.dart';
 import 'package:EngKid/data/core/remote/api/ebook_category_api/ebook_category_api.dart';
+import 'package:EngKid/data/core/remote/api/question_api/question_api.dart';
 import 'package:EngKid/data/core/remote/api/reading_api/reading_api.dart';
 import 'package:EngKid/data/core/remote/api/student_reading_api/student_reading_api.dart';
 import 'package:EngKid/data/core/remote/api/topic_api/topic_api.dart';
@@ -32,6 +33,7 @@ class ApiModule {
     getIt.registerSingleton(EBookCategoryApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(ChildApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(ReadingApi(dio, baseUrl: dio.options.baseUrl));
+    getIt.registerSingleton(QuestionApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(StudentReadingApi(dio, baseUrl: dio.options.baseUrl));
   }
 

@@ -33,10 +33,10 @@ class QuizUseCases {
       bool isCompleted = false}) async {
     if (!_topicService.isCaculator) return;
     final int mark = isCorrect ? 1 : 0;
-    final double percent = _userService.getAchievedStar(attempt -
-        1); // vì đã tăng một lần cố gắng nên phải trừ đi một để lấy sao cho lần cố gắng hiện tại
+    // final double percent = _userService.getAchievedStar(attempt -
+    //     1); // vì đã tăng một lần cố gắng nên phải trừ đi một để lấy sao cho lần cố gắng hiện tại
     final double starEachQuiz = reading.stars / reading.totalQuiz;
-    final double star = starEachQuiz * percent; // star
+    final double star = starEachQuiz; // star
 
     final Question? question = _topicService.currentQuiz.questions
         .firstWhereOrNull((element) => element.questionId == questionId);
@@ -51,7 +51,7 @@ class QuizUseCases {
     }
 
     // _topicService.updateQuestion(questionId: questionId, mark: mark);
-    final double totalStar = caculateStar(attempt: attempt);
+    final double totalStar = caculateStar();
 
     // _topicService.updateStarReading(
     //   // update in reading
@@ -203,17 +203,13 @@ class QuizUseCases {
         KeySharedPreferences.starOfTwoYear, dataStarOfTwoYear);
   }
 
-  double caculateStar({
-    required int attempt,
-  }) {
+  double caculateStar() {
     late double totalStar = 0; // stars
-    final double percent = _userService.getAchievedStar(attempt -
-        1); // vì đã tăng một lần cố gắng nên phải trừ đi một để lấy sao cho lần cố gắng hiện tại
     final double starEachQuiz = reading.stars / reading.totalQuiz;
 
     for (final Question element in _topicService.currentQuiz.questions) {
       if (element.mark == 1) {
-        totalStar += starEachQuiz * percent;
+        totalStar += starEachQuiz;
       }
     }
     return totalStar;
