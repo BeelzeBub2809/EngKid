@@ -12,8 +12,13 @@ part 'user_api.g.dart';
 abstract class UserApi {
   factory UserApi(Dio dio, {String baseUrl}) = _UserApi;
 
-  // @GET('auth/user-info/{id}')
-  // Future<ApiResponseObject> getUserInfo(
-  //   @Path("id") int id,
-  // );
+  @GET('auth/user-info/{id}')
+  Future<ApiResponseObject> getUserInfo(
+    @Path("id") int id,
+  );
+
+  @GET('auth/get-child-profiles')
+  Future<ApiResponseObject> getChildProfiles(
+    @Query("parent_user_id") int parentUserId,
+  );
 }

@@ -388,7 +388,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
 
   bool getQuizsFromStorage() {
     final String? quizs = _preferencesManager.getString(
-      "${_userService.currentUser.userId}_${readingData.id}_datafile.json",
+      "${_userService.currentUser.id}_${readingData.id}_datafile.json",
     );
 
     if (quizs != null) {
@@ -435,7 +435,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
           if (_remainingTime == 25 * 60) {
             int loginRecordId = _preferencesManager.getInt(
               KeySharedPreferences.loginRecord +
-                  _userService.currentUser.userId.toString(),
+                  _userService.currentUser.id.toString(),
             )!;
             // _userService.updateLoginRecord(loginRecordId, false, false, true);
           }
@@ -569,7 +569,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     for (Reading reading in _topicService.topicReadings.topicReadings
         .readings) {
       String? isVideoDownloaded = _preferencesManager.getString(
-        "${_userService.currentUser.userId}_${reading.id}_datafile.json",
+        "${_userService.currentUser.id}_${reading.id}_datafile.json",
       );
       if (isVideoDownloaded != null) {
         _isDownloaded[reading.id] = true;
@@ -584,7 +584,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     for (Reading reading
     in _topicService.topicReadings.topicReadings.readings) {
       String? isVideoDownloaded = _preferencesManager.getString(
-        "${_userService.currentUser.userId}_${reading.id}_video_mo.json",
+        "${_userService.currentUser.id}_${reading.id}_video_mo.json",
       );
       if (isVideoDownloaded != null) {
         _isDownloadedVideoMong[reading.id] = true;
@@ -598,7 +598,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     for (Reading reading
     in _topicService.topicReadings.topicReadings.readings) {
       String? isVideoDownloaded = _preferencesManager.getString(
-        "${_userService.currentUser.userId}_${reading.id}_datafile.json",
+        "${_userService.currentUser.id}_${reading.id}_datafile.json",
       );
       if (isVideoDownloaded != null) {
         _isVideoDownloaded[reading.id] = true;
@@ -712,7 +712,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
         in _topicService.topicReadings.topicReadings.readings) {
           if (_isDownloaded[reading.id] == true) {
             String? isVideoDownloaded = _preferencesManager.getString(
-              "${_userService.currentUser.userId}_${reading.id}_datafile.json",
+              "${_userService.currentUser.id}_${reading.id}_datafile.json",
             );
             if (isVideoDownloaded == null) {
               _isMultipleDownloading[reading.id] = true;
@@ -722,7 +722,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
         for (Reading reading
         in _topicService.topicReadings.topicReadings.readings) {
           String? isVideoDownloaded = _preferencesManager.getString(
-            "${_userService.currentUser.userId}_${reading.id}_datafile.json",
+            "${_userService.currentUser.id}_${reading.id}_datafile.json",
           );
 
           if (_isDownloaded[reading.id] == true && isVideoDownloaded == null) {
@@ -770,9 +770,9 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
   Future<void> deleteQuizFromStorage(int readingId) async {
     // Construct the key for the quiz you want to delete
     String quizKey =
-        "${_userService.currentUser.userId}_${readingId}_datafile.json";
+        "${_userService.currentUser.id}_${readingId}_datafile.json";
     String quizVideoMong =
-        "${_userService.currentUser.userId}_${readingId}_video_mo.json";
+        "${_userService.currentUser.id}_${readingId}_video_mo.json";
     // Use _preferencesManager to remove the quiz from storage
     await _preferencesManager.remove(quizKey);
     await _preferencesManager.remove(quizVideoMong);

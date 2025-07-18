@@ -9,32 +9,20 @@ part 'login.g.dart';
 class Login with _$Login {
   const factory Login({
     @Default(-1) int id,
-    @JsonKey(
-      name: 'survey_passed',
-    )
-    @Default(false)
-    bool surveyPassed,
-    @Default("") String name,
+
+    @JsonKey(name: 'username')
     String? username,
+
+    @JsonKey(name: 'email')
     @Default("") String email,
-    @Default("") String phone,
-    @JsonKey(
-      name: 'role_id',
-    )
-    @Default('')
-    String roleId,
+
+    @JsonKey(name: 'role_id') @Default('') String roleId,
     @Default("") String role,
     @Default("") String image,
-    @JsonKey(
-      name: '_token',
-    )
-    @Default("")
-    String token,
-    @JsonKey(
-      name: 'login_record',
-    )
-    @Default(0)
-    int loginRecord,
+    @JsonKey(name: 'accessToken') @Default("") String token,
   }) = _Login;
-  factory Login.fromJson(Map<String, dynamic> json) => _$LoginFromJson(json);
+
+  factory Login.fromJson(Map<String, dynamic> json) =>
+      _$LoginFromJson(json);
 }
+

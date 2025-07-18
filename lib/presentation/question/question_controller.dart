@@ -472,7 +472,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
       if(videoDuration > 0){
         if(_doQuizDuration.toInt() == videoDuration.toInt()){
           int loginRecordId = _preferencesManager.getInt(
-            KeySharedPreferences.loginRecord+_userService.currentUser.userId.toString(),
+            KeySharedPreferences.loginRecord+_userService.currentUser.id.toString(),
           )!;
           // _userService.updateLoginRecord(loginRecordId, true, false, true);
         }
@@ -490,14 +490,14 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     }
     if (!_topicService.isCaculator) return;
     await _preferencesManager.putDouble(
-      key: "${_userService.currentUser.userId}_${readingId}_do_quiz_duration",
+      key: "${_userService.currentUser.id}_${readingId}_do_quiz_duration",
       value: _doQuizDuration,
     );
   }
 
   double getTimeDoingQuizFromStorage() {
     final double? duration = _preferencesManager.getDouble(
-      "${_userService.currentUser.userId}_${readingId}_do_quiz_duration",
+      "${_userService.currentUser.id}_${readingId}_do_quiz_duration",
     );
     if (duration != null) {
       return duration;
@@ -508,7 +508,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
   Future<void> submitCompletedQuestion()async {
     //call api submit time doing question
     int loginRecordId = _preferencesManager.getInt(
-      KeySharedPreferences.loginRecord + _userService.currentUser.userId.toString(),
+      KeySharedPreferences.loginRecord + _userService.currentUser.id.toString(),
     )!;
     // _userService.updateLoginRecord(loginRecordId, true, true, true);
 
@@ -523,14 +523,14 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     if (!_topicService.isCaculator) return;
 
     await _preferencesManager.putDouble(
-      key: "${_userService.currentUser.userId}_${readingId}_duration",
+      key: "${_userService.currentUser.id}_${readingId}_duration",
       value: _duration,
     );
   }
 
   double getTimeDurationFromStorage() {
     final double? duration = _preferencesManager.getDouble(
-      "${_userService.currentUser.userId}_${readingId}_duration",
+      "${_userService.currentUser.id}_${readingId}_duration",
     );
     if (duration != null) {
       return duration;

@@ -10,4 +10,7 @@ abstract class ChildApi {
 
   @GET('kid-student/parent-M/{kid_parent_id}')
   Future<ApiResponseObject> getAllKid(@Path("kid_parent_id") int kidParentId);
+
+  @POST('kid-student/parent/create-child')
+  Future<ApiResponseObject> createChild(@Body() Map<String, dynamic> body);
 }

@@ -5,8 +5,8 @@ class LoginUsecases {
   final LoginRepository _loginRepository;
   LoginUsecases(this._loginRepository);
 
-  Future<Login> login(String userLoginId) async =>
-      _loginRepository.login(userLoginId);
+  Future<Login> login(String username, String password) async =>
+      _loginRepository.login(username, password);
   Future<dynamic> signUp(Map<String, dynamic> body) async =>
       _loginRepository.signUp(body);
   Future<dynamic> checkSignUp(Map<String, dynamic> body) async =>

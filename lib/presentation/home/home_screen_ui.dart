@@ -104,7 +104,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                                 child: RegularText(
                                   userService.childProfiles.childProfiles.isNotEmpty
                                       ? "select_account_remind"
-                                      : 'Hãy tạo tài khoản cho các con nhé!',
+                                      : 'Hãy tạo tài khoản cho các con để bắt đầu!',
                                   style: TextStyle(
                                     color: AppColor.gray,
                                     fontSize: Fontsize.smallest,
@@ -117,116 +117,132 @@ class HomeScreen extends GetView<HomeScreenController> {
                                 height: 0.05 * size.height,
                               ),
                               Obx(
-                                () => userService.childProfiles.childProfiles.isNotEmpty
-                                    ? SizedBox(
-                                        width: 0.3 * size.width,
-                                        height: 0.32 * size.height,
-                                        child: Swiper(
-                                          itemBuilder: (BuildContext context, int index) {
-                                            return Stack(
-                                              children: [
-                                                Center(
-                                                  child: Container(
-                                                    width: 0.24 * size.height,
-                                                    height: 0.24 * size.height,
+                                  () => userService.childProfiles.childProfiles.isNotEmpty
+                                      ? SizedBox(
+                                          width: 0.3 * size.width,
+                                          height: 0.32 * size.height,
+                                          child: Swiper(
+                                            itemBuilder: (BuildContext context, int index) {
+                                              return Stack(
+                                                children: [
+                                                  Center(
+                                                    child: Container(
+                                                      width: 0.24 * size.height,
+                                                      height: 0.24 * size.height,
 
-                                                    decoration: const BoxDecoration(
-                                                      color: Color(0XFFfdf1ce),
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    child: Center(
-                                                      child: ClipRRect(
-                                                        borderRadius: BorderRadius.circular(0.23 * size.height),
-                                                        child: CacheImage(
-                                                          url: userService.childProfiles.childProfiles[index].avatar,
-                                                          width: 0.23 * size.height,
-                                                          height: 0.23 * size.height,
+                                                      decoration: const BoxDecoration(
+                                                        color: Color(0XFFfdf1ce),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                      child: Center(
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(0.23 * size.height),
+                                                          child: CacheImage(
+                                                            url: userService.childProfiles.childProfiles[index].avatar,
+                                                            width: 0.23 * size.height,
+                                                            height: 0.23 * size.height,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                                Positioned.fill(
-                                                  child: Align(
-                                                    alignment:Alignment.bottomCenter,
-                                                    child: ImageText(
-                                                      pathImage: LocalImage.shapeName,
-                                                      text: userService.childProfiles.childProfiles[index].name,
-                                                      style: TextStyle(
-                                                        color: AppColor.gray,
-                                                        fontSize: fSize,
-                                                        height: 1.2,
+                                                  Positioned.fill(
+                                                    child: Align(
+                                                      alignment:Alignment.bottomCenter,
+                                                      child: ImageText(
+                                                        pathImage: LocalImage.shapeName,
+                                                        text: userService.childProfiles.childProfiles[index].name,
+                                                        style: TextStyle(
+                                                          color: AppColor.gray,
+                                                          fontSize: fSize,
+                                                          height: 1.2,
+                                                        ),
+                                                        textAlign: TextAlign.center,
+                                                        width: 0.23 * size.width,
+                                                        height: 0.1 * size.height,
+                                                        onTap: controller.copyDeviceTokenToClipboard,
                                                       ),
-                                                      textAlign: TextAlign.center,
-                                                      width: 0.23 * size.width,
-                                                      height: 0.1 * size.height,
-                                                      onTap: controller.copyDeviceTokenToClipboard,
-                                                    ),
 
-                                                ))
-                                              ],
-                                            );
-                                          },
-                                          index: userService.userLogin.roleId == "2"
-                                            ? 0
-                                            : controller.indexCurrentUserInChildProfiles(),
-                                          onIndexChanged: (int index) {
-                                            if (userService.userLogin.roleId == "2") {
-                                              return;
-                                            }
-                                            controller.onChangeChild(userService.childProfiles.childProfiles[index]);
-                                          },
-                                          itemCount:
-                                            userService.userLogin.roleId == "2"
-                                              ? 1
-                                              : userService.childProfiles.childProfiles.length,
-                                          control: SwiperControlCustom(
-                                            width: 0.035 * size.width,
-                                            height: 0.035 * size.width,
-                                            crossAxisAlignment:CrossAxisAlignment.center,
+                                                  ))
+                                                ],
+                                              );
+                                            },
+                                            index: userService.userLogin.roleId == "2"
+                                              ? 0
+                                              : controller.indexCurrentUserInChildProfiles(),
+                                            onIndexChanged: (int index) {
+                                              if (userService.userLogin.roleId == "2") {
+                                                return;
+                                              }
+                                              controller.onChangeChild(userService.childProfiles.childProfiles[index]);
+                                            },
+                                            itemCount:
+                                              userService.userLogin.roleId == "2"
+                                                ? 1
+                                                : userService.childProfiles.childProfiles.length,
+                                            control: SwiperControlCustom(
+                                              width: 0.035 * size.width,
+                                              height: 0.035 * size.width,
+                                              crossAxisAlignment:CrossAxisAlignment.center,
+                                            ),
                                           ),
+                                        )
+                                      : Image.asset(
+                                          LocalImage.children,
+                                          width: size.width * 0.15,
+                                          height: size.height * 0.3,
+                                          fit: BoxFit.cover,
                                         ),
-                                      )
-                                    : Image.asset(
-                                        LocalImage.children,
-                                        width: size.width * 0.15,
-                                        height: size.height * 0.3,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
+                                ),
 
                               SizedBox(
                                 height: 0.02 * size.height,
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  ImageText(
-                                    text: 'e_book',
-                                    pathImage: LocalImage.buttonElibrary,
-                                    isUpperCase: true,
-                                    width: size.width * 0.16,
-                                    height: size.height * 0.13,
-                                    onTap: () {
-                                      controller.onPressLibrary();
-                                    },
-                                  ),
-                                  SizedBox(
-                                    width: size.width * 0.01,
-                                  ),
-                                  ImageText(
-                                    text: 'reading',
+                              if(userService.childProfiles.childProfiles.isNotEmpty)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    ImageText(
+                                      text: 'e_book',
+                                      pathImage: LocalImage.buttonElibrary,
+                                      isUpperCase: true,
+                                      width: size.width * 0.16,
+                                      height: size.height * 0.13,
+                                      onTap: () {
+                                        controller.onPressLibrary();
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: size.width * 0.01,
+                                    ),
+                                    ImageText(
+                                      text: 'reading',
+                                      pathImage: LocalImage.shapeButton,
+                                      isUpperCase: true,
+                                      width: size.width * 0.16,
+                                      height: size.height * 0.13,
+                                      onTap: () {
+                                        controller.onPressStart();
+                                      },
+                                    ),
+                                  ],
+                                ),
+
+                              if(userService.childProfiles.childProfiles.isEmpty)
+                                Padding(
+                                  padding: EdgeInsets.only(top: 0.02 * size.height),
+                                  child: ImageText(
+                                    text: 'create_account',
                                     pathImage: LocalImage.shapeButton,
                                     isUpperCase: true,
-                                    width: size.width * 0.16,
-                                    height: size.height * 0.13,
+                                    width: size.width * 0.3,
+                                    height: size.height * 0.2,
                                     onTap: () {
-                                      controller.onPressStart();
+                                      Get.toNamed(AppRoute.addChildrenCode);
                                     },
                                   ),
-                                ],
-                              ),
+                                ),
                             ],
                           ),
                         ),

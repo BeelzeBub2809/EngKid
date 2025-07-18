@@ -71,10 +71,6 @@ class LoginController extends GetxController {
   // }
 
   Future<void> onLogin(BuildContext context) async {
-    // if (username == "") {
-    //   LibFunction.toast('Vui lòng nhập mã ID để đăng nhập!');
-    //   return;
-    // }
     LibFunction.showLoading();
     await LibFunction.effectConfirmPop();
     // await _preferencesManager.putString(
@@ -84,32 +80,28 @@ class LoginController extends GetxController {
     _userService.identifier = username;
 
     try {
-      // final Login userProfile = await loginUsecases.login(username);
+      final Login userProfile = await loginUsecases.login(username, password);
       //sample user profile for demonstration
-      const userProfile = Login(
-        id: 1, // Mocked ID for demonstration
-        surveyPassed: true, // Example value
-        name: 'John Doe',
-        username: 'johndoe',
-        email: 'johndoe@example.com',
-        phone: '1234567890',
-        roleId: '1',
-        role: 'Admin',
-        image: 'https://example.com/image.jpg',
-        token: 'mocked_token',
-        loginRecord: 123,
-      );
+      // const userProfile = Login(
+      //   id: 1, // Mocked ID for demonstration
+      //   surveyPassed: true, // Example value
+      //   name: 'John Doe',
+      //   username: 'johndoe',
+      //   email: 'johndoe@example.com',
+      //   phone: '1234567890',
+      //   roleId: '1',
+      //   role: 'Admin',
+      //   image: 'https://example.com/image.jpg',
+      //   token: 'mocked_token',
+      //   loginRecord: 123,
+      // );
       _configureUserProfile(userProfile);
       Get.back();
     } catch (error) {
       _subString.value = "invalid_account";
       debugPrint('Error on sign_in: ${error.toString()}');
+      LibFunction.toast(error.toString());
       Get.back(); //hide loading modal
-      switch (error) {
-        case 'User not found':
-          LibFunction.toast(error.toString());
-          break;
-      }
     }
   }
 
@@ -137,13 +129,9 @@ class LoginController extends GetxController {
       key: KeySharedPreferences.token,
       value: userProfile.token,
     );
-    await _preferencesManager.putInt(
-      key: KeySharedPreferences.loginRecord,
-      value: userProfile.loginRecord,
-    );
     await _userService.assignUseLogin(userProfile); //set to global user data
     // await _userService.getSettings();
-    // await _userService.getChildProfiles();
+    await _userService.getChildProfiles(userProfile.id);
     // await _topicService.getLibrary();
 
     // _userService.getStarSetting();

@@ -10,14 +10,15 @@ part 'auth_api.g.dart';
 abstract class AuthApi {
   factory AuthApi(Dio dio, {String baseUrl}) = _AuthApi;
 
-  @POST('auth/login')
+  @POST('auth/app-login')
   @FormUrlEncoded()
   Future<ApiResponseObject> login(
-    @Field("user_login_id") String userLoginId,
+    @Field("username") String username,
+    @Field("password") String password,
   );
 
   // tạo tài khoản
-  @POST('auth/sign-up')
+  @POST('auth/register')
   @FormUrlEncoded()
   Future<ApiResponseObject> signUp(
     @Body() Map<String, dynamic> body,

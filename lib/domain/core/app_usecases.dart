@@ -14,5 +14,7 @@ import 'package:EngKid/domain/topic/entities/entites.dart';
 class AppUseCases {
   final AppRepository _appRepository;
   AppUseCases(this._appRepository);
-  // Future<UserInfo> getUserInfo(int id) => _appRepository.getUserInfo(id);
+  Future<UserInfo> getUserInfo(int id) => _appRepository.getUserInfo(id);
+
+  Future<ChildProfiles> getChildProfiles(int parentUserId) => _appRepository.getChildProfiles(parentUserId);
 }

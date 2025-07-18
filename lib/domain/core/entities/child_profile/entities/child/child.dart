@@ -7,11 +7,13 @@ part 'child.g.dart';
 @freezed
 class Child with _$Child {
   const factory Child({
-    @JsonKey(name: 'user_id') @Default(1) int userId,
-    @Default("") String name,
+    @JsonKey(name: 'id') @Default(0) int id,
+    @JsonKey(name: 'name')  @Default("") String name,
+    @JsonKey(name: 'parent_id') @Default(0) int parentId,
+    @JsonKey(name: 'gender') @Default("") String gender,
+    @JsonKey(name: 'dob') @Default("") String dob,
     @JsonKey(name: 'grade_id') @Default(1) int gradeId,
-    @JsonKey(name: 'image') @Default("") String avatar,
-    @JsonKey(name: 'is_passed_survey') @Default(0) int surveyPassed,
-  }) = _Child;
+    @JsonKey(name: 'image') @Default("") String avatar
+ }) = _Child;
   factory Child.fromJson(Map<String, dynamic> json) => _$ChildFromJson(json);
 }

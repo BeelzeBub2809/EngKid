@@ -56,6 +56,10 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
 
   void onPressTo(Menu menu) async {
     handleGetData(menu.to);
+    if(_userService.childProfiles.childProfiles.isEmpty) {
+      Get.toNamed(AppRoute.addChildrenCode);
+      return;
+    }
 
     if (!menu.needValidateParent && !menu.requireValidate) {
       if (menu.to == "") {
@@ -125,43 +129,13 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
 
   void onPressLibrary() async {
     if (_userService.userLogin.roleId == "2") return;
-    if (_userService.currentUser.surveyPassed == 1) {
-      isElibraryOpen = true;
-      Get.toNamed(AppRoute.eLibrary, arguments: [true, true]);
-    }
-
-    // if (_userService.currentUser.surveyPassed) {
-    //   if (isElibraryOpen == false) {
-    //     if (_networkService.networkConnection.value) {
-    //       isElibraryOpen = true;
-    //       Get.toNamed(
-    //         AppRoute.eLibrary,
-    //         arguments: [true, true],
-    //       );
-    //     } else {
-    //       LibFunction.toast('require_network_to_elibrary');
-    //     }
-    //   } else {
-    //     Get.toNamed(
-    //       AppRoute.eLibrary,
-    //       arguments: [true, true],
-    //     );
-    //   }
-    // } else {
-      // Get.toNamed(
-      //   AppRoute.safetyGuide,
-      //   arguments: [
-      //     true,
-      //     true,
-      //     true
-      //   ], // allow button back and to learn, go to elibrary
-      // );
-    // }
+    isElibraryOpen = true;
+    Get.toNamed(AppRoute.eLibrary, arguments: [true, true]);
   }
 
   int indexCurrentUserInChildProfiles() {
     return _userService.childProfiles.childProfiles
-        .indexWhere((element) => element.userId == _userService.currentUser.userId);
+        .indexWhere((element) => element.id == _userService.currentUser.id);
   }
 
   void onChangeChild(Child child) async {

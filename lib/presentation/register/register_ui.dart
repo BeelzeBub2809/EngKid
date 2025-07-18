@@ -272,9 +272,7 @@ class RegisterScreen extends GetView<RegisterController> {
                             text: 'next'.tr,
                             pathImage: LocalImage.shapeButtonSubmit,
                             onTap: () async {
-                              if (await controller.validateSignUp()) {
-                                controller.signUpAccount();
-                              }
+                              controller.signUpAccount();
                             },
                             isUpperCase: true,
                             width: size.width * 0.3,

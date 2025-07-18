@@ -14,17 +14,31 @@ class AppRepositoryImp extends AppRepository {
     required this.userApi,
   });
 
-  // @override
-  // Future<UserInfo> getUserInfo(int id) async {
-  //   try {
-  //     final ApiResponseObject response = await userApi.getUserInfo(id);
-  //     if (response.result) {
-  //       return UserInfo.fromJson(response.data);
-  //     } else {
-  //       throw '';
-  //     }
-  //   } catch (error) {
-  //     return Future.error(error);
-  //   }
-  // }
+  @override
+  Future<UserInfo> getUserInfo(int id) async {
+    try {
+      final ApiResponseObject response = await userApi.getUserInfo(id);
+      if (response.result) {
+        return UserInfo.fromJson(response.data);
+      } else {
+        throw '';
+      }
+    } catch (error) {
+      return Future.error(error);
+    }
+  }
+
+  @override
+  Future<ChildProfiles> getChildProfiles(int parentUserId) async {
+    try {
+      final ApiResponseObject response = await userApi.getChildProfiles(parentUserId);
+      if (response.result) {
+        return ChildProfiles.fromJson(response.data);
+      } else {
+        throw '';
+      }
+    } catch (error) {
+      return Future.error(error);
+    }
+  }
 }

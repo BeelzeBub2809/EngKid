@@ -42,4 +42,6 @@ class AppRoute {
   static const questionFinalScreen = "/final_screen";
   static const coloring = '/coloring';
   static const drawing = '/drawing';
+
+  static const addChildrenCode = '/add_children_code';
 }
