@@ -6,7 +6,7 @@ const Map<String, String> vi = {
   'forgot_identifier': 'Quên mã ID?',
   'invalid_account': 'ID chưa chính xác, vui lòng thử lại!',
   'enter_id': 'Vui lòng nhập ID để truy cập',
-  'forgot_password': 'Vui lòng liên hệ với cán bộ phụ trách\nđể nhận lại mã ID',
+  'forgot_password': 'Quên mật khẩu?',
   'register': 'Tạo tài khoản',
   //forgot identifier
   'phone_number' : 'Số điện thoại',
@@ -17,6 +17,10 @@ const Map<String, String> vi = {
   're_enter_login_id' : 'Nhập lại mã ID',
 
   //register
+  'full_name' : 'Họ và tên',
+  'user_name' : 'Tên tài khoản',
+  'password' : 'Mật khẩu',
+  'confirm_password' : 'Nhập lại mật khẩu',
   'name_parents' : 'Tên cha mẹ',
   'gmail_address' : 'Gmail',
   'sex' : 'Giới tính',
@@ -52,6 +56,15 @@ const Map<String, String> vi = {
 
 
   // add child
+  'sunday': 'Chủ nhật',
+  'monday': 'Thứ hai',
+  'tuesday': 'Thứ ba',
+  'wednesday': 'Thứ tư',
+  'thursday': 'Thứ năm',
+  'friday': 'Thứ sáu',
+  'saturday': 'Thứ bảy',
+  'choose_date_of_birth' : 'Chọn ngày sinh',
+  'date_of_birth' : 'Ngày sinh',
   'child_name_add' : 'Tên con (biệt danh)',
   'school_add' : 'Trường học',
   'grade_add' : 'Khối',
@@ -75,15 +88,19 @@ const Map<String, String> vi = {
   ' bạn sẽ không thể truy cập tài khoản này.\n\nBạn có chắc chắn muốn xóa tài khoản này không?',
   'new_phone_number' : 'Số điện thoại mới',
 
+  //home
+  'create_account' : 'Tạo tài khoản con',
 
 
-
-
-
-
-
+  //My library
+  'grade_1' : 'Lớp 1',
+  'grade_2' : 'Lớp 2',
+  'grade_3' : 'Lớp 3',
+  'grade_4' : 'Lớp 4',
+  'grade_5' : 'Lớp 5',
 
   // declare_parent_code
+  'save_safety_code' : 'Lưu mật khẩu',
   'parent_setup': 'Ba mẹ cài đặt mã an toàn',
   're_parent_setup': 'Xác nhận lại mã an toàn',
   'illegal_code': 'Mã an toàn chưa hợp lệ. Vui lòng thử lại!',

@@ -113,7 +113,6 @@ class MyLibraryScreen extends GetView<MyLibraryController>{
                           controller.onBackPress();
                         },
                       ),
-                      RegularText('home'.tr, style: TextStyle(fontSize: Fontsize.normal, color: Colors.red),)
 
                     ],
                   )),

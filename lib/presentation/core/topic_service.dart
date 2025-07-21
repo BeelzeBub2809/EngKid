@@ -155,7 +155,7 @@ class TopicService extends GetxService {
         grades.add(
           Grade(
             id: index + 1,
-            name: "Grade ${index + 1}",
+            name: "grade_${index + 1}".tr,
             image: "$imageUrl/grade${index + 1}.png",
             isOpen: true,
           ),

@@ -48,7 +48,7 @@ class LoginScreen extends GetView<LoginController> {
                         Padding(
                           padding: EdgeInsets.only(top: 0.12 * size.height),
                           child: RegularText(
-                            "Login",
+                            'login'.tr,
                             style: TextStyle(
                               color: AppColor.red,
                               fontSize: Fontsize.huge,
@@ -65,7 +65,7 @@ class LoginScreen extends GetView<LoginController> {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: Text(
-                                    "Username",
+                                    "user_name".tr,
                                     style: TextStyle(
                                       fontSize: Fontsize.normal,
                                       fontWeight: FontWeight.w600,
@@ -105,7 +105,7 @@ class LoginScreen extends GetView<LoginController> {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: Text(
-                                    "Password",
+                                    "password".tr,
                                     style: TextStyle(
                                       fontSize: Fontsize.normal,
                                       fontWeight: FontWeight.w600,
@@ -150,7 +150,7 @@ class LoginScreen extends GetView<LoginController> {
                                 padding: EdgeInsets.symmetric(
                                     vertical: 0.05 * size.height),
                                 child: RegularText(
-                                  "Quên mật khẩu?",
+                                  "forgot_password".tr,
                                   style: TextStyle(
                                     color: AppColor.gray,
                                     fontSize: Fontsize.normal,
@@ -190,7 +190,7 @@ class LoginScreen extends GetView<LoginController> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: ImageText(
-                    text: 'login',
+                    text: 'login'.tr,
                     pathImage: LocalImage.shapeButton,
                     onTap: () {
                       controller.onLogin(context);
