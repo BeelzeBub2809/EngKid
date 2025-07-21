@@ -61,11 +61,11 @@ class AddChildAccountController extends GetxController {
   List<Organization> get schoolList => _schoolList;
 
   final RxList<Organization> _gradeList = [
-    const Organization(id: 1, group: 'grade_1', code: '1'),
-    const Organization(id: 2, group: 'grade_2', code: '1'),
-    const Organization(id: 3, group: 'grade_3', code: '1'),
-    const Organization(id: 4, group: 'grade_4', code: '1'),
-    const Organization(id: 5, group: 'grade_5', code: '1'),
+    const Organization(id: 1, group: '1', code: '1'),
+    const Organization(id: 2, group: '2', code: '1'),
+    const Organization(id: 3, group: '3', code: '1'),
+    const Organization(id: 4, group: '4', code: '1'),
+    const Organization(id: 5, group: '5', code: '1'),
   ].obs;
   final RxList<Organization> _classList = [
     const Organization(id: 1, group: 'class_1', code: '1'),
@@ -201,6 +201,7 @@ class AddChildAccountController extends GetxController {
 
 
   void createChildAccount() async {
+    print('Create Child Called');
     if(validateFormRegister()){
       Map<String, dynamic> body = {
         'name' : _childName.value,
@@ -295,7 +296,6 @@ class AddChildAccountController extends GetxController {
     return _validateChildName.value.isEmpty &&
         _validateSex.value.isEmpty &&
         _validateGrade.value.isEmpty &&
-        _validateStudentId.isEmpty &&
         _validateDateOfBirth.isEmpty;
   }
 

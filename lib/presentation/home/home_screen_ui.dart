@@ -233,7 +233,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                                 Padding(
                                   padding: EdgeInsets.only(top: 0.02 * size.height),
                                   child: ImageText(
-                                    text: 'create_account',
+                                    text: 'create_account'.tr,
                                     pathImage: LocalImage.shapeButton,
                                     isUpperCase: true,
                                     width: size.width * 0.3,

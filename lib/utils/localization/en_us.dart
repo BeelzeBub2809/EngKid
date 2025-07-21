@@ -6,7 +6,7 @@ const Map<String, String> en = {
   'forgot_identifier': 'Forget ID?',
   'invalid_account': 'ID is not correct. Please try again!',
   'enter_id': 'Please enter ID to login!',
-  'forgot_password': 'Please contact with teacher incharge\nto get your ID',
+  'forgot_password': 'Forgot Password?',
   'register' : 'Register account',
 
   //forgot identifier
@@ -18,6 +18,10 @@ const Map<String, String> en = {
   're_enter_login_id' : 'Re-enter ID code',
 
   //register
+  'full_name' : 'Full Name',
+  'user_name' : 'User Name',
+  'password' : 'Password',
+  'confirm_password' : 'Confirm Password',
   'name_parents' : 'Parents name',
   'gmail_address' : 'Gmail',
   'sex' : 'Sex',
@@ -51,6 +55,15 @@ const Map<String, String> en = {
   'please_enter_address' : 'Please enter address',
 
   // add child
+  'sunday': 'Sunday',
+  'monday': 'Monday',
+  'tuesday': 'Tuesday',
+  'wednesday': 'Wednesday',
+  'thursday': 'Thursday',
+  'friday': 'Friday',
+  'saturday': 'Saturday',
+  'choose_date_of_birth' : 'Choose date of birth',
+  'date_of_birth' : 'Date of birth',
   'child_name_add' : 'Child\'s name (nickname)',
   'school_add' : 'School',
   'grade_add' : 'Grade',
@@ -73,9 +86,18 @@ const Map<String, String> en = {
   'confirm_delete_account' : 'After deleting,you will not be able to access this account.\n\nAre you sure you want to delete this account?',
   'new_phone_number' : 'New phone number',
 
+  //home
+  'create_account' : 'Create child account',
 
+  //My library
+  'grade_1' : 'Grade 1',
+  'grade_2' : 'Grade 2',
+  'grade_3' : 'Grade 3',
+  'grade_4' : 'Grade 4',
+  'grade_5' : 'Grade 5',
 
   // declare_parent_code
+  'save_safety_code' : 'Save safety code',
   'parent_setup': 'Parent setup safety code',
   're_parent_setup': 'Re-enter safety code',
   'illegal_code': 'Safety code is not correct. Please try again!',
