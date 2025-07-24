@@ -373,4 +373,9 @@ const Map<String, String> en = {
   "group_uploaded": "Group avatar updated",
   "enter_answer": "Enter answer",
   "answer_question": "Answer the question",
+
+  //Video
+  "pause_video" : "Paused",
+  "next_video" : "Continue",
+  "review_video" : "Play again"
 };
