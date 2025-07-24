@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:EngKid/domain/core/entities/child_profile/child_profiles_usecase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -205,7 +207,6 @@ class AddChildAccountController extends GetxController {
     if(validateFormRegister()){
       Map<String, dynamic> body = {
         'name' : _childName.value,
-        'student_id' : _studentId.value,
         'dob' : _dateOfBirth.value,
         'gender' : _sex.value,
         'grade_id' : _selectedGrade.value['id'],
@@ -213,19 +214,20 @@ class AddChildAccountController extends GetxController {
       try {
         LibFunction.showLoading();
         final statusCode = await _childProfilesUsecases.createChild(body);
+        final prettyJson = const JsonEncoder.withIndent('  ').convert(statusCode);
+        print('📦 API Response (statusCode):\n$prettyJson');
         if (statusCode == 3) {
           LibFunction.hideLoading();
           LibFunction.toast('student_exits');
         }else {
           LibFunction.hideLoading();
           LibFunction.toast('add_child_success');
-          Get.back();
           final child = _child.value = Child(
             id: statusCode['id'],
             name: statusCode['name'],
             gradeId: statusCode['grade_id'],
             avatar: '',
-            parentId: statusCode['parent_id'],
+            parentId: statusCode['kid_parent_id'],
             gender: statusCode['gender'],
             dob: statusCode['dob'],
           );

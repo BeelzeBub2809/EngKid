@@ -379,4 +379,9 @@ const Map<String, String> vi = {
   "group_uploaded": "Đã cập nhật ảnh nhóm",
   "enter_answer": "Nhập câu trả lời",
   "answer_question": "Trả lời câu hỏi",
+
+  //Video
+  "pause_video" : "Dừng",
+  "next_video" : "Tiếp tục",
+  "review_video" : "Phát lại"
 };
