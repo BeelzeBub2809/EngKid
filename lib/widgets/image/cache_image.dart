@@ -23,6 +23,16 @@ class CacheImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Check if URL is empty or null
+    if (url.isEmpty) {
+      print("CacheImage: Empty URL provided, using placeholder");
+      return Image.asset(
+        LocalImage.backgroundBlue,
+        width: width,
+        height: height,
+        fit: boxFit,
+      );
+    }
 
     // If it's an SVG
     if (IMUtils.isSvg(url)) {

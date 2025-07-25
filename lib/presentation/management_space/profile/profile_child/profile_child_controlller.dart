@@ -10,12 +10,7 @@ import 'package:get/get.dart';
 
 import '../../../../domain/core/entities/child_profile/entities/child/child.dart';
 
-
-enum ProfileChildInputType {
-  childName,
-  childId,
-  dateOfBirth
-}
+enum ProfileChildInputType { childName, childId, dateOfBirth }
 
 class ProfileChildController extends GetxController {
   ProfileChildController();
@@ -43,7 +38,6 @@ class ProfileChildController extends GetxController {
 
   TextEditingController childNameController = TextEditingController();
   TextEditingController childIdController = TextEditingController();
-
 
   final RxString _validateChildName = ''.obs;
   String get validateChildName => _validateChildName.value;
@@ -112,12 +106,10 @@ class ProfileChildController extends GetxController {
         _childName.value = _userService.currentUser.name;
         _childId.value = _userService.currentUser.id.toString();
         _selectedGrade.value = {
-          "id" : _userService.currentUser.gradeId,
+          "id": _userService.currentUser.gradeId,
         };
 
         _dateOfBirth.value = "29/11/2003";
-
-
       }
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -139,7 +131,6 @@ class ProfileChildController extends GetxController {
       indexChild.value = 0;
       onChangeChild(_userService.childProfiles.childProfiles[0], 0);
     }
-
   }
 
   void onChangeAvt(int index, String avtUrl) {
@@ -151,9 +142,7 @@ class ProfileChildController extends GetxController {
     indexAvt.value = index;
   }
 
-  void initData() async {
-
-  }
+  void initData() async {}
 
   void onChangeChild(Child child, int index) {
     try {
@@ -164,10 +153,8 @@ class ProfileChildController extends GetxController {
       childIdController.text = child.id.toString();
 
       _selectedGrade.value = {
-        "id" : child.gradeId,
+        "id": child.gradeId,
       };
-
-
     } catch (e) {
       LibFunction.toast('error_try_again');
     }
@@ -198,9 +185,7 @@ class ProfileChildController extends GetxController {
         dateOfBirthController.text = dateOfBirthRx;
         print('dateOfBirthController: ${dateOfBirthController}');
 
-
         break;
-
     }
   }
 

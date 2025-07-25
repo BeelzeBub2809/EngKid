@@ -352,5 +352,5 @@ class LocalImage {
   // profile
   static const icEdit = "$_imageUrl/ic_edit.png";
 
-
+  static const gameIcon = "$_imageUrl/game_icon.png";
 }
