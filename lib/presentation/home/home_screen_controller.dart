@@ -52,11 +52,29 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
       arguments: 'settings',
       count: 0,
     ),
+    Menu(
+      name: 'game',
+      pathImage: LocalImage.gameIcon,
+      to: AppRoute.game,
+      needValidateParent: true,
+      requireValidate: true,
+      arguments: [true, false], // if is game then ques cannot caculator score
+      count: 0,
+    ),
+    Menu(
+      name: 'notification',
+      pathImage: LocalImage.bell,
+      to: AppRoute.notificationSystem,
+      needValidateParent: true,
+      requireValidate: false,
+      arguments: null,
+      count: 0,
+    ),
   ].obs;
 
   void onPressTo(Menu menu) async {
     handleGetData(menu.to);
-    if(_userService.childProfiles.childProfiles.isEmpty) {
+    if (_userService.childProfiles.childProfiles.isEmpty) {
       Get.toNamed(AppRoute.addChildrenCode);
       return;
     }
@@ -93,25 +111,25 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
         const AndroidAudioAttributes(usage: AndroidAudioUsage.media));
   }
 
-
   void shareMyApp() {
     String appLink = '';
-    const appLinkIos = 'https://apps.apple.com/vn/app/vui-%C4%91%E1%BB%8Dc-c%C3%B9ng-em/id6711332921';
-    const appLinkAndroid= 'https://play.google.com/store/apps/details?id=com.EngKid.readingapp&pcampaignid=web_share';
+    const appLinkIos =
+        'https://apps.apple.com/vn/app/vui-%C4%91%E1%BB%8Dc-c%C3%B9ng-em/id6711332921';
+    const appLinkAndroid =
+        'https://play.google.com/store/apps/details?id=com.EngKid.readingapp&pcampaignid=web_share';
 
-    if(Platform.isIOS){
+    if (Platform.isIOS) {
       appLink = appLinkIos;
-    }else {
+    } else {
       appLink = appLinkAndroid;
     }
-
 
     Share.share(appLink, subject: 'Vui đọc cùng em');
   }
 
   void handleGetData(String to) {
     switch (to) {
-        case AppRoute.myLibrary:
+      case AppRoute.myLibrary:
         _topicService.getGradesFromStorage(
           isAwait: true,
         );
@@ -190,7 +208,6 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
     //custom for teacher
     await Clipboard.setData(ClipboardData(text: deviceToken ?? ""));
   }
-
 
   @override
   void onClose() {

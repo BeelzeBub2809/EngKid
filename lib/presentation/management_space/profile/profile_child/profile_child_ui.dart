@@ -32,28 +32,27 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
 
     return Scaffold(
       floatingActionButton: Obx(
-            () => Align(
+        () => Align(
           alignment: Alignment.bottomCenter,
           child: Padding(
-            padding:  EdgeInsets.only(left: 0.06 * size.width),
+            padding: EdgeInsets.only(left: 0.06 * size.width),
             child: ImageText(
-              text: controller.isEdit
-                  ? 'update_profile'.tr
-                  : 'delete_account'.tr,
+              text:
+                  controller.isEdit ? 'update_profile'.tr : 'delete_account'.tr,
               pathImage: controller.isEdit
                   ? LocalImage.shapeButton
                   : LocalImage.buttonElibrary,
               isUpperCase: true,
               onTap: controller.isEdit
                   ? () async {
-                // await controller.updateProfileParent();
-              }
+                      // await controller.updateProfileParent();
+                    }
                   : () async {
-                Get.dialog(const DialogAlert(
-                  message: 'confirm_delete_account',
-                  isCancel: true,
-                ));
-              },
+                      Get.dialog(const DialogAlert(
+                        message: 'confirm_delete_account',
+                        isCancel: true,
+                      ));
+                    },
               width: size.width * 0.6,
               height: size.height * 0.07,
             ),
@@ -61,22 +60,19 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
         ),
       ),
       body: SingleChildScrollView(
-
-
         child: Container(
-
-            width: size.width,
-            height: size.height,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  LocalImage.quizBg,
-                ),
-                fit: BoxFit.fill,
+          width: size.width,
+          height: size.height,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                LocalImage.quizBg,
               ),
+              fit: BoxFit.fill,
             ),
+          ),
           child: Padding(
-            padding:  EdgeInsets.symmetric(horizontal: size.width * 0.03),
+            padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -84,9 +80,8 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                   Row(
                     children: [
                       ImageButton(
-                        pathImage:
-                        LocalImage.swiperBack,
-                        onTap: (){
+                        pathImage: LocalImage.swiperBack,
+                        onTap: () {
                           int previousIndex = controller.indexChild.value - 1;
                           if (previousIndex >= 0) {
                             controller.pageController.animateToPage(
@@ -94,41 +89,54 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                               duration: const Duration(milliseconds: 300),
                               curve: Curves.easeInOut,
                             );
-                            controller.onChangeChild(userService.childProfiles.childProfiles[previousIndex], previousIndex);
+                            controller.onChangeChild(
+                                userService
+                                    .childProfiles.childProfiles[previousIndex],
+                                previousIndex);
                           }
                         },
                         width: size.width * 0.08,
                         height: size.width * 0.13,
                         semantics: 'back',
                       ),
-                      SizedBox(width: size.width * 0.05,),
-
+                      SizedBox(
+                        width: size.width * 0.05,
+                      ),
                       Expanded(
                         child: SizedBox(
                           height: LibFunction.scaleForCurrentValue(size, 500),
                           child: PageView.builder(
                             controller: controller.pageController,
-                            itemCount: userService.childProfiles.childProfiles.length,
+                            itemCount:
+                                userService.childProfiles.childProfiles.length,
                             onPageChanged: (index) {
-                              controller.onChangeChild(userService.childProfiles.childProfiles[index], index);
+                              controller.onChangeChild(
+                                  userService
+                                      .childProfiles.childProfiles[index],
+                                  index);
                             },
                             itemBuilder: (context, index) {
                               return AnimatedBuilder(
                                 animation: controller.pageController,
                                 builder: (context, child) {
                                   double value = 1.0;
-                                  if (controller.pageController.position.haveDimensions) {
-                                    value = controller.pageController.page! - index;
-                                    value = (1 - (value.abs() * 0.3)).clamp(0.7, 1.0);
+                                  if (controller
+                                      .pageController.position.haveDimensions) {
+                                    value =
+                                        controller.pageController.page! - index;
+                                    value = (1 - (value.abs() * 0.3))
+                                        .clamp(0.7, 1.0);
                                   }
                                   return Center(
                                     child: Transform.scale(
                                       scale: value,
                                       child: Container(
-                                        margin: const EdgeInsets.symmetric(horizontal: 5),
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 5),
                                         decoration: BoxDecoration(
                                           border: Border.all(
-                                            color: index == controller.indexChild.value
+                                            color: index ==
+                                                    controller.indexChild.value
                                                 ? AppColor.red
                                                 : Colors.transparent,
                                             width: 1,
@@ -139,29 +147,56 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                                           clipBehavior: Clip.none,
                                           children: [
                                             Obx(() {
-                                              final path = controller.pathAvatars[index] ?? userService.childProfiles.childProfiles[index].avatar;
+                                              final path = controller
+                                                      .pathAvatars[index] ??
+                                                  userService
+                                                      .childProfiles
+                                                      .childProfiles[index]
+                                                      .avatar;
                                               return ClipOval(
                                                 child: CacheImage(
                                                   url: path,
-                                                  width: LibFunction.scaleForCurrentValue(size, index == controller.indexChild.value ? 450 : 400),
-                                                  height: LibFunction.scaleForCurrentValue(size, index == controller.indexChild.value ? 450 : 400),
+                                                  width: LibFunction
+                                                      .scaleForCurrentValue(
+                                                          size,
+                                                          index ==
+                                                                  controller
+                                                                      .indexChild
+                                                                      .value
+                                                              ? 450
+                                                              : 400),
+                                                  height: LibFunction
+                                                      .scaleForCurrentValue(
+                                                          size,
+                                                          index ==
+                                                                  controller
+                                                                      .indexChild
+                                                                      .value
+                                                              ? 450
+                                                              : 400),
                                                 ),
                                               );
                                             }),
-
-                                               Obx(
-                                                 () => index == controller.indexChild.value && controller.isEdit ? Positioned(
-                                                  bottom: -10,
-                                                  right: 0,
-                                                  left: 0,
-                                                  child: GestureDetector(
-                                                    onTap: (){
-                                                      _diaLogChangeAvt(size);
-
-                                                    },
-                                                      child: const Icon(Icons.camera_alt, size: 20)),
-                                              ) : const SizedBox(),
-                                               ),
+                                            Obx(
+                                              () => index ==
+                                                          controller.indexChild
+                                                              .value &&
+                                                      controller.isEdit
+                                                  ? Positioned(
+                                                      bottom: -10,
+                                                      right: 0,
+                                                      left: 0,
+                                                      child: GestureDetector(
+                                                          onTap: () {
+                                                            _diaLogChangeAvt(
+                                                                size);
+                                                          },
+                                                          child: const Icon(
+                                                              Icons.camera_alt,
+                                                              size: 20)),
+                                                    )
+                                                  : const SizedBox(),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -173,14 +208,12 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                           ),
                         ),
                       ),
-                      SizedBox(width: size.width * 0.05,),
-
-
-
+                      SizedBox(
+                        width: size.width * 0.05,
+                      ),
                       ImageButton(
-                        pathImage:
-                        LocalImage.swiperNext,
-                        onTap: (){
+                        pathImage: LocalImage.swiperNext,
+                        onTap: () {
                           int nextIndex = controller.indexChild.value + 1;
                           if (nextIndex < userService.userInfos.length) {
                             controller.pageController.animateToPage(
@@ -188,7 +221,10 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                               duration: const Duration(milliseconds: 300),
                               curve: Curves.easeInOut,
                             );
-                            controller.onChangeChild(userService.childProfiles.childProfiles[nextIndex], nextIndex);
+                            controller.onChangeChild(
+                                userService
+                                    .childProfiles.childProfiles[nextIndex],
+                                nextIndex);
                           }
                         },
                         width: size.width * 0.08,
@@ -197,11 +233,10 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                       ),
                     ],
                   ),
-
                   Padding(
                     padding: EdgeInsets.only(top: Get.height * 0.02),
                     child: Obx(
-                          () => SizedBox(
+                      () => SizedBox(
                         width: Get.width,
                         child: CommonWidget.textFieldWithTitle(
                             validateNotify: controller.validateChildName,
@@ -209,7 +244,7 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                             vertical: 0,
                             title: 'child_name_add'.tr,
                             child: Obx(
-                                () => TextFieldWidget(
+                              () => TextFieldWidget(
                                   enabled: controller.isEdit ? true : false,
                                   prefixIcon: const Row(
                                     mainAxisSize: MainAxisSize.min,
@@ -224,8 +259,7 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                                   onChange: (val) {
                                     controller.onChangeInput(
                                         input: val,
-                                      type: ProfileChildInputType.childName
-                                    );
+                                        type: ProfileChildInputType.childName);
                                   },
                                   hintText: ''),
                             )),
@@ -233,7 +267,7 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                     ),
                   ),
                   Obx(
-                        () => SizedBox(
+                    () => SizedBox(
                       width: Get.width,
                       child: CommonWidget.textFieldWithTitle(
                           validateNotify: controller.validateChildId,
@@ -255,52 +289,50 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                               onChange: (val) {
                                 controller.onChangeInput(
                                     input: val,
-                                    type: ProfileChildInputType.childId
-                                );
+                                    type: ProfileChildInputType.childId);
                               },
                               hintText: '')),
                     ),
                   ),
                   Obx(
-                        () => SizedBox(
-                          width: Get.width,
+                    () => SizedBox(
+                      width: Get.width,
                       child: CommonWidget.textFieldWithTitle(
-                          validateNotify: controller.validateDateOfBirth,
-                          horizontal: 6,
-                          vertical: 0,
-                          title: 'date_of_birth'.tr,
-                          child: TextFieldWidget(
-                              enabled: controller.isEdit ? true : false,
-                              prefixIcon: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.code,
-                                    color: AppColor.red,
-                                    size: 22,
-                                  ),
-                                ],
-                              ),
-                              onChange: (val) {
-                                controller.onChangeInput(
-                                    input: val,
-                                    type: ProfileChildInputType.dateOfBirth
-                                );
-                              },
-                              hintText: '',
+                        validateNotify: controller.validateDateOfBirth,
+                        horizontal: 6,
+                        vertical: 0,
+                        title: 'date_of_birth'.tr,
+                        child: TextFieldWidget(
+                            enabled: controller.isEdit ? true : false,
+                            prefixIcon: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.code,
+                                  color: AppColor.red,
+                                  size: 22,
+                                ),
+                              ],
+                            ),
+                            onChange: (val) {
+                              controller.onChangeInput(
+                                  input: val,
+                                  type: ProfileChildInputType.dateOfBirth);
+                            },
+                            hintText: '',
                             suffixIcon: GestureDetector(
                               onTap: () async {
                                 final selectedDates =
-                                await showCalendarDatePicker2Dialog(
+                                    await showCalendarDatePicker2Dialog(
                                   context: Get.context!,
                                   config:
-                                  CalendarDatePicker2WithActionButtonsConfig(
+                                      CalendarDatePicker2WithActionButtonsConfig(
                                     calendarType:
-                                    CalendarDatePicker2Type.single,
+                                        CalendarDatePicker2Type.single,
                                     selectedDayHighlightColor: Colors.red,
                                   ),
                                   dialogSize:
-                                  Size(Get.width * 0.8, Get.height * 0.5),
+                                      Size(Get.width * 0.8, Get.height * 0.5),
                                   value: [
                                     controller.selectedDate ?? DateTime.now()
                                   ],
@@ -309,19 +341,24 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                                 if (selectedDates != null &&
                                     selectedDates.isNotEmpty) {
                                   controller.selectedDate = selectedDates.first;
-                                  controller.dateOfBirthRx = DateFormat('dd/MM/yyyy').format(selectedDates.first!);
-                                  print('controller.dateOfBirthRx : ${controller.dateOfBirthRx}');
+                                  controller.dateOfBirthRx =
+                                      DateFormat('dd/MM/yyyy')
+                                          .format(selectedDates.first!);
+                                  print(
+                                      'controller.dateOfBirthRx : ${controller.dateOfBirthRx}');
                                   controller.onChangeInput(
                                       input: controller.dateOfBirthRx,
-                                      type: ProfileChildInputType.dateOfBirth
-                                  );
+                                      type: ProfileChildInputType.dateOfBirth);
                                 }
                               },
-                              child:
-                               Icon(Icons.calendar_month, size: 30, color: controller.isEdit ? AppColor.red : AppColor.gray,),
-                            )
-                          ),
-
+                              child: Icon(
+                                Icons.calendar_month,
+                                size: 30,
+                                color: controller.isEdit
+                                    ? AppColor.red
+                                    : AppColor.gray,
+                              ),
+                            )),
                       ),
                     ),
                   ),
@@ -330,7 +367,6 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       mainAxisSize: MainAxisSize.max,
-
                       children: [
                         RegularText(
                           'sex'.tr,
@@ -341,7 +377,9 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                             fontStyle: FontStyle.italic,
                           ),
                         ),
-                        SizedBox(width: size.width * 0.4,),
+                        SizedBox(
+                          width: size.width * 0.4,
+                        ),
                         Expanded(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -350,35 +388,34 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                                 "male",
                                 "female",
                               ].map((sex) => Row(
-                                children: [
-                                  RegularText(
-                                    sex.tr,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: Fontsize.small,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: Get.width * 0.02,
-                                  ),
-                                  Obx(
-                                        () => GestureDetector(
-                                      onTap: () {
-                                        controller.selectSex(sex);
-                                      },
-                                      child: Image.asset(
-                                        controller.sex == sex
-                                            ? LocalImage.checkboxChecked
-                                            : LocalImage.checkboxUnChecked,
-                                        width: 24,
-                                        height: 24,
+                                    children: [
+                                      RegularText(
+                                        sex.tr,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: Fontsize.small,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
-                                    ),
-                                  ),
-
-                                ],
-                              ))
+                                      SizedBox(
+                                        width: Get.width * 0.02,
+                                      ),
+                                      Obx(
+                                        () => GestureDetector(
+                                          onTap: () {
+                                            controller.selectSex(sex);
+                                          },
+                                          child: Image.asset(
+                                            controller.sex == sex
+                                                ? LocalImage.checkboxChecked
+                                                : LocalImage.checkboxUnChecked,
+                                            width: 24,
+                                            height: 24,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ))
                             ],
                           ),
                         )
@@ -386,7 +423,7 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                     ),
                   ),
                   Obx(
-                        () => Padding(
+                    () => Padding(
                       padding: EdgeInsets.only(
                           top: controller.validateSex.isNotEmpty ? 10 : 0,
                           right: controller.validateSex.isNotEmpty ? 15 : 0),
@@ -409,14 +446,14 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Obx(
-                                () => ItemDropdownHaveTitle(
+                            () => ItemDropdownHaveTitle(
                               title: 'grade_add',
                               isEdit: controller.isEdit,
                               items: controller.gradeList
                                   .map((org) => {
-                                'id': org.id,
-                                'name': org.name,
-                              })
+                                        'id': org.id,
+                                        'name': org.name,
+                                      })
                                   .toList(),
                               selectedItem: controller.selectedGrade,
                               onChanged: (value) {
@@ -429,18 +466,16 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                           ),
                           Obx(() => controller.validateGrade.isNotEmpty
                               ? Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: RegularText(controller.validateGrade,
-                                style: const TextStyle(
-                                    fontSize: 12, color: AppColor.red)),
-                          )
+                                  padding: const EdgeInsets.only(top: 5),
+                                  child: RegularText(controller.validateGrade,
+                                      style: const TextStyle(
+                                          fontSize: 12, color: AppColor.red)),
+                                )
                               : const SizedBox())
                         ],
                       ),
                     ],
                   ),
-
-
                 ],
               ),
             ),
@@ -449,6 +484,7 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
       ),
     );
   }
+
   String _buildShortTitle(List<Map<String, dynamic>> list) {
     String result = list.map((e) => e['title']).join(', ');
     if (result.length > 30) {
@@ -456,17 +492,18 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
     }
     return result;
   }
+
   Widget _buildHeader(Size size, BuildContext context) {
     EdgeInsets safePadding = MediaQuery.of(context).padding;
 
     return Padding(
-      padding:  EdgeInsets.symmetric(vertical: safePadding.top),
+      padding: EdgeInsets.symmetric(vertical: safePadding.top),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ImageButton(
             pathImage: LocalImage.backButton,
-            onTap: (){
+            onTap: () {
               Get.back();
             },
             width: size.width * 0.13,
@@ -485,32 +522,30 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
             ),
           ),
           Obx(
-                () =>
-               Semantics(
-                 label: controller.isEdit ? 'edit' : 'not_edit',
-                 child: GestureDetector(
-                    onTap: () => controller.isEditBtn(),
-                    child: Container(
-                        width: size.width * 0.12,
-                        height: size.height * 0.05,
-                        decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage(LocalImage.buttonEnter))),
-                        child: Icon(
-                          controller.isEdit ? Icons.edit : Icons.edit_off_sharp,
-                          size: 25,
-                          color: Colors.white,
-                        ))),
-               ),
+            () => Semantics(
+              label: controller.isEdit ? 'edit' : 'not_edit',
+              child: GestureDetector(
+                  onTap: () => controller.isEditBtn(),
+                  child: Container(
+                      width: size.width * 0.12,
+                      height: size.height * 0.05,
+                      decoration: const BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(LocalImage.buttonEnter))),
+                      child: Icon(
+                        controller.isEdit ? Icons.edit : Icons.edit_off_sharp,
+                        size: 25,
+                        color: Colors.white,
+                      ))),
             ),
-
+          ),
         ],
       ),
     );
   }
+
   void _diaLogChangeAvt(Size size) {
     Get.dialog(
-
       TweenAnimationBuilder(
         tween: Tween<double>(begin: 0.5, end: 1.0),
         duration: const Duration(milliseconds: 250),
@@ -533,13 +568,12 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                 width: Get.width * 0.8,
                 height: Get.height * 0.4,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  image: const DecorationImage(
-                    image: AssetImage(LocalImage.safetyGuideBg),
-                    fit: BoxFit.fill,
-                  )
-                ),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    image: const DecorationImage(
+                      image: AssetImage(LocalImage.safetyGuideBg),
+                      fit: BoxFit.fill,
+                    )),
                 padding: const EdgeInsets.all(15),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -552,12 +586,12 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                       text: "Chọn ảnh đại diện",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize:Fontsize.larger,
+                        fontSize: Fontsize.larger,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     Obx(
-                          () => SizedBox(
+                      () => SizedBox(
                         height: size.height * 0.2,
                         width: size.width,
                         child: ListView.builder(
@@ -603,8 +637,11 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                     Align(
                       alignment: Alignment.bottomRight,
                       child: ImageText(
-                        onTap: (){
-                          controller.onChangeAvt(controller.indexChild.value, controller.listImageAvt[controller.indexAvt.value]);
+                        onTap: () {
+                          controller.onChangeAvt(
+                              controller.indexChild.value,
+                              controller
+                                  .listImageAvt[controller.indexAvt.value]);
                         },
                         pathImage: LocalImage.shapeButton,
                         width: 0.3 * Get.width,
@@ -612,14 +649,11 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                         text: "Chọn",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize:Fontsize.larger,
+                          fontSize: Fontsize.larger,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-
-
-
                   ],
                 ),
               ),
@@ -629,5 +663,4 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
       ),
     );
   }
-
 }

@@ -44,4 +44,11 @@ class AppRoute {
   static const drawing = '/drawing';
 
   static const addChildrenCode = '/add_children_code';
+
+  static const game = '/game';
+  static const wordleGame = '/wordle_game';
+  static const puzzleGame = '/puzzle_game';
+  static const memoryGame = '/memory_game';
+
+  static const notificationSystem = '/notification_system';
 }

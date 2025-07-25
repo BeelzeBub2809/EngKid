@@ -7,6 +7,12 @@ import 'package:EngKid/presentation/e_library/e_library_binding.dart';
 import 'package:EngKid/presentation/e_library/e_library_ui.dart';
 import 'package:EngKid/presentation/e_library/e_library_video_binding.dart';
 import 'package:EngKid/presentation/e_library/e_library_video_ui.dart';
+import 'package:EngKid/presentation/game/wordle_game/wordle_game_binding.dart';
+import 'package:EngKid/presentation/game/wordle_game/wordle_game_ui.dart';
+import 'package:EngKid/presentation/game/puzzle_game/puzzle_game_binding.dart';
+import 'package:EngKid/presentation/game/puzzle_game/puzzle_game_ui.dart';
+import 'package:EngKid/presentation/game/memory_game/memory_game_binding.dart';
+import 'package:EngKid/presentation/game/memory_game/memory_game_ui.dart';
 import 'package:EngKid/presentation/home/home_screen_binding.dart';
 import 'package:EngKid/presentation/home/home_screen_ui.dart';
 import 'package:EngKid/presentation/management_space/management_space_binding.dart';
@@ -23,6 +29,8 @@ import 'package:EngKid/presentation/management_space/setting/setting_binding.dar
 import 'package:EngKid/presentation/management_space/setting/setting_ui.dart';
 import 'package:EngKid/presentation/my_library/my_library_binding.dart';
 import 'package:EngKid/presentation/my_library/my_library_ui.dart';
+import 'package:EngKid/presentation/notification_system/notification_system_binding.dart';
+import 'package:EngKid/presentation/notification_system/notification_system_ui.dart';
 import 'package:EngKid/presentation/question/question_binding.dart';
 import 'package:EngKid/presentation/question/question_ui.dart';
 import 'package:EngKid/presentation/reading_space/reading_space_binding.dart';
@@ -31,6 +39,8 @@ import 'package:EngKid/presentation/register/register_binding.dart';
 import 'package:EngKid/presentation/register/register_ui.dart';
 import 'package:EngKid/presentation/validate_parent/validate_parent_binding.dart';
 import 'package:EngKid/presentation/validate_parent/validate_parent_ui.dart';
+import 'package:EngKid/presentation/game/game_binding.dart';
+import 'package:EngKid/presentation/game/game_ui.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -106,9 +116,9 @@ class _MyAppState extends State<MyApp> {
               binding: RegisterBinding(),
             ),
             GetPage(
-                name: AppRoute.home,
-                page: () => const HomeScreen(),
-                binding: HomeScreenBinding(),
+              name: AppRoute.home,
+              page: () => const HomeScreen(),
+              binding: HomeScreenBinding(),
             ),
             GetPage(
               name: AppRoute.readingSpace,
@@ -126,15 +136,13 @@ class _MyAppState extends State<MyApp> {
               binding: ManagementSpaceBinding(),
               children: [
                 GetPage(
-                  name: AppRoute.report,
-                  page: () => const ReportScreen(),
-                  binding: ReportBinding()
-                ),
+                    name: AppRoute.report,
+                    page: () => const ReportScreen(),
+                    binding: ReportBinding()),
                 GetPage(
-                  name: AppRoute.personalInfo,
-                  page: () => const PersonalInfoScreen(),
-                  binding: PersonalInfoBinding()
-                ),
+                    name: AppRoute.personalInfo,
+                    page: () => const PersonalInfoScreen(),
+                    binding: PersonalInfoBinding()),
                 GetPage(
                   name: AppRoute.settings,
                   page: () => const SettingScreen(),
@@ -170,8 +178,7 @@ class _MyAppState extends State<MyApp> {
             GetPage(
                 name: AppRoute.addChildrenCode,
                 page: () => const AddChildAccountScreen(),
-                binding: AddChildAccountBinding()
-            ),
+                binding: AddChildAccountBinding()),
             GetPage(
               name: AppRoute.profileParent,
               page: () => const ProfileParentScreen(),
@@ -181,6 +188,31 @@ class _MyAppState extends State<MyApp> {
               name: AppRoute.profileChild,
               page: () => const ProfileChildScreen(),
               binding: ProfileChildBindings(),
+            ),
+            GetPage(
+              name: AppRoute.game,
+              page: () => const GameUI(),
+              binding: GameBinding(),
+            ),
+            GetPage(
+              name: AppRoute.wordleGame,
+              page: () => const WordleGameUI(),
+              binding: WordleGameBinding(),
+            ),
+            GetPage(
+              name: AppRoute.puzzleGame,
+              page: () => const PuzzleGameUI(),
+              binding: PuzzleGameBinding(),
+            ),
+            GetPage(
+              name: AppRoute.memoryGame,
+              page: () => const MemoryGameUI(),
+              binding: MemoryGameBinding(),
+            ),
+            GetPage(
+              name: AppRoute.notificationSystem,
+              page: () => const NotificationSystemScreen(),
+              binding: NotificationSystemBinding(),
             ),
           ],
         ),
