@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:EngKid/domain/core/entities/child_profile/child_profiles_usecase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -61,11 +63,11 @@ class AddChildAccountController extends GetxController {
   List<Organization> get schoolList => _schoolList;
 
   final RxList<Organization> _gradeList = [
-    const Organization(id: 1, group: 'grade_1', code: '1'),
-    const Organization(id: 2, group: 'grade_2', code: '1'),
-    const Organization(id: 3, group: 'grade_3', code: '1'),
-    const Organization(id: 4, group: 'grade_4', code: '1'),
-    const Organization(id: 5, group: 'grade_5', code: '1'),
+    const Organization(id: 1, group: '1', code: '1'),
+    const Organization(id: 2, group: '2', code: '1'),
+    const Organization(id: 3, group: '3', code: '1'),
+    const Organization(id: 4, group: '4', code: '1'),
+    const Organization(id: 5, group: '5', code: '1'),
   ].obs;
   final RxList<Organization> _classList = [
     const Organization(id: 1, group: 'class_1', code: '1'),
@@ -201,10 +203,10 @@ class AddChildAccountController extends GetxController {
 
 
   void createChildAccount() async {
+    print('Create Child Called');
     if(validateFormRegister()){
       Map<String, dynamic> body = {
         'name' : _childName.value,
-        'student_id' : _studentId.value,
         'dob' : _dateOfBirth.value,
         'gender' : _sex.value,
         'grade_id' : _selectedGrade.value['id'],
@@ -212,19 +214,20 @@ class AddChildAccountController extends GetxController {
       try {
         LibFunction.showLoading();
         final statusCode = await _childProfilesUsecases.createChild(body);
+        final prettyJson = const JsonEncoder.withIndent('  ').convert(statusCode);
+        print('📦 API Response (statusCode):\n$prettyJson');
         if (statusCode == 3) {
           LibFunction.hideLoading();
           LibFunction.toast('student_exits');
         }else {
           LibFunction.hideLoading();
           LibFunction.toast('add_child_success');
-          Get.back();
           final child = _child.value = Child(
             id: statusCode['id'],
             name: statusCode['name'],
             gradeId: statusCode['grade_id'],
             avatar: '',
-            parentId: statusCode['parent_id'],
+            parentId: statusCode['kid_parent_id'],
             gender: statusCode['gender'],
             dob: statusCode['dob'],
           );
@@ -295,7 +298,6 @@ class AddChildAccountController extends GetxController {
     return _validateChildName.value.isEmpty &&
         _validateSex.value.isEmpty &&
         _validateGrade.value.isEmpty &&
-        _validateStudentId.isEmpty &&
         _validateDateOfBirth.isEmpty;
   }
 

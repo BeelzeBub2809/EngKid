@@ -232,64 +232,6 @@ class AddChildAccountScreen extends GetView<AddChildAccountController> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               RegularText(
-                'student_id'.tr,
-                style: TextStyle(
-                  fontSize: Fontsize.normal,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
-              Obx(
-                () => SizedBox(
-                  width: 0.32 * Get.width,
-                  child: LandScapeTextField(
-                    maxLength: 30,
-                    input: controller.studentIdRx,
-                    keyboardType: TextInputType.text,
-                    backgroundColor: Colors.transparent,
-                    borderColor: Colors.black38,
-                    placeHolder: 'student_id'.tr,
-                    textAlign: Alignment.bottomLeft,
-                    textStyle: TextStyle(
-                      fontSize: Fontsize.larger,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
-                    onChange: (text) => controller.onChangeInput(
-                      input: text,
-                      type: AddChildInputType.studentId,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Obx(
-          () => Padding(
-            padding: EdgeInsets.only(
-                top: controller.validateStudentId.isNotEmpty ? 10 : 0,
-                right: controller.validateStudentId.isNotEmpty ? 25 : 0),
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                controller.validateStudentId.tr,
-                style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.red),
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding:
-              EdgeInsets.only(top: Get.height * 0.05, right: Get.height * 0.05),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              RegularText(
                 'date_of_birth'.tr,
                 style: TextStyle(
                   fontSize: Fontsize.normal,

@@ -106,7 +106,7 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
   void onInit() {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
-
+    _userService.getChildProfilesFromStorage();
     player.setAndroidAudioAttributes(
         const AndroidAudioAttributes(usage: AndroidAudioUsage.media));
   }

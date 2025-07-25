@@ -198,51 +198,96 @@ class HomeScreen extends GetView<HomeScreenController> {
                               SizedBox(
                                 height: 0.02 * size.height,
                               ),
-                              if(userService.childProfiles.childProfiles.isNotEmpty)
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ImageText(
-                                      text: 'e_book',
-                                      pathImage: LocalImage.buttonElibrary,
-                                      isUpperCase: true,
-                                      width: size.width * 0.16,
-                                      height: size.height * 0.13,
-                                      onTap: () {
-                                        controller.onPressLibrary();
-                                      },
-                                    ),
-                                    SizedBox(
-                                      width: size.width * 0.01,
-                                    ),
-                                    ImageText(
-                                      text: 'reading',
+                              Obx(
+                                  () => userService.childProfiles.childProfiles.isNotEmpty
+                                      ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      ImageText(
+                                        text: 'e_book',
+                                        pathImage: LocalImage.buttonElibrary,
+                                        isUpperCase: true,
+                                        width: size.width * 0.16,
+                                        height: size.height * 0.13,
+                                        onTap: () {
+                                          controller.onPressLibrary();
+                                        },
+                                      ),
+                                      SizedBox(
+                                        width: size.width * 0.01,
+                                      ),
+                                      ImageText(
+                                        text: 'reading',
+                                        pathImage: LocalImage.shapeButton,
+                                        isUpperCase: true,
+                                        width: size.width * 0.16,
+                                        height: size.height * 0.13,
+                                        onTap: () {
+                                          controller.onPressStart();
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                      : Padding(
+                                    padding: EdgeInsets.only(top: 0.02 * size.height),
+                                    child: ImageText(
+                                      text: 'create_account'.tr,
                                       pathImage: LocalImage.shapeButton,
                                       isUpperCase: true,
-                                      width: size.width * 0.16,
-                                      height: size.height * 0.13,
+                                      width: size.width * 0.3,
+                                      height: size.height * 0.2,
                                       onTap: () {
-                                        controller.onPressStart();
+                                        Get.toNamed(AppRoute.addChildrenCode);
                                       },
                                     ),
-                                  ],
-                                ),
-
-                              if(userService.childProfiles.childProfiles.isEmpty)
-                                Padding(
-                                  padding: EdgeInsets.only(top: 0.02 * size.height),
-                                  child: ImageText(
-                                    text: 'create_account',
-                                    pathImage: LocalImage.shapeButton,
-                                    isUpperCase: true,
-                                    width: size.width * 0.3,
-                                    height: size.height * 0.2,
-                                    onTap: () {
-                                      Get.toNamed(AppRoute.addChildrenCode);
-                                    },
                                   ),
-                                ),
+                              ),
+                              // if(userService.childProfiles.childProfiles.isNotEmpty)
+                              //   Row(
+                              //     mainAxisAlignment: MainAxisAlignment.center,
+                              //     crossAxisAlignment: CrossAxisAlignment.center,
+                              //     children: [
+                              //       ImageText(
+                              //         text: 'e_book',
+                              //         pathImage: LocalImage.buttonElibrary,
+                              //         isUpperCase: true,
+                              //         width: size.width * 0.16,
+                              //         height: size.height * 0.13,
+                              //         onTap: () {
+                              //           controller.onPressLibrary();
+                              //         },
+                              //       ),
+                              //       SizedBox(
+                              //         width: size.width * 0.01,
+                              //       ),
+                              //       ImageText(
+                              //         text: 'reading',
+                              //         pathImage: LocalImage.shapeButton,
+                              //         isUpperCase: true,
+                              //         width: size.width * 0.16,
+                              //         height: size.height * 0.13,
+                              //         onTap: () {
+                              //           controller.onPressStart();
+                              //         },
+                              //       ),
+                              //     ],
+                              //   ),
+                              //
+                              // if(userService.childProfiles.childProfiles.isEmpty)
+                              //   Padding(
+                              //     padding: EdgeInsets.only(top: 0.02 * size.height),
+                              //     child: ImageText(
+                              //       text: 'create_account'.tr,
+                              //       pathImage: LocalImage.shapeButton,
+                              //       isUpperCase: true,
+                              //       width: size.width * 0.3,
+                              //       height: size.height * 0.2,
+                              //       onTap: () {
+                              //         Get.toNamed(AppRoute.addChildrenCode);
+                              //       },
+                              //     ),
+                              //   ),
                             ],
                           ),
                         ),
