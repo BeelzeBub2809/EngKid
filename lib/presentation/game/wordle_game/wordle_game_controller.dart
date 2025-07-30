@@ -74,7 +74,6 @@ class WordleGameController extends GetxController {
 
       debugPrint('Fetching word from: $selectedApiUrl');
       final response = await _dio.get(selectedApiUrl);
-
       if (response.statusCode == 200) {
         print('API Response: ${response.data}');
 
@@ -157,13 +156,11 @@ class WordleGameController extends GetxController {
 
       // Fetch definition and image concurrently
       final List<Future> futures = [
-        _dio.get('$DICTIONARY_API_URL/${word.toLowerCase()}'),
-        _fetchWordImage(word),
+        _dio.get('$DICTIONARY_API_URL/${word.toLowerCase()}')
       ];
 
       final results = await Future.wait(futures);
       final definitionResponse = results[0] as dio.Response;
-      final imageUrl = results[1] as String?;
 
       if (definitionResponse.statusCode == 200 &&
           definitionResponse.data is List &&
@@ -203,9 +200,7 @@ class WordleGameController extends GetxController {
           'definition': definition,
           'pronunciation': pronunciation,
           'audioUrl': audioUrl,
-          'partOfSpeech':
-              wordData['meanings']?[0]?['partOfSpeech'] ?? 'Unknown',
-          'imageUrl': imageUrl ?? '', // Add image URL to the data
+          'partOfSpeech': wordData['meanings']?[0]?['partOfSpeech'] ?? 'Unknown'
         };
       }
       return null;
@@ -217,43 +212,18 @@ class WordleGameController extends GetxController {
     }
   }
 
-  Future<String?> _fetchWordImage(String word) async {
-    try {
-      final response = await _dio.get(
-        UNSPLASH_API_URL,
-        queryParameters: {
-          'page': 1,
-          'per_page': 1,
-          'query': word.toLowerCase(),
-          'client_id': UNSPLASH_CLIENT_ID,
-        },
-      );
-
-      if (response.statusCode == 200 &&
-          response.data is List &&
-          response.data.isNotEmpty) {
-        final imageData = response.data[0];
-        // Get the regular size image URL
-        return imageData['urls']?['regular'] ?? imageData['urls']?['small'];
-      }
-      return null;
-    } catch (e) {
-      debugPrint('Error fetching word image: $e');
-      return null;
-    }
-  }
-
   void showWordDefinition() async {
     if (_targetWord.value.isEmpty) return;
-
+    LibFunction.showLoading();
     final wordInfo = await fetchWordDefinition(_targetWord.value);
-
+    LibFunction.hideLoading();
     if (wordInfo != null) {
       Get.dialog(
         DialogWordDefinition(wordInfo: wordInfo),
         barrierDismissible: true,
       );
     } else {
+      LibFunction.hideLoading();
       LibFunction.toast('Could not fetch word definition');
     }
   }

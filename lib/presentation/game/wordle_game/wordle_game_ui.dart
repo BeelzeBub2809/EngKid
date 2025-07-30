@@ -73,8 +73,8 @@ class WordleGameUI extends GetView<WordleGameController> {
             onTap: () => Get.back(),
             child: Image.asset(
               LocalImage.backButton,
-              width: 35,
-              height: 35,
+              width: 75,
+              height: 75,
             ),
           ),
           // Title and difficulty

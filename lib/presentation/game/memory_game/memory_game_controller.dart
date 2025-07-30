@@ -1,344 +1,295 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_tts/flutter_tts.dart';
 
-enum MemoryGameType {
-  cardMatching,
-  sequenceMemory,
-  wordMemory,
-  colorPattern,
-  numberSequence,
-}
+enum MemoryGameType { cardMatching }
 
-enum MemoryDifficulty {
-  easy,
-  medium,
-  hard,
-}
+enum MemoryDifficulty { easy, medium, hard }
 
-class MemoryCard {
-  final int id;
-  final String content;
-  final Color color;
-  bool isFlipped;
-  bool isMatched;
-  bool isVisible;
+enum GameState { setup, loading, playing, finished }
 
-  MemoryCard({
-    required this.id,
-    required this.content,
-    required this.color,
-    this.isFlipped = false,
-    this.isMatched = false,
-    this.isVisible = true,
+enum CardType { word, phonetic }
+
+class WordData {
+  final String word;
+  final String pronunciation;
+  final String phonetic;
+
+  WordData({
+    required this.word,
+    required this.pronunciation,
+    required this.phonetic,
   });
 
-  MemoryCard copyWith({
-    int? id,
-    String? content,
-    Color? color,
-    bool? isFlipped,
-    bool? isMatched,
-    bool? isVisible,
-  }) {
-    return MemoryCard(
-      id: id ?? this.id,
-      content: content ?? this.content,
-      color: color ?? this.color,
-      isFlipped: isFlipped ?? this.isFlipped,
-      isMatched: isMatched ?? this.isMatched,
-      isVisible: isVisible ?? this.isVisible,
+  factory WordData.fromJson(Map<String, dynamic> json) {
+    return WordData(
+      word: json['word'] ?? '',
+      pronunciation: json['pronunciation'] ?? '',
+      phonetic: json['phonetic'] ?? '',
     );
   }
 }
 
-class SequenceItem {
-  final int index;
-  final String content;
-  final Color color;
-  bool isHighlighted;
+class RandomWordResponse {
+  final String word;
 
-  SequenceItem({
-    required this.index,
+  RandomWordResponse({required this.word});
+
+  factory RandomWordResponse.fromJson(Map<String, dynamic> json) {
+    return RandomWordResponse(word: json['word'] ?? '');
+  }
+}
+
+class MemoryCard {
+  final int id;
+  final int pairId; // ID to identify matching pairs
+  final String content; // Either word or phonetic
+  final String word; // Original word
+  final String pronunciation;
+  final String phonetic;
+  final CardType type; // word or phonetic
+  final Color color;
+  bool isFlipped;
+  bool isMatched;
+
+  MemoryCard({
+    required this.id,
+    required this.pairId,
     required this.content,
+    required this.word,
+    required this.pronunciation,
+    required this.phonetic,
+    required this.type,
     required this.color,
-    this.isHighlighted = false,
+    this.isFlipped = false,
+    this.isMatched = false,
   });
 }
 
-class MemoryGameController extends GetxController with WidgetsBindingObserver {
-  // Game state observables
-  final RxBool _isLoading = false.obs;
-  final RxBool _gameStarted = false.obs;
-  final RxBool _gameFinished = false.obs;
-  final RxBool _showResult = false.obs;
-  final RxBool _timerActive = false.obs;
-  final RxBool _gameInProgress = false.obs;
+class MemoryGameController extends GetxController {
+  // Game state
+  final _gameState = GameState.setup.obs;
+  final _gameStarted = false.obs;
+  final _gameInProgress = false.obs;
+  final _gameFinished = false.obs;
+  final _isLoading = false.obs;
+  final _showResult = false.obs;
+  final _timerActive = false.obs;
 
-  // Game configuration
-  final Rx<MemoryGameType> _selectedGameType = MemoryGameType.cardMatching.obs;
-  final Rx<MemoryDifficulty> _selectedDifficulty = MemoryDifficulty.easy.obs;
-  final RxInt _gameTimeLimit = 60.obs; // seconds
-  final RxInt _rounds = 5.obs;
+  // Game settings
+  final _selectedGameType = MemoryGameType.cardMatching.obs;
+  final _selectedDifficulty = MemoryDifficulty.easy.obs;
+  final _rounds = 1.obs;
+  final _currentRound = 0.obs;
 
-  // Current game state
-  final RxInt _currentRound = 0.obs;
-  final RxInt _score = 0.obs;
-  final RxInt _timeRemaining = 0.obs;
-  final RxInt _attempts = 0.obs;
-  final RxInt _correctAttempts = 0.obs;
+  // Game progress
+  final _score = 0.obs;
+  final _attempts = 0.obs;
+  final _correctAttempts = 0.obs;
+  final _round = 1.obs;
+  final _gameTime = 120.obs; // 2 minutes for card matching
 
-  // Card matching game
-  final RxList<MemoryCard> _cards = <MemoryCard>[].obs;
-  final RxList<int> _flippedCards = <int>[].obs;
-  final RxBool _canFlipCards = true.obs;
-
-  // Sequence memory game
-  final RxList<SequenceItem> _sequence = <SequenceItem>[].obs;
-  final RxList<int> _playerSequence = <int>[].obs;
-  final RxBool _showingSequence = false.obs;
-  final RxBool _waitingForInput = false.obs;
-  final RxInt _sequenceStep = 0.obs;
-
-  // Word/Pattern memory
-  final RxList<String> _wordsToMemorize = <String>[].obs;
-  final RxList<String> _availableWords = <String>[].obs;
-  final RxList<String> _selectedWords = <String>[].obs;
-  final RxBool _showMemoryItems = false.obs;
-  final RxInt _memoryTime = 5.obs; // seconds to memorize
+  // Card matching specific
+  final _cards = <MemoryCard>[].obs;
+  final _flippedCards = <int>[].obs;
+  final _canFlipCards = true.obs;
+  final _matchedPairs = 0.obs;
 
   Timer? _gameTimer;
-  Timer? _sequenceTimer;
-  Timer? _memoryTimer;
 
   // Getters
-  bool get isLoading => _isLoading.value;
+  GameState get gameState => _gameState.value;
   bool get gameStarted => _gameStarted.value;
+  bool get gameInProgress => _gameInProgress.value;
   bool get gameFinished => _gameFinished.value;
+  bool get isLoading => _isLoading.value;
   bool get showResult => _showResult.value;
   bool get timerActive => _timerActive.value;
-  bool get gameInProgress => _gameInProgress.value;
 
   MemoryGameType get selectedGameType => _selectedGameType.value;
   MemoryDifficulty get selectedDifficulty => _selectedDifficulty.value;
-  int get gameTimeLimit => _gameTimeLimit.value;
+  String get selectedDifficultyString =>
+      _selectedDifficulty.value.name.capitalize!;
   int get rounds => _rounds.value;
-
   int get currentRound => _currentRound.value;
+
   int get score => _score.value;
-  int get timeRemaining => _timeRemaining.value;
   int get attempts => _attempts.value;
   int get correctAttempts => _correctAttempts.value;
+  int get round => _round.value;
+  int get gameTime => _gameTime.value;
 
-  // Card matching getters
   List<MemoryCard> get cards => _cards;
   List<int> get flippedCards => _flippedCards;
   bool get canFlipCards => _canFlipCards.value;
+  int get matchedPairs => _matchedPairs.value;
 
-  // Sequence memory getters
-  List<SequenceItem> get sequence => _sequence;
-  List<int> get playerSequence => _playerSequence;
-  bool get showingSequence => _showingSequence.value;
-  bool get waitingForInput => _waitingForInput.value;
-  int get sequenceStep => _sequenceStep.value;
+  // Add TTS and API constants
+  static const String RANDOM_WORD_API_URL =
+      'https://random-word-api-eight.vercel.app/word/multiple';
+  static const String DICTIONARY_API_URL =
+      'https://api.dictionaryapi.dev/api/v2/entries/en';
 
-  // Word memory getters
-  List<String> get wordsToMemorize => _wordsToMemorize;
-  List<String> get availableWords => _availableWords;
-  List<String> get selectedWords => _selectedWords;
-  bool get showMemoryItems => _showMemoryItems.value;
-  int get memoryTime => _memoryTime.value;
+  late FlutterTts _flutterTts;
+  final _isLoadingWords = false.obs;
 
-  double get progress => rounds > 0 ? (_currentRound.value + 1) / rounds : 0.0;
-  double get accuracy => attempts > 0 ? correctAttempts / attempts : 0.0;
+  // Getters for loading state
+  bool get isLoadingWords => _isLoadingWords.value;
 
   @override
   void onInit() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    _initializeTts();
     super.onInit();
-    WidgetsBinding.instance.addObserver(this);
-    _generateGame();
   }
 
-  @override
-  void onClose() {
-    _gameTimer?.cancel();
-    _sequenceTimer?.cancel();
-    _memoryTimer?.cancel();
-    WidgetsBinding.instance.removeObserver(this);
-    super.onClose();
+  void _initializeTts() {
+    _flutterTts = FlutterTts();
+    _flutterTts.setLanguage('en-US');
+    _flutterTts.setSpeechRate(0.6);
+    _flutterTts.setVolume(1.0);
+    _flutterTts.setPitch(1.0);
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive) {
-      pauseGame();
-    }
-  }
-
-  // Game configuration methods
-  void setGameType(MemoryGameType type) {
-    _selectedGameType.value = type;
-    if (!_gameStarted.value) {
-      _generateGame();
+  Future<void> playPronunciation(String word) async {
+    try {
+      await _flutterTts.speak(word);
+    } catch (e) {
+      print('Error playing pronunciation: $e');
     }
   }
 
   void setDifficulty(MemoryDifficulty difficulty) {
     _selectedDifficulty.value = difficulty;
-    if (!_gameStarted.value) {
-      _generateGame();
-    }
   }
 
-  void setTimeLimit(int seconds) {
-    _gameTimeLimit.value = seconds;
-  }
+  Future<void> startGame() async {
+    // Set state to loading first
+    _gameState.value = GameState.loading;
+    _isLoading.value = true;
 
-  void setRounds(int roundCount) {
-    _rounds.value = roundCount;
-  }
-
-  // Game control methods
-  void startGame() {
-    if (_cards.isEmpty && _sequence.isEmpty && _wordsToMemorize.isEmpty) {
-      _generateGame();
-    }
-
+    // Reset game values
     _gameStarted.value = true;
+    _gameInProgress.value = false; // Don't start until cards are ready
     _gameFinished.value = false;
-    _gameInProgress.value = true;
-    _currentRound.value = 0;
+    _showResult.value = false;
+    _timerActive.value = false;
     _score.value = 0;
     _attempts.value = 0;
     _correctAttempts.value = 0;
-    _showResult.value = false;
+    _round.value = 1;
+    _currentRound.value = 0;
+    _matchedPairs.value = 0;
 
-    if (_gameTimeLimit.value > 0) {
-      _startTimer();
+    // Set game time based on difficulty
+    switch (_selectedDifficulty.value) {
+      case MemoryDifficulty.easy:
+        _gameTime.value = 180; // 3 minutes
+        break;
+      case MemoryDifficulty.medium:
+        _gameTime.value = 150; // 2.5 minutes
+        break;
+      case MemoryDifficulty.hard:
+        _gameTime.value = 120; // 2 minutes
+        break;
     }
 
-    _startCurrentRound();
+    try {
+      await _generateGame();
+
+      print('Cards generated: ${_cards.length}');
+
+      if (_cards.isNotEmpty) {
+        // Now start the actual game
+        _gameState.value = GameState.playing;
+        _gameInProgress.value = true;
+        _timerActive.value = true;
+        _isLoading.value = false;
+        _startCurrentRound();
+      } else {
+        // Force fallback card generation if no cards were created
+        print('No cards generated, using fallback');
+        _generateFallbackCardsForCurrentDifficulty();
+
+        if (_cards.isNotEmpty) {
+          _gameState.value = GameState.playing;
+          _gameInProgress.value = true;
+          _timerActive.value = true;
+          _isLoading.value = false;
+          _startCurrentRound();
+        } else {
+          // Fallback if no cards generated
+          _gameState.value = GameState.setup;
+          _gameStarted.value = false;
+          _isLoading.value = false;
+          Get.snackbar(
+            'Error',
+            'Unable to load game data. Please try again.',
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
+      }
+    } catch (e) {
+      print('Error starting game: $e');
+      _gameState.value = GameState.setup;
+      _gameStarted.value = false;
+      _isLoading.value = false;
+      Get.snackbar(
+        'Error',
+        'Failed to start game. Please check your connection.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 
   void pauseGame() {
+    _gameInProgress.value = false;
     _timerActive.value = false;
     _gameTimer?.cancel();
-    _sequenceTimer?.cancel();
-    _memoryTimer?.cancel();
   }
 
   void resumeGame() {
-    if (_gameStarted.value &&
-        !_gameFinished.value &&
-        _gameTimeLimit.value > 0) {
-      _startTimer();
-    }
-  }
-
-  void _startTimer() {
-    _timeRemaining.value = _gameTimeLimit.value;
+    _gameInProgress.value = true;
     _timerActive.value = true;
-
-    _gameTimer?.cancel();
     _gameTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_timeRemaining.value > 0) {
-        _timeRemaining.value--;
-      } else {
-        _endGame();
+      if (_gameTime.value > 0 && !_gameInProgress.value) {
         timer.cancel();
+      } else if (_gameTime.value > 0) {
+        _gameTime.value--;
+      } else {
+        timer.cancel();
+        _gameOver(false);
       }
     });
   }
 
   void _startCurrentRound() {
-    switch (_selectedGameType.value) {
-      case MemoryGameType.cardMatching:
-        _startCardMatchingRound();
-        break;
-      case MemoryGameType.sequenceMemory:
-        _startSequenceRound();
-        break;
-      case MemoryGameType.wordMemory:
-        _startWordMemoryRound();
-        break;
-      case MemoryGameType.colorPattern:
-        _startColorPatternRound();
-        break;
-      case MemoryGameType.numberSequence:
-        _startNumberSequenceRound();
-        break;
-    }
+    _startCardMatchingRound();
   }
 
   void _startCardMatchingRound() {
-    _generateCardMatchingGame();
+    // Cards should already be generated at this point
     _canFlipCards.value = true;
     _flippedCards.clear();
-  }
 
-  void _startSequenceRound() {
-    _generateSequenceGame();
-    _playerSequence.clear();
-    _showingSequence.value = true;
-    _waitingForInput.value = false;
-    _showSequence();
-  }
-
-  void _startWordMemoryRound() {
-    _generateWordMemoryGame();
-    _selectedWords.clear();
-    _showMemoryItems.value = true;
-    _startMemoryTimer();
-  }
-
-  void _startColorPatternRound() {
-    _generateColorPatternGame();
-    _playerSequence.clear();
-    _showingSequence.value = true;
-    _waitingForInput.value = false;
-    _showSequence();
-  }
-
-  void _startNumberSequenceRound() {
-    _generateNumberSequenceGame();
-    _playerSequence.clear();
-    _showingSequence.value = true;
-    _waitingForInput.value = false;
-    _showSequence();
-  }
-
-  void _showSequence() {
-    _sequenceStep.value = 0;
-    _sequenceTimer?.cancel();
-
-    _sequenceTimer = Timer.periodic(const Duration(milliseconds: 800), (timer) {
-      if (_sequenceStep.value < _sequence.length) {
-        // Highlight current item
-        for (int i = 0; i < _sequence.length; i++) {
-          _sequence[i].isHighlighted = i == _sequenceStep.value;
-        }
-        _sequence.refresh();
-        _sequenceStep.value++;
-      } else {
-        // Clear all highlights
-        for (var item in _sequence) {
-          item.isHighlighted = false;
-        }
-        _sequence.refresh();
-        _showingSequence.value = false;
-        _waitingForInput.value = true;
+    // Start timer
+    _gameTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_gameTime.value > 0 && _gameInProgress.value) {
+        _gameTime.value--;
+      } else if (_gameTime.value == 0) {
         timer.cancel();
+        _gameOver(false);
       }
-    });
-  }
-
-  void _startMemoryTimer() {
-    _memoryTimer?.cancel();
-    _memoryTimer = Timer(Duration(seconds: _memoryTime.value), () {
-      _showMemoryItems.value = false;
-      _waitingForInput.value = true;
     });
   }
 
@@ -346,183 +297,91 @@ class MemoryGameController extends GetxController with WidgetsBindingObserver {
   void flipCard(int cardIndex) {
     if (!_canFlipCards.value ||
         _cards[cardIndex].isFlipped ||
-        _cards[cardIndex].isMatched) {
-      return;
-    }
+        _cards[cardIndex].isMatched ||
+        _flippedCards.length >= 2) return;
 
-    _cards[cardIndex] = _cards[cardIndex].copyWith(isFlipped: true);
+    _cards[cardIndex].isFlipped = true;
     _flippedCards.add(cardIndex);
+    _cards.refresh();
 
     if (_flippedCards.length == 2) {
       _canFlipCards.value = false;
-      _attempts.value++;
-
-      Future.delayed(const Duration(milliseconds: 1000), () {
-        _checkCardMatch();
-      });
+      _checkMatch();
     }
   }
 
-  void _checkCardMatch() {
+  void _checkMatch() {
     final card1 = _cards[_flippedCards[0]];
     final card2 = _cards[_flippedCards[1]];
 
-    if (card1.content == card2.content) {
-      // Match found
-      _cards[_flippedCards[0]] = card1.copyWith(isMatched: true);
-      _cards[_flippedCards[1]] = card2.copyWith(isMatched: true);
-      _correctAttempts.value++;
+    // Check if they have the same pairId and different types (word vs phonetic)
+    if (card1.pairId == card2.pairId && card1.type != card2.type) {
+      // Match found - word matches its phonetic
+      card1.isMatched = true;
+      card2.isMatched = true;
+      _matchedPairs.value++;
       _score.value += 10;
+      _correctAttempts.value++;
+      _flippedCards.clear();
+      _canFlipCards.value = true;
 
-      // Check if all cards are matched
-      if (_cards.every((card) => card.isMatched)) {
-        _nextRound();
+      // Check if game is complete
+      final totalPairs = _cards.length ~/ 2;
+      if (_matchedPairs.value >= totalPairs) {
+        _gameComplete();
       }
     } else {
-      // No match, flip cards back
-      _cards[_flippedCards[0]] = card1.copyWith(isFlipped: false);
-      _cards[_flippedCards[1]] = card2.copyWith(isFlipped: false);
-    }
-
-    _flippedCards.clear();
-    _canFlipCards.value = true;
-  }
-
-  // Sequence game methods
-  void addToPlayerSequence(int index) {
-    if (!_waitingForInput.value) return;
-
-    _playerSequence.add(index);
-
-    // Check if current input is correct
-    final currentIndex = _playerSequence.length - 1;
-    if (_playerSequence[currentIndex] != _sequence[currentIndex].index) {
-      // Wrong sequence
-      _attempts.value++;
-      _showResult.value = true;
+      // No match
       Future.delayed(const Duration(seconds: 1), () {
-        _nextRound();
-      });
-      return;
-    }
-
-    // Check if sequence is complete
-    if (_playerSequence.length == _sequence.length) {
-      // Correct sequence completed
-      _correctAttempts.value++;
-      _attempts.value++;
-      _score.value += 15;
-      _showResult.value = true;
-      Future.delayed(const Duration(seconds: 1), () {
-        _nextRound();
+        card1.isFlipped = false;
+        card2.isFlipped = false;
+        _flippedCards.clear();
+        _canFlipCards.value = true;
+        _cards.refresh();
       });
     }
-  }
-
-  // Word memory methods
-  void selectWord(String word) {
-    if (!_waitingForInput.value) return;
-
-    if (_selectedWords.contains(word)) {
-      _selectedWords.remove(word);
-    } else {
-      _selectedWords.add(word);
-    }
-  }
-
-  void submitWordSelection() {
-    if (!_waitingForInput.value) return;
 
     _attempts.value++;
-    final correctWords = _wordsToMemorize.toSet();
-    final selectedWordsSet = _selectedWords.toSet();
-
-    final correctSelections =
-        correctWords.intersection(selectedWordsSet).length;
-    final totalCorrect = correctWords.length;
-
-    if (correctSelections == totalCorrect &&
-        selectedWordsSet.length == totalCorrect) {
-      _correctAttempts.value++;
-      _score.value += 20;
-    }
-
-    _showResult.value = true;
-    Future.delayed(const Duration(seconds: 2), () {
-      _nextRound();
-    });
+    _cards.refresh();
   }
 
-  void _nextRound() {
-    _showResult.value = false;
-    _waitingForInput.value = false;
-
-    if (_currentRound.value < _rounds.value - 1) {
-      _currentRound.value++;
-      _startCurrentRound();
-    } else {
-      _endGame();
-    }
-  }
-
-  void _endGame() {
+  void _gameComplete() {
+    _gameState.value = GameState.finished;
     _gameFinished.value = true;
     _gameInProgress.value = false;
     _timerActive.value = false;
     _gameTimer?.cancel();
-    _sequenceTimer?.cancel();
-    _memoryTimer?.cancel();
 
-    // Show final results
-    Get.dialog(
-      _buildResultDialog(),
-      barrierDismissible: false,
+    // Bonus points for time remaining
+    _score.value += _gameTime.value;
+
+    Get.snackbar(
+      'Congratulations!',
+      'You completed the memory game with score: ${_score.value}',
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 3),
     );
   }
 
-  Widget _buildResultDialog() {
-    final percentage = (accuracy * 100).round();
+  void _gameOver(bool won) {
+    _gameState.value = GameState.finished;
+    _gameFinished.value = true;
+    _gameInProgress.value = false;
+    _timerActive.value = false;
+    _gameTimer?.cancel();
 
-    return AlertDialog(
-      title: const Text('Game Complete!'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('Final Score: $score points'),
-          Text('Accuracy: ${correctAttempts}/${attempts} (${percentage}%)'),
-          Text('Rounds Completed: ${currentRound + 1}/$rounds'),
-          const SizedBox(height: 16),
-          Text(_getPerformanceMessage(percentage)),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Get.back(); // Close dialog
-            resetGame();
-          },
-          child: const Text('Play Again'),
-        ),
-        TextButton(
-          onPressed: () {
-            Get.back(); // Close dialog
-            Get.back(); // Return to previous screen
-          },
-          child: const Text('Exit'),
-        ),
-      ],
+    Get.snackbar(
+      won ? 'Well Done!' : 'Time\'s Up!',
+      won ? 'You won the game!' : 'Better luck next time!',
+      backgroundColor: won ? Colors.green : Colors.red,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 3),
     );
-  }
-
-  String _getPerformanceMessage(int percentage) {
-    if (percentage >= 90) return 'Amazing Memory! 🧠✨';
-    if (percentage >= 75) return 'Great Memory Skills! 🎯';
-    if (percentage >= 60) return 'Good Memory Work! 👍';
-    if (percentage >= 40) return 'Keep Training! 💪';
-    return 'Practice Makes Perfect! 🎯';
   }
 
   void resetGame() {
+    _gameState.value = GameState.setup;
     _gameStarted.value = false;
     _gameFinished.value = false;
     _gameInProgress.value = false;
@@ -532,218 +391,226 @@ class MemoryGameController extends GetxController with WidgetsBindingObserver {
     _correctAttempts.value = 0;
     _showResult.value = false;
     _timerActive.value = false;
-    _waitingForInput.value = false;
-    _showingSequence.value = false;
-    _showMemoryItems.value = false;
+    _matchedPairs.value = 0;
+    _isLoading.value = false;
 
     _cards.clear();
-    _sequence.clear();
-    _wordsToMemorize.clear();
-    _selectedWords.clear();
-    _playerSequence.clear();
     _flippedCards.clear();
-
-    _generateGame();
+    _gameTimer?.cancel();
   }
 
-  void _generateGame() {
+  Future<void> _generateGame() async {
     _isLoading.value = true;
-
-    switch (_selectedGameType.value) {
-      case MemoryGameType.cardMatching:
-        _generateCardMatchingGame();
-        break;
-      case MemoryGameType.sequenceMemory:
-        _generateSequenceGame();
-        break;
-      case MemoryGameType.wordMemory:
-        _generateWordMemoryGame();
-        break;
-      case MemoryGameType.colorPattern:
-        _generateColorPatternGame();
-        break;
-      case MemoryGameType.numberSequence:
-        _generateNumberSequenceGame();
-        break;
-    }
-
+    await _generateCardMatchingGame();
     _isLoading.value = false;
   }
 
-  void _generateCardMatchingGame() {
+  Future<List<String>> _fetchRandomWords(int count) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            '$RANDOM_WORD_API_URL/$count/types?types=noun,verb,adjective'),
+        headers: {'Accept': 'application/json'},
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data
+            .map((item) => RandomWordResponse.fromJson(item).word)
+            .toList();
+      } else {
+        throw Exception('Failed to fetch words: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching random words: $e');
+      // Fallback words if API fails
+      return _getFallbackWords(count);
+    }
+  }
+
+  List<String> _getFallbackWords(int count) {
+    final fallbackWords = [
+      'cat',
+      'dog',
+      'bird',
+      'fish',
+      'tree',
+      'house',
+      'car',
+      'book',
+      'run',
+      'jump',
+      'sing',
+      'dance',
+      'happy',
+      'sad',
+      'big',
+      'small',
+      'red',
+      'blue',
+      'green',
+      'yellow',
+      'sun',
+      'moon',
+      'star',
+      'water',
+      'fire',
+      'earth',
+      'wind',
+      'love',
+      'hope',
+      'dream',
+      'play',
+      'work'
+    ];
+    fallbackWords.shuffle();
+    return fallbackWords.take(count).toList();
+  }
+
+  Future<WordData> _fetchWordPronunciation(String word) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$DICTIONARY_API_URL/$word'),
+        headers: {'Accept': 'application/json'},
+      ).timeout(const Duration(seconds: 8));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        if (data.isNotEmpty) {
+          final wordEntry = data[0];
+          String pronunciation = '';
+          String phonetic = '';
+
+          // Try to get phonetic transcription
+          if (wordEntry['phonetic'] != null) {
+            phonetic = wordEntry['phonetic'];
+          }
+
+          // Try to get pronunciation from phonetics array
+          if (wordEntry['phonetics'] != null) {
+            final phonetics = wordEntry['phonetics'] as List;
+            for (var phoneticEntry in phonetics) {
+              if (phoneticEntry['text'] != null &&
+                  phoneticEntry['text'].toString().isNotEmpty) {
+                phonetic = phoneticEntry['text'];
+                break;
+              }
+            }
+          }
+
+          return WordData(
+            word: word,
+            pronunciation: pronunciation,
+            phonetic: phonetic.isNotEmpty ? phonetic : '/$word/',
+          );
+        }
+      }
+    } catch (e) {
+      print('Error fetching pronunciation for $word: $e');
+    }
+
+    // Return fallback data
+    return WordData(
+      word: word,
+      pronunciation: '',
+      phonetic: '/$word/',
+    );
+  }
+
+  Future<void> _generateCardPairs() async {
     _cards.clear();
-    final random = Random();
+    _isLoadingWords.value = true;
 
     int pairCount;
     switch (_selectedDifficulty.value) {
       case MemoryDifficulty.easy:
-        pairCount = 6; // 3x4 grid
+        pairCount = 6; // 12 cards total
         break;
       case MemoryDifficulty.medium:
-        pairCount = 8; // 4x4 grid
+        pairCount = 8; // 16 cards total
         break;
       case MemoryDifficulty.hard:
-        pairCount = 12; // 4x6 grid
+        pairCount = 12; // 24 cards total
         break;
     }
 
-    final emojis = [
-      '🐶',
-      '🐱',
-      '🐭',
-      '🐹',
-      '🐰',
-      '🦊',
-      '🐻',
-      '🐼',
-      '🐨',
-      '🐯',
-      '🦁',
-      '🐮'
-    ];
-    final colors = [
-      Colors.red,
-      Colors.blue,
-      Colors.green,
-      Colors.orange,
-      Colors.purple,
-      Colors.pink
-    ];
+    try {
+      // Fetch random words
+      final words = await _fetchRandomWords(pairCount);
+      print('Fetched words: $words');
 
-    List<MemoryCard> cardPairs = [];
-    for (int i = 0; i < pairCount; i++) {
-      final content = emojis[i % emojis.length];
-      final color = colors[i % colors.length];
+      // Fetch pronunciations for each word
+      final List<WordData> wordDataList = [];
+      for (String word in words) {
+        final wordData = await _fetchWordPronunciation(word);
+        wordDataList.add(wordData);
+      }
 
-      cardPairs.add(MemoryCard(id: i * 2, content: content, color: color));
-      cardPairs.add(MemoryCard(id: i * 2 + 1, content: content, color: color));
+      print('Word data list length: ${wordDataList.length}');
+
+      final colors = [
+        Colors.red,
+        Colors.blue,
+        Colors.green,
+        Colors.yellow,
+        Colors.purple,
+        Colors.orange,
+        Colors.pink,
+        Colors.cyan,
+        Colors.lime,
+        Colors.indigo,
+        Colors.teal,
+        Colors.amber,
+      ];
+
+      final cardPairs = <MemoryCard>[];
+
+      for (int i = 0; i < wordDataList.length; i++) {
+        final wordData = wordDataList[i];
+        final color = colors[i % colors.length];
+
+        // Create word card
+        cardPairs.add(MemoryCard(
+          id: i * 2,
+          pairId: i,
+          content: wordData.word,
+          word: wordData.word,
+          pronunciation: wordData.pronunciation,
+          phonetic: wordData.phonetic,
+          type: CardType.word,
+          color: color,
+        ));
+
+        // Create phonetic card
+        cardPairs.add(MemoryCard(
+          id: i * 2 + 1,
+          pairId: i,
+          content: wordData.phonetic,
+          word: wordData.word,
+          pronunciation: wordData.pronunciation,
+          phonetic: wordData.phonetic,
+          type: CardType.phonetic,
+          color: color,
+        ));
+      }
+
+      final random = Random();
+      cardPairs.shuffle(random);
+      _cards.value = cardPairs;
+
+      print('Total cards generated: ${_cards.length}');
+    } catch (e) {
+      print('Error generating card pairs: $e');
+      // Use fallback words if everything fails
+      _generateFallbackCards(pairCount);
+      print('Fallback cards generated: ${_cards.length}');
+    } finally {
+      _isLoadingWords.value = false;
     }
-
-    cardPairs.shuffle(random);
-    _cards.addAll(cardPairs);
   }
 
-  void _generateSequenceGame() {
-    _sequence.clear();
-    final random = Random();
-
-    int sequenceLength;
-    switch (_selectedDifficulty.value) {
-      case MemoryDifficulty.easy:
-        sequenceLength = 4;
-        break;
-      case MemoryDifficulty.medium:
-        sequenceLength = 6;
-        break;
-      case MemoryDifficulty.hard:
-        sequenceLength = 8;
-        break;
-    }
-
-    final colors = [
-      Colors.red,
-      Colors.blue,
-      Colors.green,
-      Colors.yellow,
-      Colors.purple,
-      Colors.orange
-    ];
-    final gridSize = 6; // 2x3 or 3x2 grid
-
-    for (int i = 0; i < sequenceLength; i++) {
-      final index = random.nextInt(gridSize);
-      final color = colors[index % colors.length];
-      _sequence.add(SequenceItem(
-        index: index,
-        content: '${index + 1}',
-        color: color,
-      ));
-    }
-  }
-
-  void _generateWordMemoryGame() {
-    _wordsToMemorize.clear();
-    _availableWords.clear();
-
-    int wordCount;
-    switch (_selectedDifficulty.value) {
-      case MemoryDifficulty.easy:
-        wordCount = 5;
-        _memoryTime.value = 8;
-        break;
-      case MemoryDifficulty.medium:
-        wordCount = 7;
-        _memoryTime.value = 6;
-        break;
-      case MemoryDifficulty.hard:
-        wordCount = 10;
-        _memoryTime.value = 5;
-        break;
-    }
-
-    final allWords = [
-      'APPLE',
-      'BANANA',
-      'ORANGE',
-      'GRAPE',
-      'MANGO',
-      'PEACH',
-      'PEAR',
-      'CHERRY',
-      'LEMON',
-      'LIME',
-      'PLUM',
-      'BERRY',
-      'MELON',
-      'KIWI',
-      'PAPAYA',
-      'COCONUT',
-      'HOUSE',
-      'TREE',
-      'FLOWER',
-      'MOUNTAIN',
-      'RIVER',
-      'OCEAN',
-      'STAR',
-      'MOON',
-      'SUN',
-      'CLOUD',
-      'RAIN',
-      'SNOW',
-      'WIND',
-      'FIRE',
-      'EARTH',
-      'WATER'
-    ];
-
-    allWords.shuffle();
-    _wordsToMemorize.addAll(allWords.take(wordCount));
-
-    // Add some extra words as distractors
-    final remainingWords =
-        allWords.skip(wordCount).take(wordCount * 2).toList();
-    _availableWords.addAll(_wordsToMemorize);
-    _availableWords.addAll(remainingWords);
-    _availableWords.shuffle();
-  }
-
-  void _generateColorPatternGame() {
-    _sequence.clear();
-    final random = Random();
-
-    int patternLength;
-    switch (_selectedDifficulty.value) {
-      case MemoryDifficulty.easy:
-        patternLength = 4;
-        break;
-      case MemoryDifficulty.medium:
-        patternLength = 6;
-        break;
-      case MemoryDifficulty.hard:
-        patternLength = 8;
-        break;
-    }
-
+  void _generateFallbackCards(int pairCount) {
+    final fallbackWords = _getFallbackWords(pairCount);
     final colors = [
       Colors.red,
       Colors.blue,
@@ -752,43 +619,79 @@ class MemoryGameController extends GetxController with WidgetsBindingObserver {
       Colors.purple,
       Colors.orange,
       Colors.pink,
-      Colors.cyan
+      Colors.cyan,
+      Colors.lime,
+      Colors.indigo,
+      Colors.teal,
+      Colors.amber,
     ];
 
-    for (int i = 0; i < patternLength; i++) {
-      final colorIndex = random.nextInt(colors.length);
-      _sequence.add(SequenceItem(
-        index: colorIndex,
-        content: '',
-        color: colors[colorIndex],
-      ));
-    }
-  }
-
-  void _generateNumberSequenceGame() {
-    _sequence.clear();
+    final cardPairs = <MemoryCard>[];
     final random = Random();
 
-    int sequenceLength;
-    switch (_selectedDifficulty.value) {
-      case MemoryDifficulty.easy:
-        sequenceLength = 5;
-        break;
-      case MemoryDifficulty.medium:
-        sequenceLength = 7;
-        break;
-      case MemoryDifficulty.hard:
-        sequenceLength = 10;
-        break;
-    }
+    for (int i = 0; i < fallbackWords.length; i++) {
+      final word = fallbackWords[i];
+      final color = colors[i % colors.length];
+      final phonetic = '/$word/';
 
-    for (int i = 0; i < sequenceLength; i++) {
-      final number = random.nextInt(9) + 1; // 1-9
-      _sequence.add(SequenceItem(
-        index: number - 1,
-        content: number.toString(),
-        color: Colors.blue,
+      // Create word card
+      cardPairs.add(MemoryCard(
+        id: i * 2,
+        pairId: i,
+        content: word,
+        word: word,
+        pronunciation: '',
+        phonetic: phonetic,
+        type: CardType.word,
+        color: color,
+      ));
+
+      // Create phonetic card
+      cardPairs.add(MemoryCard(
+        id: i * 2 + 1,
+        pairId: i,
+        content: phonetic,
+        word: word,
+        pronunciation: '',
+        phonetic: phonetic,
+        type: CardType.phonetic,
+        color: color,
       ));
     }
+
+    cardPairs.shuffle(random);
+    _cards.addAll(cardPairs);
+  }
+
+  void _generateFallbackCardsForCurrentDifficulty() {
+    int pairCount;
+    switch (_selectedDifficulty.value) {
+      case MemoryDifficulty.easy:
+        pairCount = 6; // 12 cards total
+        break;
+      case MemoryDifficulty.medium:
+        pairCount = 8; // 16 cards total
+        break;
+      case MemoryDifficulty.hard:
+        pairCount = 12; // 24 cards total
+        break;
+    }
+    _generateFallbackCards(pairCount);
+  }
+
+  Future<void> _generateCardMatchingGame() async {
+    await _generateCardPairs();
+  }
+
+  @override
+  void onClose() {
+    _gameTimer?.cancel();
+    _flutterTts.stop();
+    // Restore normal orientation when controller is disposed
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+    super.onClose();
   }
 }

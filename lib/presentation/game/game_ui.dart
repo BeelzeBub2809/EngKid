@@ -99,19 +99,8 @@ class GameUI extends GetView<GameController> {
                         'MEMORY',
                         Icons.psychology,
                         Colors.purple,
-                        () => showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Work in Progress'),
-                            content: const Text('This feature is coming soon!'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          ),
-                        ),
+                        () => Get.toNamed(AppRoute.memoryGame,
+                            arguments: [true, false]),
                       ),
                       _buildGameCard(
                         context,
