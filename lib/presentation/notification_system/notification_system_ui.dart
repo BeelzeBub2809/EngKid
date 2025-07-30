@@ -653,6 +653,51 @@ class NotificationSystemScreen extends GetView<NotificationSystemController> {
                 ),
               ),
             ),
+            Padding(
+              padding: EdgeInsets.only(
+                  top: size.width * 0.05, left: size.width * 0.02),
+              child: Positioned.fill(
+                top: 0.05 * size.width,
+                left: 0.05 * size.width,
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Row(
+                    children: [
+                      ImageButton(
+                        onTap: () {
+                          controller.getNofiKidSpace();
+                          SystemChrome.setPreferredOrientations([
+                            DeviceOrientation.landscapeRight,
+                            DeviceOrientation.landscapeLeft,
+                          ]);
+                          Get.back();
+                        },
+                        semantics: 'back',
+                        pathImage: LocalImage.backNoShadow,
+                        height: 0.12 * size.width,
+                        width: 0.12 * size.width,
+                      ),
+                      SizedBox(
+                        width: 0.05 * size.width,
+                      ),
+                      Expanded(
+                          child: Semantics(
+                        label: 'notification'.tr,
+                        child: Text(
+                          'notification'.tr.toUpperCase(),
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppColor.red,
+                            fontWeight: FontWeight.bold,
+                            fontSize: Fontsize.large,
+                          ),
+                        ),
+                      )),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             Positioned.fill(
               top: 0.05 * size.width,
               right: 0.03 * size.width,

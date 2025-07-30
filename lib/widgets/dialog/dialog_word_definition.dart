@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:EngKid/utils/lib_function.dart';
+import 'package:EngKid/utils/translation_service.dart';
 
 class DialogWordDefinition extends StatefulWidget {
   final Map<String, dynamic> wordInfo;
@@ -18,6 +19,9 @@ class DialogWordDefinition extends StatefulWidget {
 class _DialogWordDefinitionState extends State<DialogWordDefinition> {
   late FlutterTts flutterTts;
   bool isPlaying = false;
+  bool isTranslating = false;
+  String? translatedDefinition;
+  bool showVietnamese = false;
 
   @override
   void initState() {
@@ -76,6 +80,37 @@ class _DialogWordDefinitionState extends State<DialogWordDefinition> {
         isPlaying = false;
       });
       LibFunction.toast('Could not play pronunciation');
+    }
+  }
+
+  Future<void> _translateDefinition() async {
+    if (translatedDefinition != null) {
+      // Toggle between English and Vietnamese
+      setState(() {
+        showVietnamese = !showVietnamese;
+      });
+      return;
+    }
+
+    setState(() {
+      isTranslating = true;
+    });
+
+    try {
+      final englishDefinition = widget.wordInfo['definition'].toString();
+      final vietnameseDefinition =
+          await TranslationService.translateToVietnamese(englishDefinition);
+
+      setState(() {
+        translatedDefinition = vietnameseDefinition;
+        showVietnamese = true;
+        isTranslating = false;
+      });
+    } catch (e) {
+      setState(() {
+        isTranslating = false;
+      });
+      LibFunction.toast('Không thể dịch định nghĩa');
     }
   }
 
@@ -192,17 +227,74 @@ class _DialogWordDefinitionState extends State<DialogWordDefinition> {
                 const SizedBox(height: 12), // Reduced from 16
 
                 // Definition
-                const Row(
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.description,
+                    const Icon(Icons.description,
                         color: Colors.green, size: 18), // Reduced icon size
-                    SizedBox(width: 6), // Reduced spacing
+                    const SizedBox(width: 6), // Reduced spacing
                     Text(
-                      'Definition: ',
-                      style: TextStyle(
+                      showVietnamese
+                          ? 'Định nghĩa (VI): '
+                          : 'Definition (EN): ',
+                      style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 13), // Reduced font size
+                    ),
+                    const Spacer(),
+                    // Translate button
+                    InkWell(
+                      onTap: isTranslating ? null : _translateDefinition,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: showVietnamese
+                              ? Colors.blue.withOpacity(0.1)
+                              : Colors.orange.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color: showVietnamese ? Colors.blue : Colors.orange,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            isTranslating
+                                ? const SizedBox(
+                                    width: 12,
+                                    height: 12,
+                                    child: CircularProgressIndicator(
+                                        strokeWidth: 2),
+                                  )
+                                : Icon(
+                                    showVietnamese
+                                        ? Icons.language
+                                        : Icons.translate,
+                                    size: 14,
+                                    color: showVietnamese
+                                        ? Colors.blue
+                                        : Colors.orange,
+                                  ),
+                            const SizedBox(width: 4),
+                            Text(
+                              isTranslating
+                                  ? 'Đang dịch...'
+                                  : showVietnamese
+                                      ? 'Tiếng Anh'
+                                      : 'Tiếng Việt',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: showVietnamese
+                                    ? Colors.blue
+                                    : Colors.orange,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -220,7 +312,9 @@ class _DialogWordDefinitionState extends State<DialogWordDefinition> {
                   ),
                   child: SingleChildScrollView(
                     child: Text(
-                      widget.wordInfo['definition'],
+                      showVietnamese && translatedDefinition != null
+                          ? translatedDefinition!
+                          : widget.wordInfo['definition'],
                       style: const TextStyle(
                         fontSize: 13, // Reduced from 14
                         height: 1.3, // Reduced line height
