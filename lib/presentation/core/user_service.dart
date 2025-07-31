@@ -47,7 +47,10 @@ class UserService extends GetxService {
   final AppUseCases appUseCases;
   final ChildProfilesUsecases childProfilesUsecases;
   final StarBoardUseCases starBoardUseCases;
-  UserService({required this.appUseCases, required this.childProfilesUsecases, required this.starBoardUseCases});
+  UserService(
+      {required this.appUseCases,
+      required this.childProfilesUsecases,
+      required this.starBoardUseCases});
 
   final _preferencesManager = getIt.get<SharedPreferencesManager>();
   final NetworkService _networkService = Get.find<NetworkService>();
@@ -124,7 +127,8 @@ class UserService extends GetxService {
 
   Future<void> getChildProfiles(int parentUserId) async {
     try {
-      final ChildProfiles childProfiles = await appUseCases.getChildProfiles(parentUserId);
+      final ChildProfiles childProfiles =
+          await appUseCases.getChildProfiles(parentUserId);
       _userInfos.assignAll([]);
       final List<UserInfo> tmpUserInfo = [];
       await Future.forEach(childProfiles.childProfiles, (Child child) async {
@@ -151,7 +155,7 @@ class UserService extends GetxService {
         }
       } else {
         final decodeCurrentUser =
-        Child.fromJson(jsonDecode(tmp) as Map<String, dynamic>);
+            Child.fromJson(jsonDecode(tmp) as Map<String, dynamic>);
         final int index = childProfiles.childProfiles
             .indexWhere((element) => element.id == decodeCurrentUser.id);
         if (index != -1) {
@@ -188,7 +192,7 @@ class UserService extends GetxService {
       tmp[index] = child;
       _childProfiles(_childProfiles.value.copyWith(childProfiles: tmp));
       await saveChildProfilesToStorage();
-    }else{
+    } else {
       // If the child is not found in the list, you might want to add it
       _childProfiles(_childProfiles.value.copyWith(
           childProfiles: [..._childProfiles.value.childProfiles, child]));
@@ -196,10 +200,12 @@ class UserService extends GetxService {
     }
   }
 
-  Future<List<History>> getReadingHistory(int studentId, String startDate, String endDate) async {
+  Future<List<History>> getReadingHistory(
+      int studentId, String startDate, String endDate) async {
     //TODO
     //set loading is true
-    final List<History> data = await starBoardUseCases.getStarsHistory(studentId: studentId, startDate: startDate, endDate: endDate);
+    final List<History> data = await starBoardUseCases.getStarsHistory(
+        studentId: studentId, startDate: startDate, endDate: endDate);
 
     //set loading is false
 
@@ -227,24 +233,25 @@ class UserService extends GetxService {
   }
 
   Future<bool?> loadChooseParentCodeFromStorage() async {
-    bool? chooseParentCode = _preferencesManager.getBool(KeySharedPreferences.chooseParentCode);
+    bool? chooseParentCode =
+        _preferencesManager.getBool(KeySharedPreferences.chooseParentCode);
     print('chooseParentCode: $chooseParentCode');
-    if(chooseParentCode != null) {
+    if (chooseParentCode != null) {
       return chooseParentCode;
-    }else {
+    } else {
       return null;
     }
   }
 
   Future<List<String>?> loadParentCodeFromStorage() async {
-    List<String>? parentCode = _preferencesManager.getStringList(KeySharedPreferences.parentCode);
+    List<String>? parentCode =
+        _preferencesManager.getStringList(KeySharedPreferences.parentCode);
     print('parentCode: $parentCode');
-    if(parentCode != null) {
+    if (parentCode != null) {
       return parentCode;
-    }else{
+    } else {
       return null;
     }
-
   }
 
   void getIdentifier() async {
@@ -335,8 +342,8 @@ class UserService extends GetxService {
       _childProfiles(decodeChildProfiles);
       final decodeUserLogin =
           Login.fromJson(jsonDecode(_preferencesManager.getString(
-            KeySharedPreferences.userLogin,
-          )!) as Map<String, dynamic>);
+        KeySharedPreferences.userLogin,
+      )!) as Map<String, dynamic>);
       if (_networkService.networkConnection.value) {
         getChildProfiles(decodeUserLogin.id);
       }
@@ -441,9 +448,9 @@ class UserService extends GetxService {
   }) async {
     switch (type) {
       case UserDataUpdateType.surveyPassed:
-      // print('API result');
-      // print(currentUser.id);
-      //   await appUseCases.updateUserSurveyStatus(currentUser.id, '1');
+        // print('API result');
+        // print(currentUser.id);
+        //   await appUseCases.updateUserSurveyStatus(currentUser.id, '1');
         // print('API result');
         // print(result);
         final int index = _childProfiles.value.childProfiles
@@ -511,8 +518,6 @@ class UserService extends GetxService {
 
   void updateSettingToStorage({
     required String language,
-    required String vocalVolume,
-    required String musicVolume,
   }) {
     _settings.asMap().forEach((index, value) {
       switch (value.value.key) {
@@ -520,13 +525,6 @@ class UserService extends GetxService {
           _settings[index](_settings[index].value.copyWith(value: language));
           updateLanguage(language == "en" ? Language.en : Language.vi);
 
-          break;
-        case 'vocal_volume':
-          _settings[index](_settings[index].value.copyWith(value: vocalVolume));
-          break;
-        case 'music_volume':
-          LibFunction.setVolumeMusic(double.parse(musicVolume) / 10);
-          _settings[index](_settings[index].value.copyWith(value: musicVolume));
           break;
       }
     });

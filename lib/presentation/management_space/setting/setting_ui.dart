@@ -43,9 +43,7 @@ class SettingScreen extends GetView<SettingController> {
               child: Row(
                 children: [
                   LeftSetting(size: size, controller: controller),
-                  SizedBox(width: 0.01 * size.width),
-                  CenterSetting(size: size, controller: controller),
-                  SizedBox(width: 0.01 * size.width),
+                  SizedBox(width: 0.02 * size.width),
                   RightSetting(size: size, controller: controller),
                 ],
               ),
@@ -295,174 +293,6 @@ class RightSetting extends StatelessWidget {
   }
 }
 
-class CenterSetting extends StatelessWidget {
-  const CenterSetting(
-      {super.key, required this.size, required this.controller});
-
-  final Size size;
-  final SettingController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      flex: 2,
-      child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        padding: EdgeInsets.only(
-          left: 0.03 * size.height,
-          right: 0.03 * size.height,
-          top: 0.01 * size.height,
-        ),
-        decoration: BoxDecoration(
-          color: AppColor.lightYellow,
-          borderRadius: BorderRadius.all(
-            Radius.circular(0.04 * size.height),
-          ),
-        ),
-        child: Column(
-          children: [
-            Center(
-              child: RegularText(
-                'volume',
-                maxLines: 1,
-                style: TextStyle(
-                  color: AppColor.red,
-                  fontSize: Fontsize.larger,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Stack(
-                  children: [
-                    SizedBox(
-                      width: 0.08 * size.height,
-                      height: 0.43 * size.height,
-                    ),
-                    Positioned.fill(
-                      top: 0.04 * size.height,
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Obx(
-                          () => Container(
-                            width: 0.08 * size.height,
-                            height: 0.38 * size.height,
-                            padding: EdgeInsets.only(top: 0.05 * size.height),
-                            child: SfSliderTheme(
-                              data: SfSliderThemeData(
-                                activeTrackHeight: 0.02 * size.width,
-                                inactiveTrackHeight: 0.02 * size.width,
-                                thumbRadius: 0.02 * size.width,
-                                overlayRadius: 0,
-                              ),
-                              child: SfSlider.vertical(
-                                inactiveColor: const Color(0XFFb9dedf),
-                                activeColor: const Color(0XFFf1b843),
-                                thumbIcon: Container(
-                                  color: AppColor.lightYellow,
-                                  child: const ImageButton(
-                                    pathImage:
-                                    LocalImage.volumnButton,
-                                    semantics: 'volume',
-                                  ),
-                                ),
-                                min: 0.0,
-                                max: 10.0,
-                                value: controller.vocalVolume.value,
-                                onChanged: (value) => controller.onChangeSlide(
-                                    value: value, type: TypeVolume.vocalVolume),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned.fill(
-                      top: 0.015 * size.height,
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: ImageButton(
-                          pathImage:
-                          LocalImage.volumnSpeak,
-                          semantics: 'volume',
-                          width: 0.035 * size.width,
-                          height: 0.035 * size.width,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(width: 0.01 * size.width),
-                Stack(
-                  children: [
-                    SizedBox(
-                      width: 0.08 * size.height,
-                      height: 0.43 * size.height,
-                    ),
-                    Positioned.fill(
-                      top: 0.04 * size.height,
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Obx(
-                          () => Container(
-                            width: 0.08 * size.height,
-                            height: 0.38 * size.height,
-                            padding: EdgeInsets.only(top: 0.05 * size.height),
-                            child: SfSliderTheme(
-                              data: SfSliderThemeData(
-                                activeTrackHeight: 0.02 * size.width,
-                                inactiveTrackHeight: 0.02 * size.width,
-                                thumbRadius: 0.02 * size.width,
-                                overlayRadius: 0,
-                              ),
-                              child: SfSlider.vertical(
-                                inactiveColor: const Color(0XFFb9dedf),
-                                activeColor: const Color(0XFFf1b843),
-                                thumbIcon: Container(
-                                  color: AppColor.lightYellow,
-                                  child: const ImageButton(
-                                    pathImage:
-                                    LocalImage.volumnButton,
-                                    semantics: 'volume',
-                                  ),
-                                ),
-                                min: 0.0,
-                                max: 10.0,
-                                value: controller.musicVolume.value,
-                                onChanged: (value) => controller.onChangeSlide(
-                                    value: value, type: TypeVolume.musicVolume),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned.fill(
-                      top: 0.015 * size.height,
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: ImageButton(
-                          pathImage: LocalImage.volumnMusic,
-                          semantics: 'volume',
-                          width: 0.035 * size.width,
-                          height: 0.035 * size.width,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class LeftSetting extends StatelessWidget {
   const LeftSetting({
     super.key,
@@ -491,8 +321,8 @@ class LeftSetting extends StatelessWidget {
         ),
         child: Obx(
           () => Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Center(
                 child: RegularText(
@@ -516,6 +346,7 @@ class LeftSetting extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 0.02 * size.height),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset(
                           controller.languages[index].value.isChecked
@@ -524,7 +355,7 @@ class LeftSetting extends StatelessWidget {
                           width: 0.04 * size.width,
                           height: 0.04 * size.width,
                         ),
-                        SizedBox(width: 0.01 * size.width),
+                        SizedBox(width: 0.02 * size.width),
                         SizedBox(
                           width: 0.12 * size.width,
                           child: RegularText(

@@ -11,8 +11,6 @@ import 'package:EngKid/utils/lib_function.dart';
 
 import '../../../utils/audios.dart';
 
-enum TypeVolume { vocalVolume, musicVolume }
-
 class SettingController extends GetxController {
   SettingController();
 
@@ -27,8 +25,6 @@ class SettingController extends GetxController {
   String parentCodeInput = '';
   String newParentCodeInput = '';
   String reParentCodeInput = '';
-  final RxDouble vocalVolume = (0.0).obs;
-  final RxDouble musicVolume = (0.0).obs;
   final RxBool isLoading = false.obs;
 
   List<Rx<Language>> get languages => _languages;
@@ -46,12 +42,6 @@ class SettingController extends GetxController {
             });
           });
           break;
-        case 'vocal_volume':
-          vocalVolume.value = double.parse(element.value.value);
-          break;
-        case 'music_volume':
-          musicVolume.value = double.parse(element.value.value);
-          break;
       }
     }
   }
@@ -64,17 +54,6 @@ class SettingController extends GetxController {
     _languages[index].update((val) => val!.isChecked = true);
   }
 
-  void onChangeSlide({required double value, required TypeVolume type}) {
-    switch (type) {
-      case TypeVolume.vocalVolume:
-        vocalVolume.value = value;
-        break;
-      case TypeVolume.musicVolume:
-        musicVolume.value = value;
-        break;
-    }
-  }
-
   Future<void> onConfirm() async {
     await LibFunction.effectConfirmPop();
     updateSafetyCode();
@@ -82,19 +61,11 @@ class SettingController extends GetxController {
         _languages.firstWhereOrNull((element) => element.value.isChecked);
     _userService.updateSettingToStorage(
       language: language?.value.code ?? 'vi',
-      vocalVolume: vocalVolume.toString(),
-      musicVolume: musicVolume.toString(),
     );
-    if (vocalVolume.value == '0.0') {
-      LibFunction.stopBackgroundSound();
-    } else {
-      LibFunction.playBackgroundSound(LocalAudio.soundInApp);
-    }
     if (_networkService.networkConnection.value) {
       isLoading.value = true;
       // await _userService.updateSetting(
       //   language: language?.value.code ?? 'vi',
-      //   vocalVolume: vocalVolume.toString(),
       //   musicVolume: musicVolume.toString(),
       // );
       // LibFunction.toast(result ? 'update_success' : 'update_failed');
