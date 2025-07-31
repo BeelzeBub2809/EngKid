@@ -149,8 +149,9 @@ class VideoController extends GetxController {
 
   Future<void> changeVolume(double volume) async {
     //_videoController!.setPlaybackSpeed(speed);
+    _isVideoPlaying.value = false;
     _videoController!.setVolume(volume);
-    _videoController!.play();
+    // _videoController!.play();
   }
 
   Future<void> closeVideo() async {

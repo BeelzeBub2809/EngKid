@@ -125,8 +125,8 @@ class VideoScreen extends StatelessWidget {
                                                   },
                                                   semantics: controller
                                                           .isVideoPlaying
-                                                      ? 'pause_video'
-                                                      : 'next_video',
+                                                      ? 'pause_video'.tr
+                                                      : 'next_video'.tr,
                                                   pathImage: controller
                                                           .isVideoPlaying
                                                       ? LocalImage.pauseButton
@@ -154,7 +154,7 @@ class VideoScreen extends StatelessWidget {
                                                   onTap: () {
                                                     controller.refreshVideo();
                                                   },
-                                                  semantics: 'review_video',
+                                                  semantics: 'review_video'.tr,
                                                   pathImage:
                                                       LocalImage.refreshButton,
                                                   width: 0.5 * size.height,
@@ -251,11 +251,11 @@ class VideoScreen extends StatelessWidget {
                                 controller.closeVideo();
                               },
                               semantics: 'home',
-                              pathImage: LocalImage.buttonHome,
+                              pathImage: LocalImage.backButton,
                               height: 0.075 * size.width,
                               width: 0.075 * size.width,
                             ),
-                            RegularText('home'.tr, style: TextStyle(fontSize: Fontsize.normal, color: Colors.white),)
+                            // RegularText('home'.tr, style: TextStyle(fontSize: Fontsize.normal, color: Colors.white),)
                           ],
                         ),
                       ),

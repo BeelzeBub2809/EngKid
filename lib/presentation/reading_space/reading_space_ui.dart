@@ -67,18 +67,18 @@ class ReadingScreen extends GetView<ReadingSpaceController> {
                         ],
                       ),
                     ),
-                    Positioned.fill(
-                      top: 0.08 * size.width,
-                      left: 0.015 * size.width,
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: RegularText(
-                          'home'.tr,
-                          style: TextStyle(
-                              fontSize: Fontsize.normal, color: AppColor.red),
-                        ),
-                      ),
-                    ),
+                    // Positioned.fill(
+                    //   top: 0.08 * size.width,
+                    //   left: 0.015 * size.width,
+                    //   child: Align(
+                    //     alignment: Alignment.topLeft,
+                    //     child: RegularText(
+                    //       'home'.tr,
+                    //       style: TextStyle(
+                    //           fontSize: Fontsize.normal, color: AppColor.red),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

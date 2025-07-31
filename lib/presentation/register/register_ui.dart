@@ -93,7 +93,7 @@ class RegisterScreen extends GetView<RegisterController> {
                               size: size,
                               controller: controller.nameParentsRx.obs,
                               validateValue: controller.validateNameParents,
-                              title: "full name",
+                              title: 'full_name'.tr,
                               onChange: (text) {
                                 controller.onChangeInput(
                                     input: text,
@@ -105,7 +105,7 @@ class RegisterScreen extends GetView<RegisterController> {
                             () => ItemInputRegister(
                               size: size,
                               controller: controller.loginId.obs,
-                              title: "user_name",
+                              title: 'user_name'.tr,
                               validateValue: controller.validateIdLogin,
                               isLoginId: true,
                               onChange: (text) {
