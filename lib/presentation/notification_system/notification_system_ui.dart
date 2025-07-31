@@ -4,13 +4,11 @@ import 'package:get/get.dart';
 import 'package:EngKid/domain/core/entities/auto_notification/auto_notification.dart';
 import 'package:EngKid/presentation/notification_system/notification_system_controller.dart';
 import 'package:EngKid/utils/app_color.dart';
-import 'package:EngKid/utils/app_route.dart';
 import 'package:EngKid/utils/font_size.dart';
 import 'package:EngKid/utils/images.dart';
 import 'package:EngKid/utils/lib_function.dart';
 import 'package:EngKid/widgets/button/image_button.dart';
 import 'package:EngKid/widgets/loading/loading_dialog.dart';
-import 'package:sizer/sizer.dart';
 
 class NotificationSystemScreen extends GetView<NotificationSystemController> {
   const NotificationSystemScreen({super.key});
@@ -29,638 +27,22 @@ class NotificationSystemScreen extends GetView<NotificationSystemController> {
         return true;
       },
       child: Scaffold(
-        body: Stack(
-          children: [
-            GestureDetector(
-              onTap: () {
-                if (controller.focusNode.hasFocus) {
-                  controller.focusNode.unfocus();
-                }
-              },
-              child: Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(LocalImage.spaceBg),
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                width: size.width,
-                height: size.height,
-                child: SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: LibFunction.scaleForCurrentValue(
-                          size,
-                          72,
-                          desire: 1,
-                        ),
-                      ),
-                      Container(
-                        width: 0.85 * size.width,
-                        height: 0.06 * size.height,
-                        margin: EdgeInsets.only(top: size.width * 0.03),
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(LocalImage.boxSearchMessage),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: Center(
-                          child: TextField(
-                            controller: controller.textEditingController,
-                            obscureText: false,
-                            focusNode: controller.focusNode,
-                            textInputAction: TextInputAction.next,
-                            cursorColor: Colors.black,
-                            onChanged: (String value) {
-                              controller.textSearch = value;
-                            },
-                            decoration: InputDecoration(
-                              hintText: "".tr,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              hintStyle: TextStyle(
-                                  color: AppColor.gray,
-                                  fontSize: Fontsize.smaller,
-                                  fontWeight:
-                                      FontWeight.w500), // Màu của placeholder
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(6),
-                                borderSide: const BorderSide(
-                                  color: Colors
-                                      .transparent, // Màu cho border bình thường
-                                  width: 1,
-                                ),
-                              ),
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors
-                                      .transparent, // Màu cho border khi focus
-                                  width: 0,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: Colors
-                                      .transparent, // Màu cho border khi không focus
-                                  width: 0,
-                                ),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              contentPadding: EdgeInsets.all(
-                                  LibFunction.scaleForCurrentValue(size, 64)),
-                              labelText: "",
-                              fillColor: Colors.transparent,
-                              filled: true,
-                              labelStyle: const TextStyle(
-                                color: AppColor.gray,
-                              ),
-                              prefixIcon:
-                                  const Icon(Icons.search, color: Colors.grey),
-                              suffixIcon: Obx(() => controller.textSearch != ""
-                                  ? InkWell(
-                                      onTap: () {
-                                        controller.textEditingController.text =
-                                            "";
-                                        controller.textSearch = "";
-                                        controller.focusNode.unfocus();
-                                      },
-                                      child: const Icon(Icons.close,
-                                          color: Colors.grey))
-                                  : const SizedBox.shrink()),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 0.02 * size.height,
-                      ),
-                      Stack(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: LibFunction.scaleForCurrentValue(
-                                size,
-                                24,
-                                desire: 1,
-                              ),
-                            ),
-                            child: Container(
-                              width: size.width,
-                              height: 0.8 * size.height,
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 0.01 * size.width),
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(LocalImage.feedbackFormBg),
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: size.height * 0.02,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Obx(
-                                        () => InkWell(
-                                          onTap: () {
-                                            controller.tabActive = 0;
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: LibFunction
-                                                  .scaleForCurrentValue(
-                                                      size, 64),
-                                              // vertical: LibFunction.scaleForCurrentValue(size, 16),
-                                            ),
-                                            margin: EdgeInsets.symmetric(
-                                              horizontal: LibFunction
-                                                  .scaleForCurrentValue(
-                                                      size, 12),
-                                            ),
-                                            height: LibFunction
-                                                .scaleForCurrentValue(
-                                              size,
-                                              46,
-                                              desire: 1,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: controller.tabActive == 0
-                                                  ? AppColor.red
-                                                  : Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      0.04 * size.width),
-                                              border: Border.all(
-                                                width: 1,
-                                                color: controller.tabActive == 0
-                                                    ? AppColor.red
-                                                    : AppColor.gray,
-                                              ),
-                                            ),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "important".tr,
-                                                  style: TextStyle(
-                                                    color:
-                                                        controller.tabActive ==
-                                                                0
-                                                            ? Colors.white
-                                                            : const Color(
-                                                                0xff606060),
-                                                    fontSize: Fontsize.smallest,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "(${controller.systemNotifications.where((element) => element.notiType == 0 && element.type == 2).length})",
-                                                  style: TextStyle(
-                                                    color:
-                                                        controller.tabActive ==
-                                                                0
-                                                            ? Colors.white
-                                                            : const Color(
-                                                                0xff606060),
-                                                    fontSize: 7.sp,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Obx(
-                                        () => InkWell(
-                                          onTap: () {
-                                            controller.tabActive = 1;
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: LibFunction
-                                                  .scaleForCurrentValue(
-                                                      size, 64),
-                                              // vertical: LibFunction.scaleForCurrentValue(size, 16),
-                                            ),
-                                            margin: EdgeInsets.symmetric(
-                                              horizontal: LibFunction
-                                                  .scaleForCurrentValue(
-                                                      size, 12),
-                                            ),
-                                            height: LibFunction
-                                                .scaleForCurrentValue(
-                                              size,
-                                              46,
-                                              desire: 1,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: controller.tabActive == 1
-                                                  ? AppColor.red
-                                                  : Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      0.04 * size.width),
-                                              border: Border.all(
-                                                width: 1,
-                                                color: controller.tabActive == 1
-                                                    ? AppColor.red
-                                                    : AppColor.gray,
-                                              ),
-                                            ),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "btvn".tr,
-                                                  style: TextStyle(
-                                                    color:
-                                                        controller.tabActive ==
-                                                                1
-                                                            ? Colors.white
-                                                            : const Color(
-                                                                0xff606060),
-                                                    fontSize: Fontsize.smallest,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "(${controller.systemNotifications.where((element) => element.notiType == 1 && element.type == 2).length})",
-                                                  style: TextStyle(
-                                                    color:
-                                                        controller.tabActive ==
-                                                                1
-                                                            ? Colors.white
-                                                            : const Color(
-                                                                0xff606060),
-                                                    fontSize: 7.sp,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Obx(
-                                        () => InkWell(
-                                          onTap: () {
-                                            controller.tabActive = 2;
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: LibFunction
-                                                  .scaleForCurrentValue(
-                                                      size, 64),
-                                              // vertical: LibFunction.scaleForCurrentValue(size, 16),
-                                            ),
-                                            margin: EdgeInsets.symmetric(
-                                              horizontal: LibFunction
-                                                  .scaleForCurrentValue(
-                                                      size, 12),
-                                            ),
-                                            height: LibFunction
-                                                .scaleForCurrentValue(
-                                              size,
-                                              46,
-                                              desire: 1,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: controller.tabActive == 2
-                                                  ? AppColor.red
-                                                  : Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      0.04 * size.width),
-                                              border: Border.all(
-                                                width: 1,
-                                                color: controller.tabActive == 2
-                                                    ? AppColor.red
-                                                    : AppColor.gray,
-                                              ),
-                                            ),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "reading_process".tr,
-                                                  style: TextStyle(
-                                                    color:
-                                                        controller.tabActive ==
-                                                                2
-                                                            ? Colors.white
-                                                            : const Color(
-                                                                0xff606060),
-                                                    fontSize: Fontsize.smallest,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "(${controller.systemNotifications.where((element) => element.notiType == -1 && element.type == 1).length})",
-                                                  style: TextStyle(
-                                                    color:
-                                                        controller.tabActive ==
-                                                                2
-                                                            ? Colors.white
-                                                            : const Color(
-                                                                0xff606060),
-                                                    fontSize: 7.sp,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Obx(
-                                        () => InkWell(
-                                          onTap: () {
-                                            controller.tabActive = 3;
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: LibFunction
-                                                  .scaleForCurrentValue(
-                                                      size, 64),
-                                              // vertical: LibFunction.scaleForCurrentValue(size, 16),
-                                            ),
-                                            margin: EdgeInsets.symmetric(
-                                              horizontal: LibFunction
-                                                  .scaleForCurrentValue(
-                                                      size, 12),
-                                            ),
-                                            height: LibFunction
-                                                .scaleForCurrentValue(
-                                              size,
-                                              46,
-                                              desire: 1,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: controller.tabActive == 3
-                                                  ? AppColor.red
-                                                  : Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      0.04 * size.width),
-                                              border: Border.all(
-                                                width: 1,
-                                                color: controller.tabActive == 3
-                                                    ? AppColor.red
-                                                    : AppColor.gray,
-                                              ),
-                                            ),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "interact".tr,
-                                                  style: TextStyle(
-                                                    color:
-                                                        controller.tabActive ==
-                                                                3
-                                                            ? Colors.white
-                                                            : const Color(
-                                                                0xff606060),
-                                                    fontSize: Fontsize.smallest,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "(${controller.systemNotifications.where((element) => element.notiType == -1 && element.type == 2).length})",
-                                                  style: TextStyle(
-                                                    color:
-                                                        controller.tabActive ==
-                                                                3
-                                                            ? Colors.white
-                                                            : const Color(
-                                                                0xff606060),
-                                                    fontSize: 7.sp,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: LibFunction.scaleForCurrentValue(
-                                      size,
-                                      12,
-                                      desire: 1,
-                                    ),
-                                  ),
-                                  Obx(
-                                    () => controller.isLoading
-                                        ? Expanded(
-                                            child: LoadingDialog(
-                                              sizeIndi: 0.2 * size.width,
-                                              color: AppColor.blue,
-                                              des: "",
-                                            ),
-                                          )
-                                        : const SizedBox.shrink(),
-                                  ),
-                                  Expanded(
-                                    child: Obx(() {
-                                      final list = controller.getListByTab(
-                                        controller.systemNotifications,
-                                        controller.textSearch,
-                                      );
-                                      // controller.feedbacks
-                                      //     .where((element) =>
-                                      //         (controller.listType == "important" &&
-                                      //             element.isImportant == 1) ||
-                                      //         controller.listType != "important")
-                                      //     .toList();
-                                      return controller.isLoading
-                                          ? const SizedBox.shrink()
-                                          : ListView.separated(
-                                              physics:
-                                                  const BouncingScrollPhysics(),
-                                              shrinkWrap: true,
-                                              // reverse: true,
-                                              scrollDirection: Axis.vertical,
-                                              itemCount: list.length,
-                                              separatorBuilder:
-                                                  (context, index) {
-                                                return SizedBox(
-                                                  height: 0.01 * size.height,
-                                                );
-                                              },
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 0.1 * size.width,
-                                              ),
-                                              itemBuilder: (
-                                                BuildContext context,
-                                                int index,
-                                              ) {
-                                                final notification =
-                                                    list[index];
-                                                DateTime dateTime =
-                                                    DateTime.parse(
-                                                        notification.createdAt);
-
-                                                DateTime now = DateTime.now();
-
-                                                Duration difference =
-                                                    now.difference(dateTime);
-
-                                                int dayssDifference =
-                                                    difference.inDays;
-
-                                                late String timeText =
-                                                    "$dayssDifference ${"day".tr}";
-                                                if (dayssDifference == 0) {
-                                                  int hoursDifference =
-                                                      difference.inHours;
-                                                  timeText =
-                                                      "$hoursDifference ${"hour".tr}";
-                                                  if (hoursDifference == 0) {
-                                                    int minutesDifference =
-                                                        difference.inMinutes;
-                                                    timeText =
-                                                        "$minutesDifference ${"minute".tr}";
-                                                    if (minutesDifference ==
-                                                        0) {
-                                                      int secondsDifference =
-                                                          difference.inSeconds;
-                                                      timeText =
-                                                          "$secondsDifference ${"second".tr}";
-                                                    }
-                                                  }
-                                                }
-                                                String type = "";
-                                                if (notification.notiType ==
-                                                        0 &&
-                                                    notification.type == 2) {
-                                                  type = "important";
-                                                }
-                                                if (notification.notiType ==
-                                                        1 &&
-                                                    notification.type == 2) {
-                                                  type = "btvn";
-                                                }
-                                                if (notification.notiType ==
-                                                        -1 &&
-                                                    notification.type == 1) {
-                                                  type = "reading_process";
-                                                }
-                                                if (notification.notiType ==
-                                                        -1 &&
-                                                    notification.type == 2) {
-                                                  type = "interact";
-                                                }
-
-                                                return Row(
-                                                  children: [
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        controller
-                                                            .handleReadNotification(
-                                                                notification);
-                                                      },
-                                                      child: Image.asset(
-                                                        notification.isRead == 1
-                                                            ? LocalImage
-                                                                .checkboxChecked
-                                                            : LocalImage
-                                                                .checkboxUnChecked,
-                                                        width:
-                                                            0.08 * size.width,
-                                                        height:
-                                                            0.08 * size.width,
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 0.03 * size.width,
-                                                    ),
-                                                    Expanded(
-                                                      child: Container(
-                                                        width: double.infinity,
-                                                        padding: EdgeInsets.all(
-                                                          LibFunction
-                                                              .scaleForCurrentValue(
-                                                            size,
-                                                            48,
-                                                          ),
-                                                        ),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors.white,
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                  .all(
-                                                            Radius.circular(
-                                                              12,
-                                                            ),
-                                                          ),
-                                                          border: Border.all(
-                                                            color: const Color(
-                                                                0xffD9D9D9),
-                                                            width: 1,
-                                                          ),
-                                                        ),
-                                                        child: NotificationItem(
-                                                          notification:
-                                                              notification,
-                                                          controller:
-                                                              controller,
-                                                          type: type,
-                                                          timeText: timeText,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              });
-                                    }),
-                                  ),
-                                  SizedBox(
-                                    height: size.height * 0.03,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(LocalImage.backgroundBlue),
+              fit: BoxFit.cover,
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  top: size.width * 0.05, left: size.width * 0.02),
-              child: Positioned.fill(
-                top: 0.05 * size.width,
-                left: 0.05 * size.width,
-                child: Align(
-                  alignment: Alignment.topLeft,
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                // Header with back button and title
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: size.width * 0.05,
+                    vertical: size.height * 0.02,
+                  ),
                   child: Row(
                     children: [
                       ImageButton(
@@ -674,47 +56,341 @@ class NotificationSystemScreen extends GetView<NotificationSystemController> {
                         },
                         semantics: 'back',
                         pathImage: LocalImage.backNoShadow,
-                        height: 0.12 * size.width,
-                        width: 0.12 * size.width,
+                        height: size.width * 0.08,
+                        width: size.width * 0.08,
                       ),
-                      SizedBox(
-                        width: 0.05 * size.width,
-                      ),
+                      SizedBox(width: size.width * 0.03),
                       Expanded(
-                          child: Semantics(
-                        label: 'notification'.tr,
                         child: Text(
-                          'notification'.tr.toUpperCase(),
-                          overflow: TextOverflow.ellipsis,
+                          'THÔNG BÁO',
                           style: TextStyle(
                             color: AppColor.red,
                             fontWeight: FontWeight.bold,
                             fontSize: Fontsize.large,
                           ),
+                          textAlign: TextAlign.left,
                         ),
-                      )),
+                      ),
                     ],
                   ),
                 ),
-              ),
-            ),
-            Positioned.fill(
-              top: 0.05 * size.width,
-              right: 0.03 * size.width,
-              child: Align(
-                alignment: Alignment.topRight,
-                child: ImageButton(
-                  onTap: () {
-                    // Get.toNamed(AppRoute.notificationSetting);
-                  },
-                  semantics: 'settings',
-                  pathImage: LocalImage.settingRed,
-                  height: 0.12 * size.width,
-                  width: 0.12 * size.width,
+
+                // Search bar
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                  child: Container(
+                    height: size.height * 0.06,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                      border: Border.all(color: AppColor.red, width: 2),
+                    ),
+                    child: TextField(
+                      controller: controller.textEditingController,
+                      focusNode: controller.focusNode,
+                      textInputAction: TextInputAction.search,
+                      cursorColor: Colors.black,
+                      onChanged: (String value) {
+                        controller.debouncedSearch();
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Tìm kiếm thông báo...",
+                        hintStyle: TextStyle(
+                          color: Colors.grey[400],
+                          fontSize: Fontsize.normal,
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: size.width * 0.04,
+                          vertical: size.height * 0.015,
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.grey[400],
+                          size: size.width * 0.05,
+                        ),
+                        suffixIcon: Obx(() => controller.textSearch.isNotEmpty
+                            ? IconButton(
+                                onPressed: () {
+                                  controller.textEditingController.clear();
+                                  controller.textSearch = "";
+                                  controller.focusNode.unfocus();
+                                },
+                                icon: Icon(
+                                  Icons.close,
+                                  color: Colors.grey[400],
+                                  size: size.width * 0.05,
+                                ),
+                              )
+                            : const SizedBox.shrink()),
+                      ),
+                      enableSuggestions: true,
+                      autocorrect: false,
+                    ),
+                  ),
                 ),
-              ),
+
+                SizedBox(height: size.height * 0.02),
+
+                // Main content area
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border:
+                          Border.all(color: const Color(0xFF4CAF50), width: 3),
+                    ),
+                    child: Column(
+                      children: [
+                        // Content area
+                        Expanded(
+                          child: Obx(() {
+                            if (controller.isLoading) {
+                              return Center(
+                                child: LoadingDialog(
+                                  sizeIndi: size.width * 0.15,
+                                  color: AppColor.blue,
+                                  des: "",
+                                ),
+                              );
+                            }
+
+                            final list = controller.getPaginatedNotifications();
+
+                            if (list.isEmpty) {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.notifications_none,
+                                      size: size.width * 0.15,
+                                      color: Colors.grey[300],
+                                    ),
+                                    SizedBox(height: size.height * 0.02),
+                                    Text(
+                                      'Chưa có thông báo nào',
+                                      style: TextStyle(
+                                        fontSize: Fontsize.normal,
+                                        color: Colors.grey[400],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+
+                            return Column(
+                              children: [
+                                Expanded(
+                                  child: ListView.separated(
+                                    physics: const BouncingScrollPhysics(),
+                                    padding: EdgeInsets.all(size.width * 0.04),
+                                    itemCount: list.length,
+                                    separatorBuilder: (context, index) {
+                                      return SizedBox(
+                                          height: size.height * 0.015);
+                                    },
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      final notification = list[index];
+                                      DateTime dateTime = DateTime.parse(
+                                          notification.createdAt);
+                                      DateTime now = DateTime.now();
+                                      Duration difference =
+                                          now.difference(dateTime);
+                                      int daysDifference = difference.inDays;
+
+                                      late String timeText =
+                                          "$daysDifference ${"day".tr}";
+                                      if (daysDifference == 0) {
+                                        int hoursDifference =
+                                            difference.inHours;
+                                        timeText =
+                                            "$hoursDifference ${"hour".tr}";
+                                        if (hoursDifference == 0) {
+                                          int minutesDifference =
+                                              difference.inMinutes;
+                                          timeText =
+                                              "$minutesDifference ${"minute".tr}";
+                                          if (minutesDifference == 0) {
+                                            int secondsDifference =
+                                                difference.inSeconds;
+                                            timeText =
+                                                "$secondsDifference ${"second".tr}";
+                                          }
+                                        }
+                                      }
+
+                                      // Show all notifications without type filtering
+                                      return Container(
+                                        padding:
+                                            EdgeInsets.all(size.width * 0.03),
+                                        decoration: BoxDecoration(
+                                          color: Colors.blue[50],
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          border: Border.all(
+                                            color: Colors.grey[200]!,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: NotificationItem(
+                                          notification: notification,
+                                          controller: controller,
+                                          type: 'thông báo',
+                                          timeText: timeText,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                // Pagination controls
+                                if (controller.totalPages > 1)
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: size.width * 0.04,
+                                      vertical: size.height * 0.02,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // Previous button
+                                        InkWell(
+                                          onTap: controller.currentPage > 1
+                                              ? controller.goToPreviousPage
+                                              : null,
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: size.width * 0.04,
+                                              vertical: size.height * 0.01,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: controller.currentPage > 1
+                                                  ? AppColor.blue
+                                                  : Colors.grey[300],
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  Icons.arrow_back_ios,
+                                                  color:
+                                                      controller.currentPage > 1
+                                                          ? Colors.white
+                                                          : Colors.grey[500],
+                                                  size: 16,
+                                                ),
+                                                SizedBox(
+                                                    width: size.width * 0.01),
+                                                Text(
+                                                  'Trước',
+                                                  style: TextStyle(
+                                                    color:
+                                                        controller.currentPage >
+                                                                1
+                                                            ? Colors.white
+                                                            : Colors.grey[500],
+                                                    fontSize: Fontsize.small,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        // Page indicator
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: size.width * 0.04,
+                                            vertical: size.height * 0.01,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                AppColor.blue.withOpacity(0.1),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Text(
+                                            'Trang ${controller.currentPage}/${controller.totalPages}',
+                                            style: TextStyle(
+                                              color: AppColor.blue,
+                                              fontSize: Fontsize.small,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                        // Next button
+                                        InkWell(
+                                          onTap: controller.currentPage <
+                                                  controller.totalPages
+                                              ? controller.goToNextPage
+                                              : null,
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: size.width * 0.04,
+                                              vertical: size.height * 0.01,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: controller.currentPage <
+                                                      controller.totalPages
+                                                  ? AppColor.blue
+                                                  : Colors.grey[300],
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  'Sau',
+                                                  style: TextStyle(
+                                                    color:
+                                                        controller.currentPage <
+                                                                controller
+                                                                    .totalPages
+                                                            ? Colors.white
+                                                            : Colors.grey[500],
+                                                    fontSize: Fontsize.small,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                    width: size.width * 0.01),
+                                                Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  color: controller
+                                                              .currentPage <
+                                                          controller.totalPages
+                                                      ? Colors.white
+                                                      : Colors.grey[500],
+                                                  size: 16,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                              ],
+                            );
+                          }),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: size.height * 0.02),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -830,32 +506,9 @@ class _NotificationItemState extends State<NotificationItem> {
             ),
             child: Row(
               children: [
-                Container(
-                  padding: EdgeInsets.all(
-                    LibFunction.scaleForCurrentValue(
-                      size,
-                      24,
-                    ),
-                  ),
-                  decoration: const BoxDecoration(
-                    color: Color(0xffF6B0BD),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(
-                        4,
-                      ),
-                    ),
-                  ),
-                  child: Text(
-                    widget.type.tr,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: Fontsize.smallest,
-                    ),
-                  ),
-                ),
                 Expanded(child: Container()),
                 Text(
-                  "${widget.timeText} ${"before".tr}",
+                  "${widget.timeText} trước",
                   style: TextStyle(
                     color: const Color(0xff666666),
                     fontSize: Fontsize.smallest,

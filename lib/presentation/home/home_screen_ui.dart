@@ -33,12 +33,12 @@ class HomeScreen extends GetView<HomeScreenController> {
     //List menu on the right side edge of the screen
     final List<MenuRight> menuRights = [
       MenuRight(
-        label: "share",
-        count: 0,
-        icon: LocalImage.iconShare,
-        onTap: () {
-          controller.shareMyApp();
-        }),
+          label: "share",
+          count: 0,
+          icon: LocalImage.iconShare,
+          onTap: () {
+            controller.shareMyApp();
+          }),
     ];
     if (screenWidth < 900) {
       fSize = Fontsize.small;
@@ -54,7 +54,7 @@ class HomeScreen extends GetView<HomeScreenController> {
             height: size.height,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(LocalImage.spaceBg),
+                image: AssetImage(LocalImage.backgroundBlue),
                 fit: BoxFit.fill,
               ),
             ),
@@ -98,11 +98,11 @@ class HomeScreen extends GetView<HomeScreenController> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-
                               Padding(
                                 padding: const EdgeInsets.only(top: 5.0),
                                 child: RegularText(
-                                  userService.childProfiles.childProfiles.isNotEmpty
+                                  userService.childProfiles.childProfiles
+                                          .isNotEmpty
                                       ? "select_account_remind"
                                       : 'Hãy tạo tài khoản cho các con để bắt đầu!',
                                   style: TextStyle(
@@ -112,93 +112,116 @@ class HomeScreen extends GetView<HomeScreenController> {
                                   ),
                                 ),
                               ),
-
                               SizedBox(
                                 height: 0.05 * size.height,
                               ),
                               Obx(
-                                  () => userService.childProfiles.childProfiles.isNotEmpty
-                                      ? SizedBox(
-                                          width: 0.3 * size.width,
-                                          height: 0.32 * size.height,
-                                          child: Swiper(
-                                            itemBuilder: (BuildContext context, int index) {
-                                              return Stack(
-                                                children: [
-                                                  Center(
-                                                    child: Container(
-                                                      width: 0.24 * size.height,
-                                                      height: 0.24 * size.height,
-
-                                                      decoration: const BoxDecoration(
-                                                        color: Color(0XFFfdf1ce),
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                      child: Center(
-                                                        child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(0.23 * size.height),
-                                                          child: CacheImage(
-                                                            url: userService.childProfiles.childProfiles[index].avatar,
-                                                            width: 0.23 * size.height,
-                                                            height: 0.23 * size.height,
-                                                          ),
+                                () => userService
+                                        .childProfiles.childProfiles.isNotEmpty
+                                    ? SizedBox(
+                                        width: 0.3 * size.width,
+                                        height: 0.32 * size.height,
+                                        child: Swiper(
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return Stack(
+                                              children: [
+                                                Center(
+                                                  child: Container(
+                                                    width: 0.24 * size.height,
+                                                    height: 0.24 * size.height,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      color: Color(0XFFfdf1ce),
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: Center(
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(0.23 *
+                                                                    size.height),
+                                                        child: CacheImage(
+                                                          url: userService
+                                                              .childProfiles
+                                                              .childProfiles[
+                                                                  index]
+                                                              .avatar,
+                                                          width: 0.23 *
+                                                              size.height,
+                                                          height: 0.23 *
+                                                              size.height,
                                                         ),
                                                       ),
                                                     ),
                                                   ),
-                                                  Positioned.fill(
+                                                ),
+                                                Positioned.fill(
                                                     child: Align(
-                                                      alignment:Alignment.bottomCenter,
-                                                      child: ImageText(
-                                                        pathImage: LocalImage.shapeName,
-                                                        text: userService.childProfiles.childProfiles[index].name,
-                                                        style: TextStyle(
-                                                          color: AppColor.gray,
-                                                          fontSize: fSize,
-                                                          height: 1.2,
-                                                        ),
-                                                        textAlign: TextAlign.center,
-                                                        width: 0.23 * size.width,
-                                                        height: 0.1 * size.height,
-                                                        onTap: controller.copyDeviceTokenToClipboard,
-                                                      ),
-
-                                                  ))
-                                                ],
-                                              );
-                                            },
-                                            index: userService.userLogin.roleId == "2"
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  child: ImageText(
+                                                    pathImage:
+                                                        LocalImage.shapeName,
+                                                    text: userService
+                                                        .childProfiles
+                                                        .childProfiles[index]
+                                                        .name,
+                                                    style: TextStyle(
+                                                      color: AppColor.gray,
+                                                      fontSize: fSize,
+                                                      height: 1.2,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                    width: 0.23 * size.width,
+                                                    height: 0.1 * size.height,
+                                                    onTap: controller
+                                                        .copyDeviceTokenToClipboard,
+                                                  ),
+                                                ))
+                                              ],
+                                            );
+                                          },
+                                          index: userService.userLogin.roleId ==
+                                                  "2"
                                               ? 0
-                                              : controller.indexCurrentUserInChildProfiles(),
-                                            onIndexChanged: (int index) {
-                                              if (userService.userLogin.roleId == "2") {
-                                                return;
-                                              }
-                                              controller.onChangeChild(userService.childProfiles.childProfiles[index]);
-                                            },
-                                            itemCount:
-                                              userService.userLogin.roleId == "2"
-                                                ? 1
-                                                : userService.childProfiles.childProfiles.length,
-                                            control: SwiperControlCustom(
-                                              width: 0.035 * size.width,
-                                              height: 0.035 * size.width,
-                                              crossAxisAlignment:CrossAxisAlignment.center,
-                                            ),
+                                              : controller
+                                                  .indexCurrentUserInChildProfiles(),
+                                          onIndexChanged: (int index) {
+                                            if (userService.userLogin.roleId ==
+                                                "2") {
+                                              return;
+                                            }
+                                            controller.onChangeChild(userService
+                                                .childProfiles
+                                                .childProfiles[index]);
+                                          },
+                                          itemCount:
+                                              userService.userLogin.roleId ==
+                                                      "2"
+                                                  ? 1
+                                                  : userService.childProfiles
+                                                      .childProfiles.length,
+                                          control: SwiperControlCustom(
+                                            width: 0.035 * size.width,
+                                            height: 0.035 * size.width,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
                                           ),
-                                        )
-                                      : Image.asset(
-                                          LocalImage.children,
-                                          width: size.width * 0.15,
-                                          height: size.height * 0.3,
-                                          fit: BoxFit.cover,
                                         ),
-                                ),
-
+                                      )
+                                    : Image.asset(
+                                        LocalImage.children,
+                                        width: size.width * 0.15,
+                                        height: size.height * 0.3,
+                                        fit: BoxFit.cover,
+                                      ),
+                              ),
                               SizedBox(
                                 height: 0.02 * size.height,
                               ),
-                              if(userService.childProfiles.childProfiles.isNotEmpty)
+                              if (userService
+                                  .childProfiles.childProfiles.isNotEmpty)
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -228,10 +251,11 @@ class HomeScreen extends GetView<HomeScreenController> {
                                     ),
                                   ],
                                 ),
-
-                              if(userService.childProfiles.childProfiles.isEmpty)
+                              if (userService
+                                  .childProfiles.childProfiles.isEmpty)
                                 Padding(
-                                  padding: EdgeInsets.only(top: 0.02 * size.height),
+                                  padding:
+                                      EdgeInsets.only(top: 0.02 * size.height),
                                   child: ImageText(
                                     text: 'create_account',
                                     pathImage: LocalImage.shapeButton,
@@ -285,14 +309,20 @@ class HomeScreen extends GetView<HomeScreenController> {
                                         children: [
                                           Obx(
                                             () => badges.Badge(
-                                              showBadge: controller.menus[index].count != 0,
-                                              position: badges.BadgePosition.topEnd(top: -5, end: -5),
-                                              badgeStyle: const badges.BadgeStyle(
+                                              showBadge: controller
+                                                      .menus[index].count !=
+                                                  0,
+                                              position:
+                                                  badges.BadgePosition.topEnd(
+                                                      top: -5, end: -5),
+                                              badgeStyle:
+                                                  const badges.BadgeStyle(
                                                 badgeColor: AppColor.red,
                                                 shape: badges.BadgeShape.circle,
                                               ),
                                               badgeContent: Text(
-                                                renderNumberBadges(controller.menus[index].count),
+                                                renderNumberBadges(controller
+                                                    .menus[index].count),
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.white,
@@ -303,7 +333,8 @@ class HomeScreen extends GetView<HomeScreenController> {
                                                 width: size.width * 0.06,
                                                 height: size.width * 0.06,
                                                 child: ImageButton(
-                                                  pathImage: controller.menus[index].pathImage,
+                                                  pathImage: controller
+                                                      .menus[index].pathImage,
                                                   onTap: () {
                                                     controller.onPressTo(
                                                       controller.menus[index],
@@ -362,17 +393,21 @@ class HomeScreen extends GetView<HomeScreenController> {
                             userService.logout();
                           },
                         ),
-                        Text('logout'.tr,
+                        Text(
+                          'logout'.tr,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: Fontsize.small,
                             fontWeight: FontWeight.bold,
-                          )
-                        ,),
-
+                          ),
+                        ),
                         Container(
                           margin: EdgeInsets.symmetric(
-                            vertical: LibFunction.scaleForCurrentValue(size, 16,desire: 1,),
+                            vertical: LibFunction.scaleForCurrentValue(
+                              size,
+                              16,
+                              desire: 1,
+                            ),
                           ),
                           // padding: EdgeInsets.symmetric(
                           //   vertical: LibFunction.scaleForCurrentValue(
@@ -384,8 +419,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                           decoration: BoxDecoration(
                               // color: Colors.black.withOpacity(0.1),
                               color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(100)
-                          ),
+                              borderRadius: BorderRadius.circular(100)),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -394,18 +428,31 @@ class HomeScreen extends GetView<HomeScreenController> {
                                 onTap: el.onTap,
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(
-                                    horizontal:LibFunction.scaleForCurrentValue(size,8,),
-                                    vertical: LibFunction.scaleForCurrentValue(size,24,desire: 1,),
+                                    horizontal:
+                                        LibFunction.scaleForCurrentValue(
+                                      size,
+                                      8,
+                                    ),
+                                    vertical: LibFunction.scaleForCurrentValue(
+                                      size,
+                                      24,
+                                      desire: 1,
+                                    ),
                                   ),
                                   child: Column(
                                     children: [
                                       Padding(
                                         padding: EdgeInsets.symmetric(
-                                          horizontal: LibFunction.scaleForCurrentValue(size, 8,),
+                                          horizontal:
+                                              LibFunction.scaleForCurrentValue(
+                                            size,
+                                            8,
+                                          ),
                                         ),
                                         child: badges.Badge(
                                           showBadge: el.count != 0,
-                                          position: badges.BadgePosition.topEnd( top: -5, end: -5),
+                                          position: badges.BadgePosition.topEnd(
+                                              top: -5, end: -5),
                                           badgeStyle: const badges.BadgeStyle(
                                             badgeColor: AppColor.red,
                                             shape: badges.BadgeShape.circle,
@@ -420,8 +467,18 @@ class HomeScreen extends GetView<HomeScreenController> {
                                           ),
                                           child: Image.asset(
                                             el.icon,
-                                            width: LibFunction.scaleForCurrentValue(size,112, desire: 0,),
-                                            height: LibFunction.scaleForCurrentValue( size, 112,desire: 0,),
+                                            width: LibFunction
+                                                .scaleForCurrentValue(
+                                              size,
+                                              112,
+                                              desire: 0,
+                                            ),
+                                            height: LibFunction
+                                                .scaleForCurrentValue(
+                                              size,
+                                              112,
+                                              desire: 0,
+                                            ),
                                           ),
                                         ),
                                       ),
