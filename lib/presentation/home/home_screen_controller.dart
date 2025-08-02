@@ -70,6 +70,24 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
       arguments: null,
       count: 0,
     ),
+    Menu(
+      name: 'add children',
+      pathImage: LocalImage.children,
+      to: AppRoute.addChildrenCode,
+      needValidateParent: true,
+      requireValidate: false,
+      arguments: null,
+      count: 0,
+    ),
+    Menu(
+      name: 'user_guide',
+      pathImage: LocalImage.guideApplication,
+      to: AppRoute.userGuide,
+      needValidateParent: false,
+      requireValidate: false,
+      arguments: null,
+      count: 0,
+    ),
   ].obs;
 
   void onPressTo(Menu menu) async {
