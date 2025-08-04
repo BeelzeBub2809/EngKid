@@ -1,4 +1,5 @@
 import 'package:EngKid/data/core/remote/api/ebook_category_api/ebook_category_api.dart';
+import 'package:EngKid/data/core/remote/api/notification_api/notification_api.dart';
 import 'package:EngKid/data/core/remote/api/question_api/question_api.dart';
 import 'package:EngKid/data/core/remote/api/reading_api/reading_api.dart';
 import 'package:EngKid/data/child/child_repo.dart';
@@ -6,11 +7,13 @@ import 'package:EngKid/data/core/remote/api/child_api/child_api.dart';
 import 'package:EngKid/data/core/remote/api/student_reading_api/student_reading_api.dart';
 import 'package:EngKid/data/core/remote/api/topic_api/topic_api.dart';
 import 'package:EngKid/data/ebook_category/ebook_category_repo.dart';
+import 'package:EngKid/data/notificaiton/notification_repo.dart';
 import 'package:EngKid/data/question/question_repo.dart';
 import 'package:EngKid/data/reading/reading_repo.dart';
 import 'package:EngKid/data/star_board/star_board_repo.dart';
 import 'package:EngKid/data/topic_reading/topic_reading_repo.dart';
 import 'package:EngKid/domain/ebook_category/ebook_category_usecase.dart';
+import 'package:EngKid/domain/notificaiton/notification_usecase.dart';
 import 'package:EngKid/domain/question/question_usecases.dart';
 import 'package:EngKid/domain/reading/reading_usecases.dart';
 import 'package:EngKid/domain/core/entities/child_profile/child_profiles_usecase.dart';
@@ -76,16 +79,15 @@ class UseCaseModule {
       fenix: true,
     );
     Get.lazyPut<ReadingUsecases>(
-          () => ReadingUsecases(
+      () => ReadingUsecases(
         ReadingRepositoryImp(
-          readingApi: getIt.get<ReadingApi>(),
-          studentReadingApi: getIt.get<StudentReadingApi>()
-        ),
+            readingApi: getIt.get<ReadingApi>(),
+            studentReadingApi: getIt.get<StudentReadingApi>()),
       ),
       fenix: true,
     );
     Get.lazyPut<QuestionUsecases>(
-          () => QuestionUsecases(
+      () => QuestionUsecases(
         QuestionRepositoryImp(
           questionApi: getIt.get<QuestionApi>(),
         ),
@@ -93,26 +95,28 @@ class UseCaseModule {
       fenix: true,
     );
     Get.lazyPut<ChildProfilesUsecases>(
-          () => ChildProfilesUsecases(
-            ChildRepositoryImp(
+      () => ChildProfilesUsecases(
+        ChildRepositoryImp(
           childApi: getIt.get<ChildApi>(),
         ),
       ),
       fenix: true,
     );
     Get.lazyPut<StarBoardUseCases>(
-          () => StarBoardUseCases(
+      () => StarBoardUseCases(
         StarBoardRepoImp(
           studentReadingApi: getIt.get<StudentReadingApi>(),
         ),
       ),
       fenix: true,
     );
-    //
-    //
-    // Get.lazyPut<QuizUseCases>(
-    //   () => QuizUseCases(),
-    //   fenix: true,
-    // );
+    Get.lazyPut<NotificationUsecases>(
+      () => NotificationUsecases(
+        NotificationRepositoryImp(
+          notificationApi: getIt.get<NotificationApi>(),
+        ),
+      ),
+      fenix: true,
+    );
   }
 }
