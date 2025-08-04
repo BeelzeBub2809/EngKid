@@ -51,4 +51,6 @@ class AppRoute {
   static const memoryGame = '/memory_game';
 
   static const notificationSystem = '/notification_system';
+
+  static const userGuide = '/user_guide';
 }
