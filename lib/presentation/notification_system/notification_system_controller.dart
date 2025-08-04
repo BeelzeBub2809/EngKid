@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:EngKid/presentation/home/home_screen_controller.dart';
+import 'package:EngKid/domain/notificaiton/notification_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -9,9 +9,9 @@ import 'package:EngKid/presentation/core/user_service.dart';
 class NotificationSystemController extends GetxController {
   NotificationSystemController();
 
+  final NotificationUsecases _notificationUsecases =
+      Get.find<NotificationUsecases>();
   final UserService _userService = Get.find<UserService>();
-  final HomeScreenController _homeScreenController =
-      Get.find<HomeScreenController>();
 
   final TextEditingController textEditingController = TextEditingController();
   final FocusNode focusNode = FocusNode();
@@ -43,7 +43,8 @@ class NotificationSystemController extends GetxController {
   set textSearch(String value) {
     _textSearch.value = value;
     _currentPage.value = 1; // Reset to first page when searching
-    _updateTotalPages();
+    // Reload data from API with new search term
+    handleGetPushNotifications();
   }
 
   // Debounce search method
@@ -65,7 +66,7 @@ class NotificationSystemController extends GetxController {
   set tabActive(int value) {
     _tabActive.value = value;
     _currentPage.value = 1; // Reset to first page when changing tab
-    _updateTotalPages();
+    handleGetPushNotifications();
     handleReadNotifications();
   }
 
@@ -78,9 +79,8 @@ class NotificationSystemController extends GetxController {
   }
 
   void _updateTotalPages() {
-    final filteredList = getListByTab(_systemNotifications, _textSearch.value);
-    _totalPages.value = (filteredList.length / _itemsPerPage.value).ceil();
-    if (_totalPages.value == 0) _totalPages.value = 1;
+    // This method is now deprecated since total pages come from API response
+    // Total pages are set directly in handleGetPushNotifications()
   }
 
   @override
@@ -95,7 +95,58 @@ class NotificationSystemController extends GetxController {
 
   Future<void> handleGetPushNotifications() async {
     try {
-      // Create fake data for testing
+      _isLoading.value = true;
+
+      final int studentId = _userService.currentUser.id;
+      print("Getting notifications for student ID: $studentId");
+
+      final response = await _notificationUsecases.getNotification(
+        studentId: studentId,
+        searchTerm: _textSearch.value,
+        pageNumb: _currentPage.value,
+        pageSize: _itemsPerPage.value,
+      );
+
+      print("Notification API response: $response");
+
+      if (response is Map<String, dynamic> &&
+          response.containsKey('notification_list')) {
+        _systemNotifications.clear();
+
+        final List<dynamic> notificationList =
+            response['notification_list'] ?? [];
+        final int totalRecord = response['total_record'] ?? 0;
+        final int totalPage = response['total_page'] ?? 1;
+
+        print("Total records: $totalRecord, Total pages: $totalPage");
+
+        for (var item in notificationList) {
+          _systemNotifications.add(
+            AutoNotification(
+              id: item['notify_id'] ?? -1,
+              title: item['title'] ?? "",
+              content: item['content'] ?? "",
+              createdAt: item['send_date'] ?? "",
+              type: 2,
+              isRead: 0,
+              notiType: 0,
+            ),
+          );
+        }
+
+        // Update total pages from API response
+        _totalPages.value = totalPage;
+
+        print(
+            "Loaded ${_systemNotifications.length} notifications from page ${_currentPage.value} of $totalPage");
+      }
+
+      handleReadNotifications();
+    } catch (e) {
+      print("Error loading notifications: $e");
+
+      // Fallback to sample data if API fails
+      _systemNotifications.clear();
       _systemNotifications.addAll([
         AutoNotification(
           id: 1,
@@ -108,112 +159,10 @@ class NotificationSystemController extends GetxController {
           isRead: 0,
           notiType: 0,
         ),
-        AutoNotification(
-          id: 2,
-          title: "Bài tập về nhà mới",
-          content:
-              "Giáo viên đã giao bài tập về nhà mới cho môn Tiếng Anh. Hạn nộp: 25/07/2025",
-          createdAt:
-              DateTime.now().subtract(const Duration(days: 1)).toString(),
-          type: 2,
-          isRead: 1,
-          notiType: 1,
-        ),
-        AutoNotification(
-          id: 3,
-          title: "Tiến độ học tập",
-          content:
-              "Bạn đã đọc được 15/20 truyện trong tuần này. Hãy cố gắng hoàn thành mục tiêu nhé!",
-          createdAt:
-              DateTime.now().subtract(const Duration(hours: 5)).toString(),
-          type: 1,
-          isRead: 0,
-          notiType: -1,
-        ),
-        AutoNotification(
-          id: 4,
-          title: "Thời gian học hôm nay",
-          content:
-              "Bạn đã học được 45 phút hôm nay. Thật tuyệt vời! Hãy nghỉ ngơi và tiếp tục vào ngày mai.",
-          createdAt:
-              DateTime.now().subtract(const Duration(minutes: 30)).toString(),
-          type: 2,
-          isRead: 0,
-          notiType: -1,
-        ),
-        AutoNotification(
-          id: 5,
-          title: "Kiểm tra định kỳ",
-          content:
-              "Nhắc nhở: Bài kiểm tra định kỳ môn Toán sẽ diễn ra vào ngày 28/07/2025. Hãy ôn tập kỹ nhé!",
-          createdAt:
-              DateTime.now().subtract(const Duration(days: 2)).toString(),
-          type: 2,
-          isRead: 1,
-          notiType: 0,
-        ),
-        AutoNotification(
-          id: 6,
-          title: "Hoạt động mới",
-          content:
-              "Có hoạt động tô màu mới trong phần 'Sáng tạo'. Hãy thử sức với những bức tranh thú vị!",
-          createdAt:
-              DateTime.now().subtract(const Duration(hours: 8)).toString(),
-          type: 2,
-          isRead: 0,
-          notiType: -1,
-        ),
-        AutoNotification(
-          id: 7,
-          title: "Chúc mừng sinh nhật!",
-          content:
-              "Chúc mừng sinh nhật bé yêu! Hôm nay là ngày đặc biệt của bạn. Chúc bạn luôn khỏe mạnh và học giỏi!",
-          createdAt:
-              DateTime.now().subtract(const Duration(hours: 12)).toString(),
-          type: 2,
-          isRead: 1,
-          notiType: 0,
-        ),
-        AutoNotification(
-          id: 8,
-          title: "Bài học mới đã sẵn sàng",
-          content:
-              "Bài học 'Khám phá vũ trụ' đã được cập nhật. Hãy cùng tìm hiểu về các hành tinh và ngôi sao nhé!",
-          createdAt:
-              DateTime.now().subtract(const Duration(days: 3)).toString(),
-          type: 1,
-          isRead: 0,
-          notiType: -1,
-        ),
-        AutoNotification(
-          id: 9,
-          title: "Thành tích xuất sắc",
-          content:
-              "Wow! Bạn đã đạt 100 điểm trong trò chơi ghép từ. Bạn thực sự rất giỏi!",
-          createdAt:
-              DateTime.now().subtract(const Duration(hours: 1)).toString(),
-          type: 2,
-          isRead: 0,
-          notiType: -1,
-        ),
-        AutoNotification(
-          id: 10,
-          title: "Nhắc nhở uống nước",
-          content:
-              "Đã đến giờ uống nước rồi! Hãy uống đủ nước để cơ thể luôn khỏe mạnh nhé bé yêu.",
-          createdAt:
-              DateTime.now().subtract(const Duration(minutes: 15)).toString(),
-          type: 2,
-          isRead: 1,
-          notiType: -1,
-        ),
       ]);
-
-      _updateTotalPages();
-      handleReadNotifications();
-    } catch (e) {
-      debugPrint("");
+      _totalPages.value = 1;
     }
+
     _isLoading.value = false;
   }
 
@@ -251,35 +200,28 @@ class NotificationSystemController extends GetxController {
   }
 
   List<AutoNotification> getPaginatedNotifications() {
-    final filteredList = getListByTab(_systemNotifications, _textSearch.value);
-    final startIndex = (_currentPage.value - 1) * _itemsPerPage.value;
-    final endIndex = startIndex + _itemsPerPage.value;
-
-    if (startIndex >= filteredList.length) {
-      return [];
-    }
-
-    return filteredList.sublist(
-      startIndex,
-      endIndex > filteredList.length ? filteredList.length : endIndex,
-    );
+    // Since API handles pagination, return all loaded notifications
+    return _systemNotifications;
   }
 
   void goToNextPage() {
     if (_currentPage.value < _totalPages.value) {
       _currentPage.value++;
+      handleGetPushNotifications();
     }
   }
 
   void goToPreviousPage() {
     if (_currentPage.value > 1) {
       _currentPage.value--;
+      handleGetPushNotifications();
     }
   }
 
   void goToPage(int page) {
     if (page >= 1 && page <= _totalPages.value) {
       _currentPage.value = page;
+      handleGetPushNotifications();
     }
   }
 
@@ -307,9 +249,12 @@ class NotificationSystemController extends GetxController {
 
   void getNofiKidSpace() {
     // Get notifications for kid space - currently commented out
-    // final HomeScreenController kidSpaceController =
-    //     Get.find<HomeScreenController>();
-    // kidSpaceController.handleGetNotifications();
+    try {
+      // final homeScreenController = Get.find<HomeScreenController>();
+      // homeScreenController.handleGetNotifications();
+    } catch (e) {
+      print("HomeScreenController not found: $e");
+    }
   }
 
   @override

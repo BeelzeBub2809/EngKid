@@ -31,7 +31,8 @@ class AppRepositoryImp extends AppRepository {
   @override
   Future<ChildProfiles> getChildProfiles(int parentUserId) async {
     try {
-      final ApiResponseObject response = await userApi.getChildProfiles(parentUserId);
+      final ApiResponseObject response =
+          await userApi.getChildProfiles(parentUserId);
       if (response.result) {
         return ChildProfiles.fromJson(response.data);
       } else {
