@@ -87,7 +87,6 @@ class ElibraryVideoController extends GetxController {
   Future<void> closeVideo() async {
     await LibFunction.effectExit();
     await _disposeVideo();
-    LibFunction.playBackgroundSound(LocalAudio.soundInApp);
     Get.back();
   }
 
@@ -96,7 +95,8 @@ class ElibraryVideoController extends GetxController {
       if (_networkService.networkConnection.value) {
         await elibraryService.updateStatus(studentId, book.id, 1);
       }
-      if (elibraryService.bookList[elibraryService.bookIndex].isActive == false) {
+      if (elibraryService.bookList[elibraryService.bookIndex].isActive ==
+          false) {
         elibraryService.bookList[elibraryService.bookIndex] = elibraryService
             .bookList[elibraryService.bookIndex]
             .copyWith(isActive: true);

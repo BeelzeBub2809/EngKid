@@ -30,7 +30,6 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
 
   final UserService _userService = Get.find<UserService>();
   final TopicService _topicService = Get.find<TopicService>();
-  final BackgroundAudioControl _backgroundAudioControl = BackgroundAudioControl();
   final _preferencesManager = getIt.get<SharedPreferencesManager>();
 
   List<String> pluginRouteNames = List<String>.empty(growable: true);
@@ -104,7 +103,6 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
   void onStopBtnPress() async {
     await AudioControl.instance.stopAudio();
     await LibFunction.effectConfirmPop();
-    LibFunction.playBackgroundSound(LocalAudio.soundInApp);
     Get.back();
   }
 
@@ -125,10 +123,10 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
       final int dataGameIndex = (Get.arguments[2] as Reading).positionId % 100;
       if (dataGameIndex == 0) {
         contentReadGame =
-        dataGame[_topicService.currentGrade.id - 1][99].values.toList()[2];
+            dataGame[_topicService.currentGrade.id - 1][99].values.toList()[2];
       } else {
         contentReadGame = dataGame[_topicService.currentGrade.id - 1]
-        [dataGameIndex - 1]
+                [dataGameIndex - 1]
             .values
             .toList()[2];
       }
@@ -138,39 +136,23 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     } catch (e) {
 //
     }
-    _unCompleteQuestions
-        .add(const Question(typeCode: 'read', question:
-
-        "But today Mr Brown isn't in the kitchen."
-
-        "'Tom!' she calls. No answer."
-
-        "'That's strange,' she thinks."
-
-        "Mrs Brown goes outside and calls Max, her dog."
-
-        "'Max!' she calls. Max doesn't come."
-
-        "'That's strange,' she thinks."
-
-        "Mrs Brown goes to feed the chickens."
-
-        "She looks in the backyard. No chickens."
-
-        "'That's strange,' she thinks."
-
-        "Mrs Brown goes to see the cows."
-
-        "She looks in the barn. No cows."
-
-        "'That's strange,' she thinks.'"
-
-        "Mrs Brown looks in the field. No animals."
-
-        "'Where are the sheep? Where are the pigs? Where's the horse? That's very strange!' she thinks."
-
-        "Mrs Brown hears a noise behind the house."
-        ));
+    _unCompleteQuestions.add(const Question(
+        typeCode: 'read',
+        question: "But today Mr Brown isn't in the kitchen."
+            "'Tom!' she calls. No answer."
+            "'That's strange,' she thinks."
+            "Mrs Brown goes outside and calls Max, her dog."
+            "'Max!' she calls. Max doesn't come."
+            "'That's strange,' she thinks."
+            "Mrs Brown goes to feed the chickens."
+            "She looks in the backyard. No chickens."
+            "'That's strange,' she thinks."
+            "Mrs Brown goes to see the cows."
+            "She looks in the barn. No cows."
+            "'That's strange,' she thinks.'"
+            "Mrs Brown looks in the field. No animals."
+            "'Where are the sheep? Where are the pigs? Where's the horse? That's very strange!' she thinks."
+            "Mrs Brown hears a noise behind the house."));
     _unCompleteQuestions.addAll(quiz.questions.sublist(0));
 
     _unCompleteQuestions.add(const Question(typeCode: 'achieve_star'));
@@ -179,7 +161,6 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     _unCompleteQuestions.add(const Question(typeCode: 'final_screen'));
 
     if (_unCompleteQuestions.isNotEmpty) {
-      LibFunction.stopBackgroundSound();
       _checkVideoPlugin(_unCompleteQuestions[0]);
       _getPlugin(_unCompleteQuestions);
       _initCheckCorrectAnswer();
@@ -235,7 +216,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  String getRandomColoringImage(){
+  String getRandomColoringImage() {
     final List<String> listColoringImage = [
       LocalImage.coloring01,
       LocalImage.coloring02,
@@ -316,10 +297,10 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     }
 
     final List<String>? idsTopicLearned =
-    _preferencesManager.getStringList(KeySharedPreferences.idsTopicLearned);
+        _preferencesManager.getStringList(KeySharedPreferences.idsTopicLearned);
     final bool isReadingEnd = Get.arguments[1] as bool;
     if ((idsTopicLearned == null ||
-        !idsTopicLearned.contains(readingId.toString())) &&
+            !idsTopicLearned.contains(readingId.toString())) &&
         isReadingEnd) {
       LibFunction.saveIds(key: KeySharedPreferences.idsTopicLearned, id: -1);
       // _topicService.updateTopicCount(1);
@@ -383,19 +364,13 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
 
   void _checkVideoPlugin(Question question) {
     // _minusStarOfReading(question);
-    if (question.typeCode == 'V' || question.typeCode == "final_screen" || question.typeCode == "achieve_star") {
-      LibFunction.pauseBackgroundSound();
+    if (question.typeCode == 'V' ||
+        question.typeCode == "final_screen" ||
+        question.typeCode == "achieve_star") {
       _isFullScreen.value = true;
       return;
     } else if (_isFullScreen.value) {
       _isFullScreen.value = false;
-    }
-    if (question.typeCode == "read" || question.typeCode == "L") {
-      LibFunction.pauseBackgroundSound();
-    } else if (BackgroundAudioControl.instance.isPlaying) {
-      LibFunction.rePlayBackgroundSound();
-    } else {
-      LibFunction.playBackgroundSound(LocalAudio.soundInQuiz);
     }
   }
 
@@ -431,7 +406,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
         case 'CWP':
           pluginRouteNames.add(AppRoute.crosswordPuzzle);
           break;
-      // game
+        // game
         case 'coloring':
           pluginRouteNames.add(AppRoute.coloring);
           break;
@@ -469,10 +444,11 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     _timerReading = Timer.periodic(const Duration(seconds: 1), (timer) {
       _doQuizDuration++;
 
-      if(videoDuration > 0){
-        if(_doQuizDuration.toInt() == videoDuration.toInt()){
+      if (videoDuration > 0) {
+        if (_doQuizDuration.toInt() == videoDuration.toInt()) {
           int loginRecordId = _preferencesManager.getInt(
-            KeySharedPreferences.loginRecord+_userService.currentUser.id.toString(),
+            KeySharedPreferences.loginRecord +
+                _userService.currentUser.id.toString(),
           )!;
           // _userService.updateLoginRecord(loginRecordId, true, false, true);
         }
@@ -505,14 +481,13 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     return 0.0; // unit minutes
   }
 
-  Future<void> submitCompletedQuestion()async {
+  Future<void> submitCompletedQuestion() async {
     //call api submit time doing question
     int loginRecordId = _preferencesManager.getInt(
       KeySharedPreferences.loginRecord + _userService.currentUser.id.toString(),
     )!;
     // _userService.updateLoginRecord(loginRecordId, true, true, true);
-
-}
+  }
 
   Future<void> saveTimeDurationToStorage() async {
     try {
@@ -563,7 +538,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
           decodeReadingDuration
               .where(
                 (element) => element.isNotEmpty,
-          )
+              )
               .toList(),
         ),
       );
@@ -608,21 +583,20 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  void readQuestion(question,options) async {
-    try{
+  void readQuestion(question, options) async {
+    try {
       _readingQuestionState.value = true;
       final file = await LibFunction.getSingleFile(question.audio);
       await Future.delayed(Duration(milliseconds: 200));
-      await LibFunction.stopBackgroundSound();
       await _audioControl.setVolume(1.0);
       await _audioControl.setUsage();
       if (kIsWeb) {
         await _audioControl.playNetworkAudio(question.audio);
-      }else{
+      } else {
         await _audioControl.playAudioFile(file.path);
       }
       var url = '';
-      switch(question.typeCode){
+      switch (question.typeCode) {
         case 'S':
           url = LocalAudio.singleChoiceQuestion;
           break;
@@ -646,7 +620,6 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
       }
       await Future.delayed(Duration(milliseconds: 200));
       await _audioControl.playLocalAudio(url: url);
-      await LibFunction.rePlayBackgroundSound();
       // var speaking = question.question;
       // var key = 0;
       // if(options != null){
@@ -656,7 +629,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
       //   }
       // }
       // await flutterTts.speak(speaking);
-    }catch(e){
+    } catch (e) {
       print("An error occurred: $e");
     }
   }

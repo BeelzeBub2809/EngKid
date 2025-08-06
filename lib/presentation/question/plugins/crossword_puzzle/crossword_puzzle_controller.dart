@@ -26,14 +26,13 @@ class CrosswordPuzzleController extends GetxController {
   final int readingId;
   final QuestionController questionController;
 
-  CrosswordPuzzleController({
-    required this.nextQuestion,
-    required this.question,
-    required this.quizUseCases,
-    required this.setIsFullScreen,
-    required this.readingId,
-    required this.questionController
-  });
+  CrosswordPuzzleController(
+      {required this.nextQuestion,
+      required this.question,
+      required this.quizUseCases,
+      required this.setIsFullScreen,
+      required this.readingId,
+      required this.questionController});
 
   final UserService _userService = Get.find<UserService>();
   final recorder = FlutterSoundRecorder();
@@ -44,7 +43,7 @@ class CrosswordPuzzleController extends GetxController {
   List<String> optionQuestions = List<String>.empty(growable: true);
   RxList<List<String?>> puzzle = <List<String?>>[].obs;
   List<int> keyPositions = List<int>.empty(growable: true);
-  int numberOfColumn=0;
+  int numberOfColumn = 0;
   final RxBool _isFilledText = false.obs;
   late Codec codec = Codec.aacMP4;
   late String mPath = '';
@@ -80,7 +79,6 @@ class CrosswordPuzzleController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    LibFunction.stopBackgroundSound();
 
     questionController.readQuestion(question, null);
 
@@ -104,7 +102,7 @@ class CrosswordPuzzleController extends GetxController {
     // Khởi tạo puzzle với các hàng độc lập
     puzzle.value = List.generate(
       optionAnswers.length,
-          (_) => List<String?>.filled(numberOfColumn, null),
+      (_) => List<String?>.filled(numberOfColumn, null),
     );
 
     int puzzleRow = 0;
@@ -121,17 +119,17 @@ class CrosswordPuzzleController extends GetxController {
     _user_answers = List.filled(optionQuestions.length, '');
   }
 
-
   void onChangeInput({required int questionIndex, required String input}) {
     print("Answer for $questionIndex: $input");
     print(optionAnswers);
 
     List<String> wordArray = input.split('');
     List<String> answerArray = optionAnswers[questionIndex].split('');
-    int wordPosition = (numberOfColumn / 2 - keyPositions[questionIndex]).toInt();
+    int wordPosition =
+        (numberOfColumn / 2 - keyPositions[questionIndex]).toInt();
     for (int index = 0; index < answerArray.length; index++) {
       puzzle[questionIndex][wordPosition] = '';
-      if(index<wordArray.length){
+      if (index < wordArray.length) {
         final word = wordArray[index];
         puzzle[questionIndex][wordPosition] = word;
       }
@@ -177,7 +175,8 @@ class CrosswordPuzzleController extends GetxController {
 
     final isFinalQuestion = questionController.isFinalQuestion();
 
-    questionController.updateCheckCorrectAnswer(questionController.questionIndex, true);
+    questionController.updateCheckCorrectAnswer(
+        questionController.questionIndex, true);
     nextQuestion();
 
     //check correct answers
@@ -218,7 +217,6 @@ class CrosswordPuzzleController extends GetxController {
     //   );
     // }
 
-
     // var index = 0;
     // for (var element in question.childQuestion) {
     //   quizUseCases.submitQuestion(
@@ -237,7 +235,6 @@ class CrosswordPuzzleController extends GetxController {
     //
     //   index++;
     // }
-
 
     // nextQuestion();
   }

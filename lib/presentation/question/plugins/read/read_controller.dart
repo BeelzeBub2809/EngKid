@@ -61,7 +61,6 @@ class ReadController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    LibFunction.stopBackgroundSound();
     _mPlayer!.openPlayer().then((value) {
       _mPlayerIsInited.value = true;
     });
@@ -92,11 +91,11 @@ class ReadController extends GetxController {
     await session.configure(AudioSessionConfiguration(
       avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
       avAudioSessionCategoryOptions:
-      AVAudioSessionCategoryOptions.allowBluetooth |
-      AVAudioSessionCategoryOptions.defaultToSpeaker,
+          AVAudioSessionCategoryOptions.allowBluetooth |
+              AVAudioSessionCategoryOptions.defaultToSpeaker,
       avAudioSessionMode: AVAudioSessionMode.spokenAudio,
       avAudioSessionRouteSharingPolicy:
-      AVAudioSessionRouteSharingPolicy.defaultPolicy,
+          AVAudioSessionRouteSharingPolicy.defaultPolicy,
       avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
       androidAudioAttributes: const AndroidAudioAttributes(
         contentType: AndroidAudioContentType.speech,
@@ -147,11 +146,11 @@ class ReadController extends GetxController {
 
     _mPlayer!
         .startPlayer(
-        fromURI: mPath,
-        codec: kIsWeb ? Codec.opusWebM : Codec.aacADTS,
-        whenFinished: () {
-          _isPlaying.value = false;
-        })
+            fromURI: mPath,
+            codec: kIsWeb ? Codec.opusWebM : Codec.aacADTS,
+            whenFinished: () {
+              _isPlaying.value = false;
+            })
         .then((value) {
       _isPlaying.value = true;
     });

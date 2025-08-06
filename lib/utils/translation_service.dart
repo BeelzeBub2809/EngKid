@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 class TranslationService {
   // Using LibreTranslate API as a free alternative to Google Translate
   static const String _baseUrl = 'https://libretranslate.com/translate';
+  static const String _myMemoryUrl = 'https://api.mymemory.translated.net/get';
+  static const String _lingvaUrl = 'https://lingva.ml/api/v1';
 
   // Alternative free translation APIs you can use:
   // 1. MyMemory: https://api.mymemory.translated.net/get
@@ -57,8 +59,7 @@ class TranslationService {
   static Future<String> _translateWithMyMemory(String text) async {
     try {
       final encodedText = Uri.encodeComponent(text);
-      final url =
-          'https://api.mymemory.translated.net/get?q=$encodedText&langpair=en|vi';
+      final url = '$_myMemoryUrl?q=$encodedText&langpair=en|vi';
 
       final response = await http.get(
         Uri.parse(url),

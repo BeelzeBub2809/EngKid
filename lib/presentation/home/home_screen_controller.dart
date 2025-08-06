@@ -197,23 +197,15 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         debugPrint("app in resumed");
-        if (BackgroundAudioControl.instance.isPlaying) {
-          LibFunction.rePlayBackgroundSound();
-        }
         break;
       case AppLifecycleState.inactive:
         debugPrint("app in inactive");
-        if (BackgroundAudioControl.instance.isPlaying) {}
-        LibFunction.pauseBackgroundSound();
         break;
       case AppLifecycleState.paused:
         debugPrint("app in paused");
-        LibFunction.pauseBackgroundSound();
-
         break;
       case AppLifecycleState.detached:
         debugPrint("app in detached");
-        LibFunction.pauseBackgroundSound();
         break;
       case AppLifecycleState.hidden:
         break;

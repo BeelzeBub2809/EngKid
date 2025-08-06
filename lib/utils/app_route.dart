@@ -49,6 +49,7 @@ class AppRoute {
   static const wordleGame = '/wordle_game';
   static const puzzleGame = '/puzzle_game';
   static const memoryGame = '/memory_game';
+  static const missingWordGame = '/missing_word_game';
 
   static const notificationSystem = '/notification_system';
 
