@@ -101,11 +101,6 @@ class LibFunction {
     return false;
   }
 
-  static Future<void> setVolumeMusic(double volume) async {
-    await AudioControl.instance.setVolume(volume);
-    await BackgroundAudioControl.instance.setVolume(volume);
-  }
-
   static Future<void> effectWrongAnswer() async {
     await AudioControl.instance.playLocalAudio(url: LocalAudio.wrong);
     Vibration.vibrate(duration: 200);
@@ -139,38 +134,6 @@ class LibFunction {
     try {
       await AudioControl.instance
           .playNetworkAudio(dotenv.get('API_NETWORK_URL') + url);
-    } catch (e) {
-      //
-    }
-  }
-
-  static Future<void> playBackgroundSound(String url) async {
-    try {
-      await BackgroundAudioControl.instance.playSound(url: url, isLoop: true);
-    } catch (e) {
-      //
-    }
-  }
-
-  static Future<void> stopBackgroundSound() async {
-    try {
-      await BackgroundAudioControl.instance.stopSound();
-    } catch (e) {
-      //
-    }
-  }
-
-  static Future<void> pauseBackgroundSound() async {
-    try {
-      await BackgroundAudioControl.instance.pause();
-    } catch (e) {
-      //
-    }
-  }
-
-  static Future<void> rePlayBackgroundSound() async {
-    try {
-      await BackgroundAudioControl.instance.play();
     } catch (e) {
       //
     }

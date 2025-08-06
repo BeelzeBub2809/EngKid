@@ -28,14 +28,13 @@ class FillBlankController extends GetxController {
   final int readingId;
   final QuestionController questionController;
 
-  FillBlankController({
-    required this.nextQuestion,
-    required this.question,
-    required this.quizUseCases,
-    required this.setIsFullScreen,
-    required this.readingId,
-    required this.questionController
-  });
+  FillBlankController(
+      {required this.nextQuestion,
+      required this.question,
+      required this.quizUseCases,
+      required this.setIsFullScreen,
+      required this.readingId,
+      required this.questionController});
 
   final UserService _userService = Get.find<UserService>();
   final recorder = FlutterSoundRecorder();
@@ -77,8 +76,7 @@ class FillBlankController extends GetxController {
   void onInit() {
     super.onInit();
     mPath =
-    "${readingId}_${question.questionId}_${DateTime.now().millisecondsSinceEpoch}.mp4";
-    LibFunction.stopBackgroundSound();
+        "${readingId}_${question.questionId}_${DateTime.now().millisecondsSinceEpoch}.mp4";
     _mPlayer!.openPlayer().then((value) {
       _mPlayerIsInited.value = true;
     });
@@ -87,7 +85,7 @@ class FillBlankController extends GetxController {
       _mRecorderIsInited.value = true;
     });
 
-    questionController.readQuestion(question,null);
+    questionController.readQuestion(question, null);
   }
 
   void onChangeInput({required String input}) {
@@ -115,7 +113,7 @@ class FillBlankController extends GetxController {
     if (!await _mRecorder!.isEncoderSupported(codec) && kIsWeb) {
       codec = Codec.opusWebM;
       mPath =
-      '${readingId}_${question.questionId}_${DateTime.now().millisecondsSinceEpoch}.webm';
+          '${readingId}_${question.questionId}_${DateTime.now().millisecondsSinceEpoch}.webm';
       if (!await _mRecorder!.isEncoderSupported(codec) && kIsWeb) {
         _mRecorderIsInited.value = true;
         return;
@@ -125,11 +123,11 @@ class FillBlankController extends GetxController {
     await session.configure(AudioSessionConfiguration(
       avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
       avAudioSessionCategoryOptions:
-      AVAudioSessionCategoryOptions.allowBluetooth |
-      AVAudioSessionCategoryOptions.defaultToSpeaker,
+          AVAudioSessionCategoryOptions.allowBluetooth |
+              AVAudioSessionCategoryOptions.defaultToSpeaker,
       avAudioSessionMode: AVAudioSessionMode.spokenAudio,
       avAudioSessionRouteSharingPolicy:
-      AVAudioSessionRouteSharingPolicy.defaultPolicy,
+          AVAudioSessionRouteSharingPolicy.defaultPolicy,
       avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
       androidAudioAttributes: const AndroidAudioAttributes(
         contentType: AndroidAudioContentType.speech,
@@ -180,11 +178,11 @@ class FillBlankController extends GetxController {
 
     _mPlayer!
         .startPlayer(
-        fromURI: mPath,
-        codec: kIsWeb ? Codec.opusWebM : Codec.aacADTS,
-        whenFinished: () {
-          _isPlaying.value = false;
-        })
+            fromURI: mPath,
+            codec: kIsWeb ? Codec.opusWebM : Codec.aacADTS,
+            whenFinished: () {
+              _isPlaying.value = false;
+            })
         .then((value) {
       _isPlaying.value = true;
     });
@@ -221,13 +219,13 @@ class FillBlankController extends GetxController {
 
     try {
       if (pathAudio.isNotEmpty) {
-
         // Non-web logic to read file as bytes
         final File file = File(pathAudio);
         bytes = await file.readAsBytes();
 
         if (bytes != null) {
-          final fileName = pathAudio.split('/').last; // Use '/' as a separator for web
+          final fileName =
+              pathAudio.split('/').last; // Use '/' as a separator for web
           await LibFunction.putFileUintList(fileName, bytes);
         } else {
           throw Exception('Failed to convert file to bytes.');
@@ -261,13 +259,14 @@ class FillBlankController extends GetxController {
         data: {
           "isFile": !_isFilledText.value && pathAudio.isNotEmpty,
           "question_answer[${question.questionId}]":
-          !_isFilledText.value && pathAudio.isNotEmpty
-              ? pathAudio.split('/').last
-              : _text.value,
+              !_isFilledText.value && pathAudio.isNotEmpty
+                  ? pathAudio.split('/').last
+                  : _text.value,
         },
       );
 
-      questionController.updateCheckCorrectAnswer(questionController.questionIndex, true);
+      questionController.updateCheckCorrectAnswer(
+          questionController.questionIndex, true);
       nextQuestion();
 
       // quizUseCases.submitQuestion(

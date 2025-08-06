@@ -24,9 +24,10 @@ class VideoController extends GetxController {
   final int readingId;
   final _preferencesManager = getIt.get<SharedPreferencesManager>();
   final UserService _userService = Get.find<UserService>();
-  final QuestionController? questionController = Get.isRegistered<QuestionController>()
-        ? Get.find<QuestionController>()
-        : null;
+  final QuestionController? questionController =
+      Get.isRegistered<QuestionController>()
+          ? Get.find<QuestionController>()
+          : null;
   VideoController({
     required this.nextQuestion,
     required this.question,
@@ -100,7 +101,8 @@ class VideoController extends GetxController {
         //   _videoController = VideoPlayerController.file(video);
         // }
         _videoController = VideoPlayerController.networkUrl(
-          Uri.parse('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'),
+          Uri.parse(
+              'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'),
         );
       } else {
         if (!getLanguageVideoFromStorage()) {
@@ -108,8 +110,8 @@ class VideoController extends GetxController {
           return;
         } else {
           if (kIsWeb) {
-            _videoController =
-                VideoPlayerController.networkUrl(Uri.parse(question.video_mong));
+            _videoController = VideoPlayerController.networkUrl(
+                Uri.parse(question.video_mong));
           } else {
             final File videoMong =
                 await LibFunction.getSingleFile(question.video_mong);
@@ -136,7 +138,7 @@ class VideoController extends GetxController {
 
     videoDuration = _videoController!.value.duration;
     final questionController = this.questionController;
-    if(questionController!=null){
+    if (questionController != null) {
       questionController.videoDuration = videoDuration.inSeconds;
     }
   }
@@ -157,7 +159,6 @@ class VideoController extends GetxController {
   Future<void> closeVideo() async {
     await LibFunction.effectExit();
     await _disposeVideo();
-    LibFunction.playBackgroundSound(LocalAudio.soundInApp);
     Get.back();
   }
 
@@ -288,10 +289,10 @@ class VideoController extends GetxController {
   }
 
   Future<void> onChangeLanguage(String language) async {
-    if(_initializedDone == true) {
-      if(!getLanguageVideoFromStorage() && language == 'mo'){
+    if (_initializedDone == true) {
+      if (!getLanguageVideoFromStorage() && language == 'mo') {
         await _disposeVideo();
-      }else{
+      } else {
         await refreshVideo();
       }
       _language.value = language;

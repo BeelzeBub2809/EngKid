@@ -25,11 +25,6 @@ class WordleGameController extends GetxController {
   // ignore: constant_identifier_names
   static const String DICTIONARY_API_URL =
       'https://api.dictionaryapi.dev/api/v2/entries/en';
-  // ignore: constant_identifier_names
-  static const String UNSPLASH_API_URL = 'https://api.unsplash.com/photos';
-  // ignore: constant_identifier_names
-  static const String UNSPLASH_CLIENT_ID =
-      '27mZNOKBffjN6mY9fymzJELupOYEciYIz_wdrLM9REk';
 
   // Game state
   final RxString _targetWord = ''.obs;
@@ -147,7 +142,7 @@ class WordleGameController extends GetxController {
     _isLoading.value = false;
 
     debugPrint(
-        'New Wordle game started. Target word: $_targetWord (${wordLength} letters)');
+        'New Wordle game started. Target word: $_targetWord ($wordLength letters)');
   }
 
   Future<Map<String, dynamic>?> fetchWordDefinition(String word) async {

@@ -13,6 +13,8 @@ import 'package:EngKid/presentation/game/puzzle_game/puzzle_game_binding.dart';
 import 'package:EngKid/presentation/game/puzzle_game/puzzle_game_ui.dart';
 import 'package:EngKid/presentation/game/memory_game/memory_game_binding.dart';
 import 'package:EngKid/presentation/game/memory_game/memory_game_ui.dart';
+import 'package:EngKid/presentation/game/missing_word/missing_word_binding.dart';
+import 'package:EngKid/presentation/game/missing_word/missing_word_ui.dart';
 import 'package:EngKid/presentation/home/home_screen_binding.dart';
 import 'package:EngKid/presentation/home/home_screen_ui.dart';
 import 'package:EngKid/presentation/management_space/management_space_binding.dart';
@@ -210,6 +212,11 @@ class _MyAppState extends State<MyApp> {
               name: AppRoute.memoryGame,
               page: () => const MemoryGameUI(),
               binding: MemoryGameBinding(),
+            ),
+            GetPage(
+              name: AppRoute.missingWordGame,
+              page: () => const MissingWordUI(),
+              binding: MissingWordBinding(),
             ),
             GetPage(
               name: AppRoute.notificationSystem,

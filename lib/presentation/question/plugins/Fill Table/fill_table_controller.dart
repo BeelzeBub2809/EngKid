@@ -26,14 +26,13 @@ class FillTableController extends GetxController {
   final int readingId;
   final QuestionController questionController;
 
-  FillTableController({
-    required this.nextQuestion,
-    required this.question,
-    required this.quizUseCases,
-    required this.setIsFullScreen,
-    required this.readingId,
-    required this.questionController
-  });
+  FillTableController(
+      {required this.nextQuestion,
+      required this.question,
+      required this.quizUseCases,
+      required this.setIsFullScreen,
+      required this.readingId,
+      required this.questionController});
 
   final UserService _userService = Get.find<UserService>();
   final recorder = FlutterSoundRecorder();
@@ -77,21 +76,22 @@ class FillTableController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    LibFunction.stopBackgroundSound();
 
-    questionController.readQuestion(question,null);
+    questionController.readQuestion(question, null);
 
     for (var element in question.childQuestion) {
       _user_answers.add("");
 
-      if(element.image1 != ''
-      ){
+      if (element.image1 != '') {
         _isHasImage.value = true;
       }
     }
   }
 
-  void onChangeInput({required int rowIndex, required int columnIndex, required String input}) {
+  void onChangeInput(
+      {required int rowIndex,
+      required int columnIndex,
+      required String input}) {
     print("Answer for row $rowIndex, column $columnIndex: $input");
     _text.value = input;
     // _user_answers[] = input;
@@ -143,16 +143,17 @@ class FillTableController extends GetxController {
         data: {
           "isFile": !_isFilledText.value && pathAudio != "",
           "question_answer[${element.questionId}]":
-          !_isFilledText.value && pathAudio != ""
-              ? pathAudio.split(Platform.pathSeparator).last
-              : _user_answers[index],
+              !_isFilledText.value && pathAudio != ""
+                  ? pathAudio.split(Platform.pathSeparator).last
+                  : _user_answers[index],
         },
       );
 
       index++;
     }
 
-    questionController.updateCheckCorrectAnswer(questionController.questionIndex, true);
+    questionController.updateCheckCorrectAnswer(
+        questionController.questionIndex, true);
     nextQuestion();
   }
 }

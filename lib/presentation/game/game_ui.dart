@@ -104,22 +104,10 @@ class GameUI extends GetView<GameController> {
                       ),
                       _buildGameCard(
                         context,
-                        'QUIZ',
-                        Icons.quiz,
-                        Colors.orange,
-                        () => showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Work in Progress'),
-                            content: const Text('This feature is coming soon!'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          ),
-                        ),
+                        'MISSING WORD',
+                        Icons.abc,
+                        Colors.green,
+                        () => Get.toNamed(AppRoute.missingWordGame),
                       ),
                     ],
                   ),

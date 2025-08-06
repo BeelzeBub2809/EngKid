@@ -56,3 +56,4 @@ assets/.env
 *.g.dart
 *.freezed.dart
 android/app/google-services.json
+.github/instructions/EngKidInstructor.instructions.md
