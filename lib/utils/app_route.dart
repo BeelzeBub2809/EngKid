@@ -54,4 +54,6 @@ class AppRoute {
   static const notificationSystem = '/notification_system';
 
   static const userGuide = '/user_guide';
+
+  static const feedback = '/feedback';
 }

@@ -12,16 +12,14 @@ import 'package:flutter/cupertino.dart';
 class ReadingRepositoryImp implements ReadingRepository {
   final ReadingApi readingApi;
   final StudentReadingApi studentReadingApi;
-  ReadingRepositoryImp({
-    required this.readingApi,
-    required this.studentReadingApi
-  });
+  ReadingRepositoryImp(
+      {required this.readingApi, required this.studentReadingApi});
 
   @override
   Future<List<Reading>> getByCateAndStudent(Map<String, dynamic> body) async {
     try {
-
-      final ApiResponseObject response = await readingApi.getByCateAndStudent(body);
+      final ApiResponseObject response =
+          await readingApi.getByCateAndStudent(body);
       final data = response.data;
       if (response.result && data != null && data['records'] != null) {
         final List<dynamic> records = data['records'];
@@ -48,20 +46,48 @@ class ReadingRepositoryImp implements ReadingRepository {
 
   @override
   Future<void> submitReadingResult(Map<String, dynamic> body) async {
-  try {
-    await studentReadingApi.submitReadingResult(body);
-  } catch (e, stackTrace) {
-    if (e is DioException) {
-      print('[Repository] DioException occurred:');
-      print('  → Type: ${e.type}');
-      print('  → Message: ${e.message}');
-      print('  → Response: ${e.response?.data}');
-      print('  → StatusCode: ${e.response?.statusCode}');
-      print('  → StackTrace: $stackTrace');
-    } else {
-      print('[Repository] Unknown exception: $e');
-      print('[Repository] StackTrace: $stackTrace');
+    try {
+      await studentReadingApi.submitReadingResult(body);
+    } catch (e, stackTrace) {
+      if (e is DioException) {
+        print('[Repository] DioException occurred:');
+        print('  → Type: ${e.type}');
+        print('  → Message: ${e.message}');
+        print('  → Response: ${e.response?.data}');
+        print('  → StatusCode: ${e.response?.statusCode}');
+        print('  → StackTrace: $stackTrace');
+      } else {
+        print('[Repository] Unknown exception: $e');
+        print('[Repository] StackTrace: $stackTrace');
+      }
     }
+  }
+
+  @override
+  Future<List<dynamic>> getListReading(String searchTerm) async {
+    try {
+      final ApiResponseObject response =
+          await readingApi.getListReading(searchTerm);
+      final data = response.data;
+      if (response.result && data != null && data['records'] != null) {
+        final List<dynamic> records = data['records'];
+        return records;
+      } else {
+        return [];
+      }
+    } catch (e, stackTrace) {
+      if (e is DioException) {
+        print('[Repository] DioException occurred:');
+        print('  → Type: ${e.type}');
+        print('  → Message: ${e.message}');
+        print('  → Response: ${e.response?.data}');
+        print('  → StatusCode: ${e.response?.statusCode}');
+        print('  → StackTrace: $stackTrace');
+      } else {
+        print('[Repository] Unknown exception: $e');
+        print('[Repository] StackTrace: $stackTrace');
+      }
+      return [];
     }
   }
 }
