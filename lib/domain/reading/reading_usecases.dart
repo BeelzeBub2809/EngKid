@@ -9,4 +9,6 @@ class ReadingUsecases {
       _readingRepository.getByCateAndStudent(body);
   Future<void> submitReadingResult(Map<String, dynamic> body) async =>
       _readingRepository.submitReadingResult(body);
+  Future<List<dynamic>> getListReading(String keyword) async =>
+      _readingRepository.getListReading(keyword);
 }

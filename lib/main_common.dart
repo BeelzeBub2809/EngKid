@@ -41,6 +41,8 @@ import 'package:EngKid/presentation/register/register_binding.dart';
 import 'package:EngKid/presentation/register/register_ui.dart';
 import 'package:EngKid/presentation/user_guide/user_guide_binding.dart';
 import 'package:EngKid/presentation/user_guide/user_guide_ui.dart';
+import 'package:EngKid/presentation/feedback/feedback_binding.dart';
+import 'package:EngKid/presentation/feedback/feedback_ui.dart';
 import 'package:EngKid/presentation/validate_parent/validate_parent_binding.dart';
 import 'package:EngKid/presentation/validate_parent/validate_parent_ui.dart';
 import 'package:EngKid/presentation/game/game_binding.dart';
@@ -227,7 +229,12 @@ class _MyAppState extends State<MyApp> {
               name: AppRoute.userGuide,
               page: () => UserGuideUI(),
               binding: UserGuideBinding(),
-            )
+            ),
+            GetPage(
+              name: AppRoute.feedback,
+              page: () => const FeedbackScreen(),
+              binding: FeedbackBinding(),
+            ),
           ],
         ),
       ),

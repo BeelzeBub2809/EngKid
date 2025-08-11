@@ -88,6 +88,15 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
       arguments: null,
       count: 0,
     ),
+    Menu(
+      name: 'feedback',
+      pathImage: LocalImage.feedback,
+      to: AppRoute.feedback,
+      needValidateParent: true,
+      requireValidate: false,
+      arguments: null,
+      count: 0,
+    )
   ].obs;
 
   void onPressTo(Menu menu) async {
