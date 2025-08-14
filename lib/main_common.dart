@@ -29,6 +29,7 @@ import 'package:EngKid/presentation/management_space/report/report_binding.dart'
 import 'package:EngKid/presentation/management_space/report/report_ui.dart';
 import 'package:EngKid/presentation/management_space/setting/setting_binding.dart';
 import 'package:EngKid/presentation/management_space/setting/setting_ui.dart';
+import 'package:EngKid/presentation/management_space/star_report/star_board_binding.dart';
 import 'package:EngKid/presentation/my_library/my_library_binding.dart';
 import 'package:EngKid/presentation/my_library/my_library_ui.dart';
 import 'package:EngKid/presentation/notification_system/notification_system_binding.dart';
@@ -43,10 +44,14 @@ import 'package:EngKid/presentation/user_guide/user_guide_binding.dart';
 import 'package:EngKid/presentation/user_guide/user_guide_ui.dart';
 import 'package:EngKid/presentation/feedback/feedback_binding.dart';
 import 'package:EngKid/presentation/feedback/feedback_ui.dart';
+import 'package:EngKid/presentation/leader_board/leader_board_binding.dart';
+import 'package:EngKid/presentation/leader_board/leader_board_ui.dart';
 import 'package:EngKid/presentation/validate_parent/validate_parent_binding.dart';
 import 'package:EngKid/presentation/validate_parent/validate_parent_ui.dart';
 import 'package:EngKid/presentation/game/game_binding.dart';
 import 'package:EngKid/presentation/game/game_ui.dart';
+import 'package:EngKid/presentation/management_space/star_report/star_board_ui.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -154,6 +159,11 @@ class _MyAppState extends State<MyApp> {
                   page: () => const SettingScreen(),
                   binding: SettingBinding(),
                 ),
+                GetPage(
+                  name: AppRoute.starBoard,
+                  page: () => const StarBoardUI(),
+                  binding: StarBoardBinding(),
+                ),
               ],
             ),
             GetPage(
@@ -234,6 +244,11 @@ class _MyAppState extends State<MyApp> {
               name: AppRoute.feedback,
               page: () => const FeedbackScreen(),
               binding: FeedbackBinding(),
+            ),
+            GetPage(
+              name: AppRoute.leaderBoard,
+              page: () => const LeaderBoardScreen(),
+              binding: LeaderBoardBinding(),
             ),
           ],
         ),

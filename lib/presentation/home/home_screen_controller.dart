@@ -96,6 +96,15 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
       requireValidate: false,
       arguments: null,
       count: 0,
+    ),
+    Menu(
+      name: 'Bảng xếp hạng',
+      pathImage: LocalImage.star,
+      to: AppRoute.leaderBoard,
+      needValidateParent: false,
+      requireValidate: false,
+      arguments: null,
+      count: 0,
     )
   ].obs;
 

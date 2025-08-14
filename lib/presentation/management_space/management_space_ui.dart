@@ -18,6 +18,8 @@ import 'management_space_controller.dart';
 import 'personal_info/personal_info_binding.dart';
 import 'report/report_binding.dart';
 import 'report/report_ui.dart';
+import 'star_report/star_board_binding.dart';
+import 'star_report/star_board_ui.dart';
 
 class ManagementSpaceScreen extends GetView<ManagementSpaceController> {
   const ManagementSpaceScreen({super.key});
@@ -96,6 +98,13 @@ class Content extends StatelessWidget {
                 return GetPageRoute(
                   page: () => const PersonalInfoScreen(),
                   binding: PersonalInfoBinding(),
+                  transition: Transition.zoom,
+                );
+
+              case AppRoute.starBoard:
+                return GetPageRoute(
+                  page: () => const StarBoardUI(),
+                  binding: StarBoardBinding(),
                   transition: Transition.zoom,
                 );
 
@@ -234,7 +243,6 @@ class Header extends StatelessWidget {
               )
             ],
           ),
-
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
