@@ -14,6 +14,12 @@ class AppRoute {
   static const report = '/report';
   static const personalInfo = '/report_personal_info';
   static const settings = '/settings';
+  static const starBoard = '/star_board';
+  static const starLineChart = '/star_line_chart';
+  static const managementStarBoardRouteKey = 2;
+  static const starBoardWeek = '/star_board_week';
+  static const starBoardMonth = '/star_board_month';
+  static const starBoardYear = '/star_board_year';
   static const managementSpaceNestedRouteKey = 1;
   static const managementSpace = '/management_space';
   static const profileParent = '/profile_parent';
@@ -56,4 +62,6 @@ class AppRoute {
   static const userGuide = '/user_guide';
 
   static const feedback = '/feedback';
+
+  static const leaderBoard = '/leader_board';
 }

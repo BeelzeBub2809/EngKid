@@ -16,6 +16,7 @@ class ManagementSpaceController extends GetxController {
 
   final List<Rx<NavItem>> _navBar = [
     const NavItem(title: 'report', isActive: true).obs,
+    const NavItem(title: 'star_board', isActive: false).obs,
     const NavItem(title: 'report_personal_info', isActive: false).obs,
     const NavItem(title: 'settings', isActive: false).obs,
   ];
@@ -50,7 +51,7 @@ class ManagementSpaceController extends GetxController {
     _navBar[index](
       navBar[index].value.copyWith(isActive: true),
     );
-
+    print("onChooseFeature: ${navBar[index].value.title}");
     Get.offNamed(
       '/${navBar[index].value.title}',
       id: AppRoute.managementSpaceNestedRouteKey,
