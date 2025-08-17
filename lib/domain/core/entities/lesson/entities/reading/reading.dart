@@ -23,6 +23,8 @@ class Reading with _$Reading {
     @JsonKey(name: 'total_complete_quiz') @Default(-1) int totalCompleteQuiz,
     @JsonKey(name: 'position_id') @Default(-1) int positionId,
     @JsonKey(name: 'reading_video_mong') @Default("") String readingVideoMong,
+    @JsonKey(name: 'is_completed') @Default(0) int isCompleted,
+    @JsonKey(name: 'is_passed') @Default(0) int isPassed,
 
     @Default(-1) int percentage,
   }) = _Reading;
