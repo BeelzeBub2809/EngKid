@@ -80,19 +80,22 @@ class GameUI extends GetView<GameController> {
                         'PUZZLE',
                         Icons.extension,
                         Colors.blue,
-                        () => showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Work in Progress'),
-                            content: const Text('This feature is coming soon!'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          ),
-                        ),
+                        () => Get.toNamed(AppRoute.puzzleGame,
+                              arguments: [true, false])
+                        // () => showDialog(
+                        //   context: context,
+                        //   builder: (context) => AlertDialog(
+                        //     title: const Text('Work in Progress'),
+                        //     content: const Text('This feature is coming soon!'),
+                        //     actions: [
+                        //       TextButton(
+                        //         onPressed: () => Get.toNamed(AppRoute.puzzleGame,
+                        //     arguments: [true, false]),
+                        //         child: const Text('OK'),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                       ),
                       _buildGameCard(
                         context,

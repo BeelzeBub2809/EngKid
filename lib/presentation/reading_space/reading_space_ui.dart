@@ -22,80 +22,94 @@ class ReadingScreen extends GetView<ReadingSpaceController> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final TopicService topicService = Get.find<TopicService>();
-    return Stack(
-      children: [
-        Scaffold(
-          body: Stack(
+    return Obx(() {
+      return Stack(
+        children: [
+          Stack(
             children: [
-              Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(LocalImage.backgroundBlue),
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                width: size.width,
-                height: size.height,
-                child: Stack(
+              Scaffold(
+                body: Stack(
                   children: [
-                    SingleChildScrollView(
-                      child: Column(
+                    Container(
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(LocalImage.backgroundBlue),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      width: size.width,
+                      height: size.height,
+                      child: Stack(
                         children: [
-                          const Header(),
-                          Progress(controller: controller),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: 0.02 * size.width,
-                                right: 0.02 * size.width,
-                                top: 0.01 * size.height),
-                            child: Row(
+                          SingleChildScrollView(
+                            child: Column(
                               children: [
-                                ShapeTopic(
-                                  controller: controller,
-                                ),
-                                const Expanded(
-                                  flex: 1,
-                                  child: SizedBox(),
-                                ),
-                                ShapeLesson(
-                                  onPressLesson: controller.onPressLesson,
-                                  controller: controller,
-                                ),
+                                const Header(),
+                                Progress(controller: controller),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 0.02 * size.width,
+                                      right: 0.02 * size.width,
+                                      top: 0.01 * size.height),
+                                  child: Row(
+                                    children: [
+                                      ShapeTopic(
+                                        controller: controller,
+                                      ),
+                                      const Expanded(
+                                        flex: 1,
+                                        child: SizedBox(),
+                                      ),
+                                      ShapeLesson(
+                                        onPressLesson: controller.onPressLesson,
+                                        controller: controller,
+                                      ),
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
-                          )
+                          ),
+                          // Positioned.fill(
+                          //   top: 0.08 * size.width,
+                          //   left: 0.015 * size.width,
+                          //   child: Align(
+                          //     alignment: Alignment.topLeft,
+                          //     child: RegularText(
+                          //       'home'.tr,
+                          //       style: TextStyle(
+                          //           fontSize: Fontsize.normal, color: AppColor.red),
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
-                    // Positioned.fill(
-                    //   top: 0.08 * size.width,
-                    //   left: 0.015 * size.width,
-                    //   child: Align(
-                    //     alignment: Alignment.topLeft,
-                    //     child: RegularText(
-                    //       'home'.tr,
-                    //       style: TextStyle(
-                    //           fontSize: Fontsize.normal, color: AppColor.red),
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
+              // DownloadLesson(
+              //   controller: controller,
+              //   size: size,
+              // ),
+              Obx(
+                () => topicService.isGetTopicReadings
+                    ? Container(
+                        color: Colors.black38, child: const LoadingDialog())
+                    : const Text(''),
+              ),
             ],
           ),
-        ),
-        // DownloadLesson(
-        //   controller: controller,
-        //   size: size,
-        // ),
-        Obx(
-          () => topicService.isGetTopicReadings
-              ? Container(color: Colors.black38, child: const LoadingDialog())
-              : const Text(''),
-        ),
-      ],
-    );
+          if (controller.isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.3), // mờ nền
+              child: const Center(
+                child: LoadingDialog(),
+              ),
+            ),
+        ],
+      );
+    });
   }
 }
 

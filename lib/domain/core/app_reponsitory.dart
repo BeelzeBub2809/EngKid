@@ -8,10 +8,12 @@ import 'package:EngKid/domain/grade/entities/entities.dart';
 import 'package:EngKid/domain/quiz/entities/entites.dart';
 import 'package:EngKid/domain/start_board/entities/entities.dart';
 import 'package:EngKid/domain/topic/entities/entites.dart';
+import 'package:dio/dio.dart';
 
 import 'entities/lesson/lesson.dart';
 
 abstract class AppRepository {
   Future<UserInfo> getUserInfo(int id);
   Future<ChildProfiles> getChildProfiles(int parentUserId);
+  Future<void> updateParentProfile(int id,FormData formData);
 }

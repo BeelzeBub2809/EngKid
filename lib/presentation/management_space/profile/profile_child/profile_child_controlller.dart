@@ -81,14 +81,7 @@ class ProfileChildController extends GetxController {
   ].obs;
 
   List<String> get listImageAvt => _listImageAvt;
-
-  final RxList<Grade> _gradeList = [
-    const Grade(id: 1, name: 'grade_1'),
-    const Grade(id: 2, name: 'grade_2'),
-    const Grade(id: 3, name: 'grade_3'),
-    const Grade(id: 4, name: 'grade_4'),
-    const Grade(id: 5, name: 'grade_5'),
-  ].obs;
+  late final RxList<Grade> _gradeList;
   List<Grade> get gradeList => _gradeList.value;
 
   @override
@@ -98,6 +91,20 @@ class ProfileChildController extends GetxController {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+
+    String grade1 = 'grade_1'.tr;
+    String grade2 = 'grade_2'.tr;
+    String grade3 = 'grade_3'.tr;
+    String grade4 = 'grade_4'.tr;
+    String grade5 = 'grade_5'.tr;
+
+    _gradeList = <Grade>[
+      Grade(id: 1, name: grade1),
+      Grade(id: 2, name: grade2),
+      Grade(id: 3, name: grade3),
+      Grade(id: 4, name: grade4),
+      Grade(id: 5, name: grade5),
+    ].obs;
 
     _userService.userInfos.asMap().forEach((index, value) {
       if (value.value.user.id == _userService.currentUser.id) {
@@ -112,6 +119,7 @@ class ProfileChildController extends GetxController {
         _dateOfBirth.value = "29/11/2003";
       }
     });
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initData();
       // getOrganization(3, _selectedProvince.value['id']);

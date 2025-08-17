@@ -6,8 +6,9 @@ const Map<String, String> en = {
   'forgot_identifier': 'Forget ID?',
   'invalid_account': 'ID is not correct. Please try again!',
   'enter_id': 'Please enter ID to login!',
-  'forgot_password': 'Forgot Password?',
+  'forgot_password': 'Forgot Password',
   'register' : 'Register account',
+  'email' : 'Email',
 
   //forgot identifier
   'phone_number' : 'Phone Number',
@@ -16,6 +17,9 @@ const Map<String, String> en = {
   'enter_new_login_id' : 'Enter New Login ID',
   'new_login_id' : 'New Login ID',
   're_enter_login_id' : 'Re-enter ID code',
+  'change_password' : 'Change Password',
+  'back_to_login': 'Back to login',
+  'send_otp': 'Send OTP',
 
   //register
   'full_name' : 'Full Name',

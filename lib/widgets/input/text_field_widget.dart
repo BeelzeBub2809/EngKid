@@ -4,13 +4,15 @@ import 'package:EngKid/utils/app_color.dart';
 
 /// Custom TextField Widget
 /// This widget provides a customizable text field with various properties such as title, validation, keyboard type, and more.
+import 'package:flutter/material.dart';
+
 class TextFieldWidget extends StatefulWidget {
   final String? title;
   final String? validateValue;
   final bool? enabled;
   final TextInputType? keyboardType;
   final bool? obscureText;
-  final RxString? controller;
+  final TextEditingController? controller;
   final int? maxLines;
   final int? maxLength;
   final Function(String)? onChange;
@@ -20,6 +22,7 @@ class TextFieldWidget extends StatefulWidget {
   final Widget? prefixIcon;
   final FocusNode? focusNode;
   final VoidCallback? onTab;
+  final String? autofillHints;
 
   const TextFieldWidget({
     Key? key,
@@ -38,6 +41,7 @@ class TextFieldWidget extends StatefulWidget {
     this.prefixIcon,
     this.focusNode,
     this.onTab,
+    this.autofillHints,
   }) : super(key: key);
 
   @override
@@ -45,23 +49,14 @@ class TextFieldWidget extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<TextFieldWidget> {
-  late TextEditingController _controller;
-
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.controller?.value ?? '');
-
-    _controller.addListener(() {
-      if (widget.controller != null) {
-        widget.controller!.value = _controller.text;
-      }
-    });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    widget.controller?.dispose();
     super.dispose();
   }
 
@@ -83,20 +78,21 @@ class _CustomTextFieldState extends State<TextFieldWidget> {
             borderRadius: BorderRadius.circular(5),
             border: Border.all(
               color: (widget.validateValue != null &&
-                      widget.validateValue!.isNotEmpty)
+                  widget.validateValue!.isNotEmpty)
                   ? Colors.red
                   : const Color(0xFFEFEFEF),
               width: 1.5,
             ),
           ),
-          child: TextField(
+          child: TextFormField(
             focusNode: widget.focusNode,
             cursorColor: Colors.blue,
             enabled: widget.enabled,
             onTap: widget.onTab,
             keyboardType: widget.keyboardType ?? TextInputType.text,
+            autofillHints: widget.autofillHints != null ? [widget.autofillHints.toString()] : null,
             obscureText: widget.obscureText ?? false,
-            controller: _controller,
+            controller: widget.controller,
             maxLines: widget.maxLines ?? 1,
             maxLength: widget.maxLength,
             onChanged: (value) {
@@ -105,39 +101,40 @@ class _CustomTextFieldState extends State<TextFieldWidget> {
             decoration: InputDecoration(
               counterText: '',
               contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 13),
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 13),
               suffixIcon: widget.suffixIcon,
               hintStyle: widget.hintStyle ??
                   const TextStyle(
                       fontSize: 15,
                       fontStyle: FontStyle.italic,
-                      color: AppColor.gray),
-              hintText: widget.hintText?.tr ?? '',
+                      color: Colors.blue),
+              hintText: widget.hintText ?? '',
               border: InputBorder.none,
               prefixIcon: widget.prefixIcon != null
                   ? Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(width: 10),
-                        widget.prefixIcon!,
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: SizedBox(
-                            height: 25,
-                            width: 1,
-                            child: ColoredBox(color: Colors.blue),
-                          ),
-                        ),
-                      ],
-                    )
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(width: 10),
+                  widget.prefixIcon!,
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: SizedBox(
+                      height: 25,
+                      width: 1,
+                      child: ColoredBox(color: Colors.blue),
+                    ),
+                  ),
+                ],
+              )
                   : null,
             ),
           ),
         ),
         if (widget.validateValue != null && widget.validateValue!.isNotEmpty)
-          Text(widget.validateValue!.tr,
+          Text(widget.validateValue!,
               style: const TextStyle(fontSize: 12, color: Colors.red)),
       ],
     );
   }
 }
+

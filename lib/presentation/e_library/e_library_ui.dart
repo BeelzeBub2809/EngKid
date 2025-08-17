@@ -553,19 +553,6 @@ class ElibraryScreen extends GetView<ElibraryController> {
                       color: Colors.black38, child: const LoadingDialog())
                   : const Text(''),
             ),
-            DownloadLesson(
-              controller: controller,
-              size: size,
-              index: elibraryService.bookIndex
-            ),
-
-            Obx(
-               () => Positioned(
-                  left: 0.71 * size.width,
-                  top: 0.062 * size.width,
-                  child: RegularText( !controller.isDownload ? 'download'.tr : '',
-                    style: TextStyle(color: AppColor.red, fontSize: Fontsize.small),)),
-            ),
           ],
         ),
       ),

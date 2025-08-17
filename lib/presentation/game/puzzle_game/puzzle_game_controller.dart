@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 enum PuzzleType {
@@ -90,6 +91,10 @@ class PuzzleGameController extends GetxController with WidgetsBindingObserver {
   void onInit() {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     _generateQuestions();
   }
 
@@ -97,6 +102,10 @@ class PuzzleGameController extends GetxController with WidgetsBindingObserver {
   void onClose() {
     _gameTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
     super.onClose();
   }
 
