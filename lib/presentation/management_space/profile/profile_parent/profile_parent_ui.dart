@@ -9,6 +9,7 @@ import 'package:EngKid/widgets/pinput/pinput_widget.dart';
 import 'package:EngKid/widgets/register/item_dropdown_have_title.dart';
 import 'package:EngKid/widgets/text/image_text.dart';
 import 'package:EngKid/widgets/text/regular_text.dart';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/utils/app_color.dart';
@@ -16,6 +17,7 @@ import 'package:EngKid/utils/im_utils.dart';
 import 'package:EngKid/widgets/button/image_button.dart';
 import 'package:EngKid/widgets/dialog/dialog_alert.dart';
 import 'package:EngKid/widgets/image/cache_image.dart';
+import 'package:intl/intl.dart';
 
 class ProfileParentScreen extends GetView<ProfileParentController> {
   const ProfileParentScreen({Key? key}) : super(key: key);
@@ -156,7 +158,7 @@ class ProfileParentScreen extends GetView<ProfileParentController> {
                                       input: val,
                                       type: ProfileInputType.nameParent);
                                 },
-                                controller: controller.nameParent.obs,
+                                controller: controller.nameController,
                                 hintText: '')),
                       ),
                     ),
@@ -225,7 +227,7 @@ class ProfileParentScreen extends GetView<ProfileParentController> {
                                     input: val,
                                     type: ProfileInputType.phoneNumber);
                               },
-                              controller: controller.phoneNumber.obs,
+                              controller: controller.phoneNumberController,
                               hintText: '')),
                     ),
                   ),
@@ -253,26 +255,154 @@ class ProfileParentScreen extends GetView<ProfileParentController> {
                                 controller.onChangeInput(
                                     input: val, type: ProfileInputType.email);
                               },
-                              controller: controller.email.obs,
+                              controller: controller.emailController,
                               hintText: '')),
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: size.width * 0.1),
-                    child: RegularText(
-                      isUpperCase: true,
-                      'note_profile'.tr,
-                      maxLines: 2,
-                      style: const TextStyle(
-                        color: AppColor.red,
-                        fontSize: 14,
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.bold,
-                        wordSpacing: 1,
-                        height: 1.5,
+                    padding: const EdgeInsets.only(top: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        RegularText(
+                          'sex'.tr,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: Fontsize.small,
+                            fontWeight: FontWeight.w500,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        SizedBox(
+                          width: size.width * 0.4,
+                        ),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ...[
+                                "male",
+                                "female",
+                              ].map((sex) => Row(
+                                children: [
+                                  RegularText(
+                                    sex.tr,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: Fontsize.small,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: Get.width * 0.02,
+                                  ),
+                                  Obx(
+                                        () => GestureDetector(
+                                      onTap: () {
+                                        controller.selectSex(sex);
+                                      },
+                                      child: Image.asset(
+                                        controller.sex == sex
+                                            ? LocalImage.checkboxChecked
+                                            : LocalImage.checkboxUnChecked,
+                                        width: 24,
+                                        height: 24,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ))
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Obx(
+                        () => SizedBox(
+                      width: Get.width,
+                      child: CommonWidget.textFieldWithTitle(
+                        validateNotify: controller.validateDateOfBirth,
+                        horizontal: 6,
+                        vertical: 0,
+                        title: 'date_of_birth'.tr,
+                        child: TextFieldWidget(
+                            controller: controller.dateOfBirthController,
+                            enabled: controller.isEdit ? true : false,
+                            prefixIcon: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.code,
+                                  color: AppColor.red,
+                                  size: 22,
+                                ),
+                              ],
+                            ),
+                            onChange: (val) {
+                              controller.onChangeInput(
+                                  input: val,
+                                  type: ProfileInputType.dateOfBirth);
+                            },
+                            hintText: '',
+                            suffixIcon: GestureDetector(
+                              onTap: () async {
+                                final selectedDates =
+                                await showCalendarDatePicker2Dialog(
+                                  context: Get.context!,
+                                  config:
+                                  CalendarDatePicker2WithActionButtonsConfig(
+                                    calendarType:
+                                    CalendarDatePicker2Type.single,
+                                    selectedDayHighlightColor: Colors.red,
+                                  ),
+                                  dialogSize:
+                                  Size(Get.width * 0.8, Get.height * 0.5),
+                                  value: [
+                                    controller.selectedDate ?? DateTime.now()
+                                  ],
+                                );
+
+                                if (selectedDates != null &&
+                                    selectedDates.isNotEmpty) {
+                                  controller.selectedDate = selectedDates.first;
+                                  controller.dateOfBirthRx =
+                                      DateFormat('dd/MM/yyyy')
+                                          .format(selectedDates.first!);
+
+                                  controller.onChangeInput(
+                                      input: controller.dateOfBirthRx,
+                                      type: ProfileInputType.dateOfBirth);
+                                }
+                              },
+                              child: Icon(
+                                Icons.calendar_month,
+                                size: 30,
+                                color: controller.isEdit
+                                    ? AppColor.red
+                                    : AppColor.gray,
+                              ),
+                            )),
                       ),
                     ),
-                  )
+                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.only(top: size.width * 0.1),
+                  //   child: RegularText(
+                  //     isUpperCase: true,
+                  //     'note_profile'.tr,
+                  //     maxLines: 2,
+                  //     style: const TextStyle(
+                  //       color: AppColor.red,
+                  //       fontSize: 14,
+                  //       fontStyle: FontStyle.italic,
+                  //       fontWeight: FontWeight.bold,
+                  //       wordSpacing: 1,
+                  //       height: 1.5,
+                  //     ),
+                  //   ),
+                  // )
                 ],
               ),
             ),
@@ -283,12 +413,8 @@ class ProfileParentScreen extends GetView<ProfileParentController> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: ImageText(
-                  text: controller.isEdit
-                      ? 'update_profile'.tr
-                      : 'delete_account'.tr,
-                  pathImage: controller.isEdit
-                      ? LocalImage.shapeButton
-                      : LocalImage.buttonElibrary,
+                  text: 'update_profile'.tr,
+                  pathImage: LocalImage.shapeButton,
                   isUpperCase: true,
                   onTap: controller.isEdit
                       ? () async {
@@ -438,7 +564,7 @@ class ProfileParentScreen extends GetView<ProfileParentController> {
                                         type: ProfileInputType.newPhoneNumber);
                                   },
                                   keyboardType: TextInputType.number,
-                                  controller: controller.newPhoneNumber.obs,
+                                  controller: controller.phoneNumberController,
                                   hintText: 'new_phone_number'),
                             ),
                           ),

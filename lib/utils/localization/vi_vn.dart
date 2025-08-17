@@ -6,8 +6,10 @@ const Map<String, String> vi = {
   'forgot_identifier': 'Quên mã ID?',
   'invalid_account': 'ID chưa chính xác, vui lòng thử lại!',
   'enter_id': 'Vui lòng nhập ID để truy cập',
-  'forgot_password': 'Quên mật khẩu?',
+  'forgot_password': 'Quên mật khẩu',
   'register': 'Tạo tài khoản',
+  'email' : 'Email',
+
   //forgot identifier
   'phone_number' : 'Số điện thoại',
   'send' : 'Gửi',
@@ -15,7 +17,9 @@ const Map<String, String> vi = {
   'enter_new_login_id' : 'Nhập mã ID mới',
   'new_login_id' : 'MÃ ID MỚI',
   're_enter_login_id' : 'Nhập lại mã ID',
-
+  'change_password' : 'Đổi mật khẩu',
+  'back_to_login': 'Quay lại đăng nhập',
+  'send_otp': 'Gửi OTP',
   //register
   'full_name' : 'Họ và tên',
   'user_name' : 'Tên tài khoản',

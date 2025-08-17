@@ -104,11 +104,28 @@ class ElibraryService extends GetxService {
     _bookList.addAll(book);
   }
 
+  Future<void> getAllEbookWithCateAndStudentId(int categoryId) async {
+    _isGetAllElibraryBooks.value = true;
+    try {
+      List<EBook> books = await eBookUsecases.getByCategoryAndStudentId(
+          categoryId, _userService.currentUser.id);
+      _selectedCateBooks.clear();
+      _selectedCateBooks.addAll(books);
+      prettyPrintJson(_selectedCateBooks, title: 'Updated _selectedCateBooks');
+    } catch (e) {
+      print('Error fetching ebooks for category $categoryId: $e');
+      _selectedCateBooks.clear();
+    } finally {
+      _isGetAllElibraryBooks.value = false;
+    }
+  }
+
+
   Future<dynamic> onChangeCategory(int index, int categoryId) async {
     if (_networkService.networkConnection.value) {
       _isGetCategoryReadings.value = true;
-      selectedCateBooks.clear();
       _categoryIndex.value = index;
+      _bookIndex.value = 0;
       //call api get list of books in category
       // final data = {
       //   "books": [
@@ -145,12 +162,12 @@ class ElibraryService extends GetxService {
       // };
       _isGetCategoryReadings.value = false;
 
-      final List<EBook> books = bookList.where((book) => book.categories.any((c) => c == categoryId)).toList();
-
-      _totalBook.value = books.length as int;
-      _completedBook.value = books.where((b) => b.isRead).length as int;
-
-      selectedCateBooks.addAll(books);
+      // final List<EBook> books = bookList.where((book) => book.categories.any((c) => c == categoryId)).toList();
+      //
+      // _totalBook.value = books.length as int;
+      // _completedBook.value = books.where((b) => b.isRead).length as int;
+      //
+      // selectedCateBooks.addAll(books);
 
       _bookIndex.value = 0;
     } else {
@@ -176,5 +193,16 @@ class ElibraryService extends GetxService {
   Future<void> updateStatus(int studentId, int bookId, int status) async {
     // await appUseCases.updateElibraryStatus(
     //     _userService.currentUser.id, bookId, status);
+  }
+  void prettyPrintJson(dynamic data, {String title = 'DATA'}) {
+    // Sử dụng JsonEncoder với indent (thụt lề) để tạo ra chuỗi JSON đẹp mắt
+    const JsonEncoder encoder = JsonEncoder.withIndent('  '); // '  ' là 2 dấu cách
+    final String prettyJson = encoder.convert(data);
+
+    print('╔══════════════════════════════════════════════════════');
+    print('║ ✅ $title');
+    print('╟──────────────────────────────────────────────────────');
+    prettyJson.split('\n').forEach((line) => print('║ $line'));
+    print('╚══════════════════════════════════════════════════════');
   }
 }

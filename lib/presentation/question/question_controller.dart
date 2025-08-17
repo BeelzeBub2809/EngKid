@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:EngKid/presentation/reading_space/reading_space_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -103,7 +104,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
   void onStopBtnPress() async {
     await AudioControl.instance.stopAudio();
     await LibFunction.effectConfirmPop();
-    Get.back();
+    Get.back(result: true);
   }
 
   void _initQuestion() {
@@ -116,8 +117,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
 
     _unCompleteQuestions.add(Question(
         video: quiz.reading.video,
-        typeCode: 'V',
-        video_mong: quiz.reading.videoMong));
+        typeCode: 'V'));
     late String contentReadGame = "";
     try {
       final int dataGameIndex = (Get.arguments[2] as Reading).positionId % 100;

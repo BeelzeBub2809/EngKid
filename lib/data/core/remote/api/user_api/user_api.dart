@@ -21,4 +21,10 @@ abstract class UserApi {
   Future<ApiResponseObject> getChildProfiles(
     @Query("parent_user_id") int parentUserId,
   );
+  @PUT('user/edit-m/{id}')
+  @MultiPart()
+  Future<ApiResponseObject> updateParentProfile(
+      @Path("id") int id,
+      @Body() FormData formData
+  );
 }

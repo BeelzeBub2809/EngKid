@@ -5,6 +5,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/data/core/local/share_preferences_manager.dart';
@@ -70,11 +71,14 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
   final RxBool _isCheckedLanguage = false.obs;
   final RxBool _isCheckedAllMong = false.obs;
   final RxString _selectLanguage = "None".obs;
+  final RxBool _isLoading = true.obs;
   final RxInt _topicIndex = 0.obs;
 
   final RxBool _isCheckAll = false.obs;
 
   bool get isDownload => _isDownload.value;
+
+  bool get isLoading => _isLoading.value;
 
   bool get isDownloading => _isDownloading.value;
 
@@ -130,11 +134,21 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
         _userService.readingSequenceSetting.readingSequenceSetting;
     WidgetsBinding.instance.addObserver(this);
     // get topics
+    await fetchData();
+  }
+  @override
+  void onReady() async {
+    await fetchData();
+  }
+
+  Future<void> fetchData() async {
+    _isLoading.value = true;
     final res = await _topicService.getTopicByGrade();
     _topics.value = res;
     _topicIndex.value = 0;
     final readingRes =await _topicService.getReadingByTopic(_topicIndex.value + 1);
     _readings.value = readingRes;
+    _isLoading.value = false;
   }
 
   Future<void> onPressLesson(
@@ -143,19 +157,6 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     readingData = reading;
     indexReading = index;
     var questions = await _topicService.getQuestionOfReading(index + 1);
-    for (var q in questions) {
-      print('------------------------------');
-      print('📌 QuestionId: ${q.questionId}');
-      print('📝 Question: ${q.question}');
-      print('🔢 Type: ${q.type} (${q.typeCode})');
-      print('🎯 AchievedMark: ${q.achievedMark}');
-      print('🎵 Audio: ${q.audio}');
-      print('🖼️ Background: ${q.background}');
-      print('🧾 Options:');
-      for (var o in q.options) {
-        print('   - ${o.option} (Correct: ${o.isCorrect == 1 || o.isCorrect == '1'})');
-      }
-    }
     var currentQuiz = Quiz(
       reading: QuizReading(
         name: reading.name,
@@ -206,7 +207,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
       // ],
 
     );
-    startLearning(currentQuiz, index);
+    await startLearning(currentQuiz, index);
     // setHasVideoMong();
     // if (!getQuizsFromStorage()) {
     //   await handleShowDownload(reading.readingVideo);
@@ -262,16 +263,18 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     // }
   }
 
-  void startLearning(Quiz quiz, int index) {
-    Get.toNamed(
+  Future<void> startLearning(Quiz quiz, int index) async {
+    final result = await Get.toNamed(
       AppRoute.lesson,
       arguments: [
         quiz, // current reading
-        readings.length - 1 ==
-            index, // reading end
+        readings.length - 1 == index, // is end
         readings[index]
       ],
     );
+    if (result == true) {
+      await fetchData();
+    }
   }
 
   Future<void> updateAttempt(Quiz quiz) async {
@@ -955,8 +958,10 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
   }
 
   void onChangeTopicReadings(int index) async {
+    _isLoading.value = true;
     _topicIndex.value = index;
     final readingRes =await _topicService.getReadingByTopic(index + 1);
     _readings.value = readingRes;
+    _isLoading.value = false;
   }
 }

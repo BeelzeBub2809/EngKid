@@ -10,4 +10,6 @@ class EBookUsecases {
 
   Future<List<EBook>> getByCategoryAndStudentM(int kidUserId) async =>
     _ebookRepo.getByCategoryAndStudentM(kidUserId);
+  Future<List<EBook>> getByCategoryAndStudentId(int categoryId, int kidId) async =>
+      _ebookRepo.getByCategoryAndStudentId(categoryId, kidId);
 }
