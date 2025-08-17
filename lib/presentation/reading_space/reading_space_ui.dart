@@ -734,7 +734,7 @@ class Progress extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     RegularText(
-                      "${topicService.progressGrade.myProgress.lessonCount.complete}/${topicService.progressGrade.myProgress.lessonCount.total}",
+                      "${topicService.completedReading}/${topicService.totalReading}",
                       style: TextStyle(
                         color: AppColor.yellow,
                         fontSize: Fontsize.smaller - 1,
@@ -775,7 +775,7 @@ class Progress extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     RegularText(
-                      "${topicService.progressGrade.myProgress.starCount.achieved.ceil()}/${topicService.progressGrade.myProgress.starCount.total}",
+                      "${topicService.completedStar.ceil()}/${topicService.totalStar}",
                       style: TextStyle(
                         color: AppColor.yellow,
                         fontSize: Fontsize.smaller - 1,

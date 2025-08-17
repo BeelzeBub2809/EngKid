@@ -79,7 +79,7 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
     LibFunction.playAudioLocal(LocalAudio.chooseLesson);
     if (_networkService.networkConnection.value) {
       await _elibraryService.getElibraryCategory();
-      await _elibraryService.getAllEbookWithCateAndStudentId(1);
+      await _elibraryService.getAllEbookWithCateAndStudentId(_elibraryService.categoryList[0].id);
       await _elibraryService.onChangeCategory(0, _elibraryService.categoryList[0].id);
     }
   }
