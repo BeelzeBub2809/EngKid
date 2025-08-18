@@ -189,10 +189,7 @@ class ProfileChildController extends GetxController {
         break;
       case ProfileChildInputType.dateOfBirth:
         _dateOfBirth.value = input;
-        print('_dateOfBirth: ${_dateOfBirth.value}');
         dateOfBirthController.text = dateOfBirthRx;
-        print('dateOfBirthController: ${dateOfBirthController}');
-
         break;
     }
   }

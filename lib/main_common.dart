@@ -105,10 +105,20 @@ class _MyAppState extends State<MyApp> {
           translations: LocalizationService(),
           initialRoute: AppRoute.login,
           theme: ThemeData.light().copyWith(
+            primaryColor: AppColor.primary,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: AppColor.primary,
+              primary: AppColor.primary,
+              secondary: AppColor.secondary,
+            ),
+            appBarTheme: AppBarTheme(
+              backgroundColor: AppColor.primary,
+              foregroundColor: Colors.white,
+            ),
             scrollbarTheme: ScrollbarThemeData(
               thumbVisibility: MaterialStateProperty.all(false),
               thickness: MaterialStateProperty.all(10),
-              thumbColor: MaterialStateProperty.all(AppColor.red),
+              thumbColor: MaterialStateProperty.all(AppColor.primary),
               trackColor: MaterialStateProperty.all(AppColor.gray),
               trackBorderColor: MaterialStateProperty.all(AppColor.gray),
               trackVisibility: MaterialStateProperty.all(true),

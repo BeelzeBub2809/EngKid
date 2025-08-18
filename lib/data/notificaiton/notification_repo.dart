@@ -15,10 +15,10 @@ class NotificationRepositoryImp implements NotificationRepository {
   }) async {
     try {
       final Map<String, dynamic> body = {
-        "student_id": studentId,
-        "search_term": searchTerm,
-        "page_numb": pageNumb,
-        "page_size": pageSize,
+        "studentId": studentId,
+        "searchTerm": searchTerm,
+        "pageNumb": pageNumb,
+        "pageSize": pageSize,
       };
       final ApiResponseObject response =
           await notificationApi.getNotificationsByParent(body);
