@@ -25,7 +25,6 @@ class StarBoardController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    await generateSampleData();
   }
 
   Future<void> onChooseFeature(int index) async {
@@ -60,36 +59,4 @@ class StarBoardController extends GetxController {
       id: AppRoute.managementStarBoardRouteKey,
     );
   }
-
-  Future<void> getStarsHistory() async {
-    isLoading.value = true;
-
-    try {
-      // Use sample data since we're in development/demo mode
-      debugPrint("Loading star history from sample data...");
-    } catch (e) {
-      debugPrint("Error loading star history: $e");
-    }
-
-    isLoading.value = false;
-  }
-
-  // Chuyển đổi chuỗi ngày thành đối tượng DateTime
-  DateTime parseDate(String dateStr) {
-    return DateTime.parse(dateStr);
-  }
-
-  Future<void> generateSampleData() async {
-    isLoading.value = true;
-
-    try {
-      debugPrint("Sample data initialization completed for star board");
-    } catch (e) {
-      debugPrint("Error generating sample data: $e");
-    }
-
-    isLoading.value = false;
-  }
-
-// Lọc các phần tử trong danh sách theo tháng và tính tổng giá trị
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/presentation/feedback/feedback_controller.dart';
+import 'package:EngKid/utils/app_color.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -74,7 +75,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             ),
             child: Icon(
               Icons.arrow_back_ios_new,
-              color: Colors.orange,
+              color: AppColor.primary,
               size: size.width * 0.06,
             ),
           ),
@@ -86,7 +87,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             style: TextStyle(
               fontSize: size.width * 0.07,
               fontWeight: FontWeight.bold,
-              color: Colors.orange,
+              color: AppColor.primary,
               shadows: [
                 Shadow(
                   color: Colors.white,
@@ -123,7 +124,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             style: TextStyle(
               fontSize: size.width * 0.045,
               fontWeight: FontWeight.w600,
-              color: Colors.deepOrange,
+              color: AppColor.blue,
             ),
           ),
           SizedBox(height: size.height * 0.015),
@@ -137,9 +138,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   Widget _buildSearchInput(Size size) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.orange.withOpacity(0.5)),
+        border: Border.all(color: AppColor.primary.withOpacity(0.5)),
         borderRadius: BorderRadius.circular(size.width * 0.03),
-        color: Colors.orange.withOpacity(0.05),
+        color: AppColor.lightBlue.withOpacity(0.3),
       ),
       child: Row(
         children: [
@@ -156,7 +157,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 contentPadding: EdgeInsets.all(size.width * 0.04),
                 prefixIcon: Icon(
                   Icons.search,
-                  color: Colors.orange,
+                  color: AppColor.primary,
                   size: size.width * 0.05,
                 ),
               ),
@@ -180,7 +181,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   height: size.width * 0.04,
                   child: const CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: Colors.orange,
+                    color: AppColor.primary,
                   ),
                 ),
               );
@@ -214,7 +215,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           maxHeight: size.height * 0.2,
         ),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.orange.withOpacity(0.3)),
+          border: Border.all(color: AppColor.primary.withOpacity(0.3)),
           borderRadius: BorderRadius.circular(size.width * 0.03),
           color: Colors.white,
           boxShadow: [
@@ -249,12 +250,12 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 width: size.width * 0.08,
                 height: size.width * 0.08,
                 decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.1),
+                  color: AppColor.lightBlue.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(size.width * 0.02),
                 ),
                 child: Icon(
                   Icons.book,
-                  color: Colors.orange,
+                  color: AppColor.primary,
                   size: size.width * 0.04,
                 ),
               ),
@@ -289,7 +290,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             style: TextStyle(
               fontSize: size.width * 0.045,
               fontWeight: FontWeight.w600,
-              color: Colors.deepOrange,
+              color: AppColor.blue,
             ),
           ),
           SizedBox(height: size.height * 0.015),
@@ -354,15 +355,15 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             style: TextStyle(
               fontSize: size.width * 0.045,
               fontWeight: FontWeight.w600,
-              color: Colors.deepOrange,
+              color: AppColor.blue,
             ),
           ),
           SizedBox(height: size.height * 0.015),
           Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.orange.withOpacity(0.5)),
+              border: Border.all(color: AppColor.primary.withOpacity(0.5)),
               borderRadius: BorderRadius.circular(size.width * 0.03),
-              color: Colors.orange.withOpacity(0.05),
+              color: AppColor.lightBlue.withOpacity(0.3),
             ),
             child: TextFormField(
               controller: controller.commentController,
@@ -399,14 +400,14 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 gradient: LinearGradient(
                   colors: controller.isLoading.value
                       ? [Colors.grey, Colors.grey[400]!]
-                      : [Colors.orange, Colors.deepOrange],
+                      : [AppColor.primary, AppColor.blue],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(size.width * 0.08),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.orange.withOpacity(0.3),
+                    color: AppColor.primary.withOpacity(0.3),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
