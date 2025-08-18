@@ -51,9 +51,9 @@ class PersonalInfoController extends GetxController {
         indexChild.value = index;
       }
     });
-
-    _parentName.value = _userService.userLogin.email;
-    // _parentPhone.value = value.value.parentInfo!.phone;
+    _userService.getUserLoginFromStorage();
+    _parentName.value = _userService.userLogin.name!;
+    _parentPhone.value = _userService.userLogin.phone!;
     _imageUrlParent.value = _userService.userLogin.image;
   }
 

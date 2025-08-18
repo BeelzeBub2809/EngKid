@@ -7,6 +7,8 @@ import 'package:EngKid/presentation/e_library/e_library_binding.dart';
 import 'package:EngKid/presentation/e_library/e_library_ui.dart';
 import 'package:EngKid/presentation/e_library/e_library_video_binding.dart';
 import 'package:EngKid/presentation/e_library/e_library_video_ui.dart';
+import 'package:EngKid/presentation/forgot_pass/forgot_pass_binding.dart';
+import 'package:EngKid/presentation/forgot_pass/forgot_pass_ui.dart';
 import 'package:EngKid/presentation/game/wordle_game/wordle_game_binding.dart';
 import 'package:EngKid/presentation/game/wordle_game/wordle_game_ui.dart';
 import 'package:EngKid/presentation/game/puzzle_game/puzzle_game_binding.dart';
@@ -130,6 +132,11 @@ class _MyAppState extends State<MyApp> {
               name: AppRoute.login,
               page: () => const LoginScreen(),
               binding: LoginBinding(),
+            ),
+            GetPage(
+              name: AppRoute.forgotPass,
+              page: () => const ForgotPassScreen(),
+              binding: ForgotPassBinding(),
             ),
             GetPage(
               name: AppRoute.register,

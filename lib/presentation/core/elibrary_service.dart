@@ -104,57 +104,53 @@ class ElibraryService extends GetxService {
     _bookList.addAll(book);
   }
 
-  Future<dynamic> onChangeCategory(int index, int categoryId) async {
-    if (_networkService.networkConnection.value) {
-      _isGetCategoryReadings.value = true;
-      selectedCateBooks.clear();
-      _categoryIndex.value = index;
-      //call api get list of books in category
-      // final data = {
-      //   "books": [
-      //     {
-      //       "id": 1,
-      //       "name": "Science Book 1",
-      //       "categories": "Category A",
-      //       "thum_img": "https://images-na.ssl-images-amazon.com/images/I/91Qu7aSa0aL.jpg",
-      //       "background": "https://example.com/science_background.jpg",
-      //       "reading_video": "https://example.com/science_video.mp4",
-      //       "status": true
-      //     },
-      //     {
-      //       "id": 2,
-      //       "name": "Science Book 2",
-      //       "categories": "Category B",
-      //       "thum_img": "https://lifeatthezoo.com/wp/wp-content/uploads/2015/12/science-activities-books-for-kids.jpg",
-      //       "background": "https://example.com/science_background2.jpg",
-      //       "reading_video": "https://example.com/science_video2.mp4",
-      //       "status": true
-      //     },
-      //     {
-      //       "id": 3,
-      //       "name": "Math Book 1",
-      //       "categories": "Category C",
-      //       "thum_img": "https://media.karousell.com/media/photos/products/2025/6/9/grade_9_mathematics_textbook_1749446506_2d158f5d.jpg",
-      //       "background": "https://example.com/math_background.jpg",
-      //       "reading_video": "https://example.com/math_video.mp4",
-      //       "status": true
-      //     }
-      //   ],
-      //   "total_books": 3,
-      //   "completed_books": 1,
-      // };
-      _isGetCategoryReadings.value = false;
+  Future<void> getAllEbookWithCateAndStudentId(int categoryId) async {
+    _isGetAllElibraryBooks.value = true;
+    try {
+      List<EBook> books = await eBookUsecases.getByCategoryAndStudentId(
+          categoryId, _userService.currentUser.id);
+      _selectedCateBooks.clear();
+      _selectedCateBooks.addAll(books);
+      prettyPrintJson(_selectedCateBooks, title: 'Updated _selectedCateBooks');
+    } catch (e) {
+      print('Error fetching ebooks for category $categoryId: $e');
+      _selectedCateBooks.clear();
+    } finally {
+      _isGetAllElibraryBooks.value = false;
+    }
+  }
 
-      final List<EBook> books = bookList.where((book) => book.categories.any((c) => c == categoryId)).toList();
 
-      _totalBook.value = books.length as int;
-      _completedBook.value = books.where((b) => b.isRead).length as int;
-
-      selectedCateBooks.addAll(books);
-
-      _bookIndex.value = 0;
-    } else {
+  Future<void> onChangeCategory(int index, int categoryId) async {
+    if (!_networkService.networkConnection.value) {
       LibFunction.toast('require_network_to_topic');
+      return;
+    }
+
+    try {
+
+      _isGetCategoryReadings.value = true;
+      _categoryIndex.value = index;
+      _bookIndex.value = 0;
+
+      await getAllEbookWithCateAndStudentId(categoryId);
+
+      _totalBook.value = selectedCateBooks.length;
+      _completedBook.value = selectedCateBooks.where((b) => b.isActive).length;
+
+    } catch (e, stackTrace) {
+      print('==================== ERROR CAUGHT ====================');
+      print('Error Type: ${e.runtimeType}');
+      print('Error Message: $e');
+      print('Stack Trace: $stackTrace');
+      print('======================================================');
+      LibFunction.toast('Đã có lỗi xảy ra khi tải sách. Vui lòng thử lại.');
+      selectedCateBooks.clear();
+      _totalBook.value = 0;
+      _completedBook.value = 0;
+
+    } finally {
+      _isGetCategoryReadings.value = false;
     }
   }
 
@@ -176,5 +172,16 @@ class ElibraryService extends GetxService {
   Future<void> updateStatus(int studentId, int bookId, int status) async {
     // await appUseCases.updateElibraryStatus(
     //     _userService.currentUser.id, bookId, status);
+  }
+  void prettyPrintJson(dynamic data, {String title = 'DATA'}) {
+    // Sử dụng JsonEncoder với indent (thụt lề) để tạo ra chuỗi JSON đẹp mắt
+    const JsonEncoder encoder = JsonEncoder.withIndent('  '); // '  ' là 2 dấu cách
+    final String prettyJson = encoder.convert(data);
+
+    print('╔══════════════════════════════════════════════════════');
+    print('║ ✅ $title');
+    print('╟──────────────────────────────────────────────────────');
+    prettyJson.split('\n').forEach((line) => print('║ $line'));
+    print('╚══════════════════════════════════════════════════════');
   }
 }

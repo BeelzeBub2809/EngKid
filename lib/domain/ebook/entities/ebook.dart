@@ -10,11 +10,11 @@ class EBook with _$EBook {
   const factory EBook({
     @Default(-1) int id,
     @JsonKey(name: 'title') required String title,
-    @Default([]) List<int> categories,
+    // @Default([]) List<int> categories,
     @JsonKey(name: 'image') required String image,
     @JsonKey(name: 'background') required String background,
     @JsonKey(name: 'file') required String file,
-    @JsonKey(name: 'is_active') @Default(false) bool isActive,
+    @JsonKey(name: 'is_active') @Default(true) bool isActive,
     @JsonKey(name: 'is_read') @Default(false) bool isRead,
   }) = _EBook;
 

@@ -14,4 +14,9 @@ abstract class EBookApi {
   Future<ApiResponseObject> getEBookByStudentIdM(
     @Path("studentId") int id,
   );
+  @GET('e-book/category-&-student-M/{categoryId}/{studentId}')
+  Future<ApiResponseObject> getEBookByStudentIdAndCategoryId(
+      @Path("categoryId") int categoryId,
+      @Path("studentId") int studentId,
+  );
 }

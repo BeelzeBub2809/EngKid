@@ -13,12 +13,26 @@ class Login with _$Login {
     @JsonKey(name: 'username')
     String? username,
 
+    @JsonKey(name: 'name')
+    String? name,
+
+    @JsonKey(name: 'gender')
+    String? gender,
+
+    @JsonKey(name: 'phone')
+    String? phone,
+
+    @JsonKey(name: 'dob')
+    String? dob,
+
     @JsonKey(name: 'email')
     @Default("") String email,
 
-    @JsonKey(name: 'role_id') @Default('') String roleId,
+    @JsonKey(name: 'role_id') @Default(0) int roleId,
     @Default("") String role,
-    @Default("") String image,
+    @JsonKey(name: 'image')
+    @Default("")
+    String image,
     @JsonKey(name: 'accessToken') @Default("") String token,
   }) = _Login;
 

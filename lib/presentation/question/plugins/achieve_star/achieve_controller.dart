@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:EngKid/presentation/core/user_service.dart';
 import 'package:EngKid/presentation/question/question_controller.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/domain/quiz/entities/entites.dart';
@@ -29,6 +30,7 @@ class AchieveStarController extends GetxController {
   });
 
   final TopicService _topicService = Get.find<TopicService>();
+  final UserService _userService = Get.find<UserService>();
 
   late double totalStar = 0;
   late int readingStar = 0;
@@ -41,7 +43,7 @@ class AchieveStarController extends GetxController {
     //   LibFunction.playAudioLocal(LocalAudio.finishLesson);
     // });
     totalStar = questionController.stars/5 * 5;
-    await _topicService.submitReadingResult(44, questionController.readingId, questionController.stars, 1, questionController.doQuizDuration);
+    await _topicService.submitReadingResult(_userService.currentUser.id, questionController.readingId, questionController.stars, 1, questionController.doQuizDuration);
     getStars();
   }
 

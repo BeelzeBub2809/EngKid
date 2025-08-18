@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:EngKid/domain/core/entities/child_profile/child_profiles_usecase.dart';
 import 'package:EngKid/domain/core/entities/child_profile/child_repository.dart';
 import 'package:EngKid/domain/start_board/star_board_usecases.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/data/core/local/share_preferences_manager.dart';
@@ -570,4 +571,12 @@ class UserService extends GetxService {
   }
 
   //calling API from Apprepository
+  Future<void> updateProfileParent(dio.FormData formData) async {
+    try {
+      print('Login ID: ${userLogin.id}');
+      await appUseCases.updateParentProfile(userLogin.id, formData);
+    } catch (e){
+      rethrow;
+    }
+  }
 }

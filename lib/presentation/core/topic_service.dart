@@ -42,6 +42,10 @@ class TopicService extends GetxService {
   final Rx<ProgressGrade> _progressGrade = const ProgressGrade().obs;
   final Rx<Lesson> _topicReadings = const Lesson().obs;
   final RxString _topicBg = "".obs;
+  final RxInt _totalReading = 0.obs;
+  final RxInt _completedReading = 0.obs;
+  final RxInt _totalStar = 0.obs;
+  final RxInt _completedStar = 0.obs;
   List<Topic> topicList = List<Topic>.empty(growable: true);
   final RxList<Reading> downloadAllReadingList =
       RxList<Reading>.empty(growable: true);
@@ -54,6 +58,10 @@ class TopicService extends GetxService {
   bool get isGetTopicReadings => _isGetTopicReadings.value;
   Grade get currentGrade => _currentGrade;
   String get topicBg => _topicBg.value;
+  int get totalReading => _totalReading.value;
+  int get completedReading => _completedReading.value;
+  int get totalStar => _totalStar.value;
+  int get completedStar => _completedStar.value;
 
   set currentGrade(Grade value) {
     _currentGrade = value;
@@ -121,13 +129,55 @@ class TopicService extends GetxService {
     try {
       final request = ReadingByTopicRequest(
         categoryId: cateId,
-        studentId: 44,
+        studentId: _userService.currentUser.id,
       );
 
       final result = await _readingUsecases.getByCateAndStudent(request.toJson());
+      if (result.isEmpty) {
+        _readings.clear();
+        _totalReading.value = 0;
+        _completedReading.value = 0;
+        _totalStar.value = 0;
+        _completedStar.value = 0;
+        return [];
+      }
+
+      int completedReadingsCount = 0;
+      int totalStarsCount = 0;
+      double completedStarsCount = 0.0;
+
+      for (final reading in result) {
+        if (reading.isCompleted == 1) {
+          completedReadingsCount++;
+        }
+
+        totalStarsCount += reading.stars;
+
+        completedStarsCount += reading.maxAchievedStars;
+      }
+
+      _totalReading.value = result.length;
+      _completedReading.value = completedReadingsCount;
+      _totalStar.value = totalStarsCount;
+      _completedStar.value = completedStarsCount.toInt();
+      _readings.clear();
       _readings.assignAll(result);
+
+      print('✅ Readings Processed:');
+      print('   - Total Readings: ${_totalReading.value}');
+      print('   - Completed Readings: ${_completedReading.value}');
+      print('   - Total Stars: ${_totalStar.value}');
+      print('   - Achieved Stars: ${_completedStar.value}');
+
       return _readings;
+
     } catch (e, stackTrace) {
+      _readings.clear();
+      _totalReading.value = 0;
+      _completedReading.value = 0;
+      _totalStar.value = 0;
+      _completedStar.value = 0;
+
       debugPrint('[ReadingService] Error: $e');
       debugPrint('[ReadingService] StackTrace: $stackTrace');
       rethrow;

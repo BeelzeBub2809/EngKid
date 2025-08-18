@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:EngKid/domain/login/entities/login/login.dart';
 import 'package:EngKid/presentation/core/user_service.dart';
 import 'package:EngKid/utils/lib_function.dart';
 import 'package:EngKid/widgets/commom/item_bottom_sheet_model.dart';
@@ -10,8 +12,11 @@ import 'package:get/get.dart';
 import 'package:EngKid/domain/organization/entities/entities.dart';
 import 'package:EngKid/utils/im_utils.dart';
 import 'package:timer_count_down/timer_controller.dart';
+import 'package:dio/dio.dart' as dio;
+import 'package:path/path.dart' as p;
 
-enum ProfileInputType { nameParent, email, phoneNumber, address, newPhoneNumber }
+
+enum ProfileInputType { nameParent, email, phoneNumber, address, newPhoneNumber, dateOfBirth }
 
 class ProfileParentController extends GetxController {
   final UserService _userService = Get.find<UserService>();
@@ -23,18 +28,34 @@ class ProfileParentController extends GetxController {
   final RxString _email = ''.obs;
   final RxString _phoneNumber = ''.obs;
   final RxString _newPhoneNumber = ''.obs;
+  final RxString _sex = 'male'.obs;
+  final RxString _dateOfBirth = ''.obs;
 
   String get nameParent => _nameParent.value;
   String get email => _email.value;
   String get phoneNumber => _phoneNumber.value;
   String get newPhoneNumber => _newPhoneNumber.value;
+  String get sex => _sex.value;
+  String get dateOfBirthRx => _dateOfBirth.value;
+  RxString get dateOfBirth => _dateOfBirth;
+  set dateOfBirthRx(String value) => _dateOfBirth.value = value;
+  TextEditingController dateOfBirthController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
+
+  final Rx<DateTime?> _selectedDate = Rx<DateTime?>(null);
+  DateTime? get selectedDate => _selectedDate.value;
+  set selectedDate(DateTime? value) => _selectedDate.value = value;
   // picked image
   final RxList<XFile> _listFile = <XFile>[].obs;
   List<XFile> get listFile => _listFile.value;
 
   final RxString _urlImage = ''.obs;
   String get urlImage => _urlImage.value;
+  final RxString _validateDateOfBirth = ''.obs;
+  String get validateDateOfBirth => _validateDateOfBirth.value;
 
   final RxString _imagePath = ''.obs;
   String get imagePath => _imagePath.value;
@@ -81,14 +102,18 @@ class ProfileParentController extends GetxController {
       DeviceOrientation.portraitDown,
     ]);
     super.onInit();
+    _userService.getUserLoginFromStorage();
+    _nameParent.value = _userService.userLogin.name!;
+    _phoneNumber.value = _userService.userLogin.phone!;
+    _email.value = _userService.userLogin.email;
+    _urlImage.value =  _userService.userLogin.image;
+    _sex.value = _userService.userLogin.gender!;
+    _dateOfBirth.value = _userService.userLogin.dob!;
 
-    _userService.userInfos.asMap().forEach((index, value) {
-      if (value.value.user.id == _userService.currentUser.id) {
-        _nameParent.value = _userService.userLogin.email;
-        _email.value = _userService.userLogin.email;
-        _urlImage.value =  _userService.userLogin.image;
-      }
-    });
+    dateOfBirthController.text = _dateOfBirth.value;
+    nameController.text = _nameParent.value;
+    phoneNumberController.text = _phoneNumber.value;
+    emailController.text = _email.value;
 
 
 
@@ -119,23 +144,43 @@ class ProfileParentController extends GetxController {
       try {
         Map<String, dynamic> body = {
           'name': _nameParent.value,
+          'phone': _phoneNumber.value,
+          'gender': _sex.value,
+          'dob': _dateOfBirth.value,
           'email': _email.value,
-          'gender' : 'male'
         };
 
+        dio.FormData formData = dio.FormData.fromMap(body);
 
         if (_imagePath.value.isNotEmpty) {
           File imageFile = File(_imagePath.value);
-          body['avatar'] = imageFile;
+          body['image'] = imageFile;
           print("imageFile : ${imageFile}");
           print("File size: ${await imageFile.length()} bytes");
+          formData.files.add(MapEntry(
+            'image',
+            await dio.MultipartFile.fromFile(
+              imagePath,
+              filename: p.basename(imagePath),
+            ),
+          ));
         } else {
         }
-        print('body : ${body}');
+        Map<String, dynamic> loggableBody = Map.from(body);
+
+        if (loggableBody['image'] is File) {
+          loggableBody['image'] = (loggableBody['image'] as File).path;
+        }
+        const JsonEncoder encoder = JsonEncoder.withIndent('  '); // '  ' là 2 dấu cách
+        final String prettyJson = encoder.convert(loggableBody);
+
+        print('---------- BEGIN REQUEST BODY ----------');
+        print(prettyJson);
+        print('----------- END REQUEST BODY -----------');
 
 
         LibFunction.showLoading();
-        // final data = await _userService.updateProfileParent(body);
+        await _userService.updateProfileParent(formData);
         // final data = [
         //     'name': _nameParent.value,
         //     'email': _email.value,
@@ -148,6 +193,8 @@ class ProfileParentController extends GetxController {
         //     image: data['image']
         //   );
         //   print('dataUpdateProfile: ${data}');
+        Login updatedParentInfo = Login.fromJson(body);
+        await _userService.assignUseLogin(updatedParentInfo);
           LibFunction.hideLoading();
           LibFunction.toast('Cập nhật thông tin thành công');
         // }
@@ -167,6 +214,10 @@ class ProfileParentController extends GetxController {
       timeController.start();
     });
 
+  }
+
+  void selectSex(String sex) {
+    _sex.value = sex;
   }
 
   void activeIsResend() {
@@ -274,6 +325,10 @@ class ProfileParentController extends GetxController {
         break;
       case ProfileInputType.newPhoneNumber:
         _newPhoneNumber.value = input;
+        break;
+      case ProfileInputType.dateOfBirth:
+        _dateOfBirth.value = input;
+        dateOfBirthController.text = dateOfBirthRx;
         break;
       default:
         break;
