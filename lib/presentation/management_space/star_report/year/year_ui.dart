@@ -104,7 +104,7 @@ class YearScreen extends GetView<YearController> {
                           final double maxY = (index == 0
                                   ? controller.maxYThisYear
                                   : controller.maxYLastYear) +
-                              size.height * 0.1;
+                              2; // giảm padding để biểu đồ hiển thị tốt hơn
                           return Column(
                             children: [
                               Container(

@@ -21,19 +21,18 @@ class YearController extends GetxController {
   late double totalLastYear = 0;
   late String curYear = "2025";
   late String preYear = "2024";
-  late double maxYThisYear = 148;
-  late double maxYLastYear = 142;
+  late double maxYThisYear = 0;
+  late double maxYLastYear = 0;
 
   final List<DayOf> monthsOfThisYear = [
-    const DayOf(text: "th1", left: 0.003, value: 85),
-    const DayOf(text: "th2", left: (1 * 0.0485) + 0.003, value: 92),
-    const DayOf(text: "th3", left: (2 * 0.0485) + 0.003, value: 88),
-    const DayOf(text: "th4", left: (3 * 0.0485) + 0.003, value: 95),
-    const DayOf(text: "th5", left: (4 * 0.0485) + 0.003, value: 103),
-    const DayOf(text: "th6", left: (5 * 0.0485) + 0.003, value: 117),
-    const DayOf(text: "th7", left: (6 * 0.0485) + 0.003, value: 134),
-    const DayOf(
-        text: "th8", left: (7 * 0.0485) + 0.003, value: 148, isHighlight: true),
+    const DayOf(text: "th1", left: 0.003, value: 0),
+    const DayOf(text: "th2", left: (1 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th3", left: (2 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th4", left: (3 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th5", left: (4 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th6", left: (5 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th7", left: (6 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th8", left: (7 * 0.0485) + 0.003, value: 0),
     const DayOf(text: "th9", left: (8 * 0.0485) + 0.003, value: 0),
     const DayOf(text: "th10", left: (9 * 0.0485) + 0.003, value: 0),
     const DayOf(text: "th11", left: (10 * 0.0485) + 0.003, value: 0),
@@ -41,18 +40,18 @@ class YearController extends GetxController {
   ];
 
   final List<DayOf> monthsOfLastYear = [
-    const DayOf(text: "th1", left: 0.003, value: 76),
-    const DayOf(text: "th2", left: (1 * 0.0485) + 0.003, value: 82),
-    const DayOf(text: "th3", left: (2 * 0.0485) + 0.003, value: 79),
-    const DayOf(text: "th4", left: (3 * 0.0485) + 0.003, value: 87),
-    const DayOf(text: "th5", left: (4 * 0.0485) + 0.003, value: 94),
-    const DayOf(text: "th6", left: (5 * 0.0485) + 0.003, value: 108),
-    const DayOf(text: "th7", left: (6 * 0.0485) + 0.003, value: 125),
-    const DayOf(text: "th8", left: (7 * 0.0485) + 0.003, value: 142),
-    const DayOf(text: "th9", left: (8 * 0.0485) + 0.003, value: 138),
-    const DayOf(text: "th10", left: (9 * 0.0485) + 0.003, value: 131),
-    const DayOf(text: "th11", left: (10 * 0.0485) + 0.003, value: 115),
-    const DayOf(text: "th12", left: (11 * 0.0485) + 0.003, value: 98),
+    const DayOf(text: "th1", left: 0.003, value: 0),
+    const DayOf(text: "th2", left: (1 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th3", left: (2 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th4", left: (3 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th5", left: (4 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th6", left: (5 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th7", left: (6 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th8", left: (7 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th9", left: (8 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th10", left: (9 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th11", left: (10 * 0.0485) + 0.003, value: 0),
+    const DayOf(text: "th12", left: (11 * 0.0485) + 0.003, value: 0),
   ];
 
   final RxBool isLoading = false.obs;
@@ -90,14 +89,21 @@ class YearController extends GetxController {
         monthsOfThisYear.asMap().forEach((index, value) {
           final double sum = sumByMonth(thisYear, index + 1, now.year);
           total += sum;
-          if (sum > maxYThisYear) {
-            maxYThisYear = sum.toDouble();
-          }
           monthsOfThisYear[index] = monthsOfThisYear[index].copyWith(
             value: sum,
             isHighlight: now.month == index + 1 ? true : false,
           );
         });
+
+        // Tính maxYThisYear từ các giá trị tháng thực tế
+        maxYThisYear = 0;
+        for (final month in monthsOfThisYear) {
+          if (month.value > maxYThisYear) {
+            maxYThisYear = month.value;
+          }
+        }
+        if (maxYThisYear == 0) maxYThisYear = 1;
+
         totalThisYear = total;
       } catch (e) {
         //
@@ -122,12 +128,19 @@ class YearController extends GetxController {
         monthsOfLastYear.asMap().forEach((index, value) {
           final double sum = sumByMonth(lastYear, index + 1, now.year - 1);
           total += sum;
-          if (sum > maxYLastYear) {
-            maxYLastYear = sum;
-          }
           monthsOfLastYear[index] =
               monthsOfLastYear[index].copyWith(value: sum);
         });
+
+        // Tính maxYLastYear từ các giá trị tháng thực tế
+        maxYLastYear = 0;
+        for (final month in monthsOfLastYear) {
+          if (month.value > maxYLastYear) {
+            maxYLastYear = month.value;
+          }
+        }
+        if (maxYLastYear == 0) maxYLastYear = 1;
+
         totalLastYear = total - totalThisYear;
       } catch (e) {
         //

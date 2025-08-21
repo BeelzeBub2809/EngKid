@@ -33,11 +33,18 @@ class HomeScreen extends GetView<HomeScreenController> {
     //List menu on the right side edge of the screen
     final List<MenuRight> menuRights = [
       MenuRight(
-          label: "share",
+          label: "Bảng xếp hạng",
           count: 0,
-          icon: LocalImage.iconShare,
+          icon: LocalImage.star,
           onTap: () {
-            controller.shareMyApp();
+            controller.onPressTo(Menu(
+                name: "Bảng xếp hạng",
+                pathImage: LocalImage.star,
+                to: AppRoute.leaderBoard,
+                needValidateParent: false,
+                requireValidate: false,
+                arguments: null,
+                count: 0));
           }),
     ];
     if (screenWidth < 900) {
@@ -222,32 +229,70 @@ class HomeScreen extends GetView<HomeScreenController> {
                               ),
                               if (userService
                                   .childProfiles.childProfiles.isNotEmpty)
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                Column(
                                   children: [
-                                    ImageText(
-                                      text: 'e_book',
-                                      pathImage: LocalImage.buttonElibrary,
-                                      isUpperCase: true,
-                                      width: size.width * 0.16,
-                                      height: size.height * 0.13,
-                                      onTap: () {
-                                        controller.onPressLibrary();
-                                      },
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        ImageText(
+                                          text: 'e_book',
+                                          pathImage: LocalImage.buttonElibrary,
+                                          isUpperCase: true,
+                                          width: size.width * 0.16,
+                                          height: size.height * 0.13,
+                                          onTap: () {
+                                            controller.onPressLibrary();
+                                          },
+                                        ),
+                                        SizedBox(
+                                          width: size.width * 0.01,
+                                        ),
+                                        ImageText(
+                                          text: 'reading',
+                                          pathImage: LocalImage.shapeButton,
+                                          isUpperCase: true,
+                                          width: size.width * 0.16,
+                                          height: size.height * 0.13,
+                                          onTap: () {
+                                            controller.onPressStart();
+                                          },
+                                        ),
+                                      ],
                                     ),
                                     SizedBox(
-                                      width: size.width * 0.01,
+                                      height: size.height * 0.02,
                                     ),
-                                    ImageText(
-                                      text: 'reading',
-                                      pathImage: LocalImage.shapeButton,
-                                      isUpperCase: true,
-                                      width: size.width * 0.16,
-                                      height: size.height * 0.13,
-                                      onTap: () {
-                                        controller.onPressStart();
-                                      },
+                                    // Second row with only game button taking full width
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        ImageText(
+                                          text: 'game',
+                                          pathImage: LocalImage.buttonPurple,
+                                          isUpperCase: true,
+                                          width: size.width * 0.33,
+                                          height: size.height * 0.13,
+                                          onTap: () {
+                                            controller.onPressTo(
+                                              Menu(
+                                                name: 'game',
+                                                pathImage: LocalImage.gameIcon,
+                                                to: AppRoute.game,
+                                                needValidateParent: false,
+                                                requireValidate: false,
+                                                arguments: [true, false],
+                                                count: 0,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),

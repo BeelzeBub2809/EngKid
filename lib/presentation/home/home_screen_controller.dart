@@ -53,15 +53,6 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
       count: 0,
     ),
     Menu(
-      name: 'game',
-      pathImage: LocalImage.gameIcon,
-      to: AppRoute.game,
-      needValidateParent: true,
-      requireValidate: true,
-      arguments: [true, false], // if is game then ques cannot caculator score
-      count: 0,
-    ),
-    Menu(
       name: 'notification',
       pathImage: LocalImage.bell,
       to: AppRoute.notificationSystem,
@@ -97,15 +88,6 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
       arguments: null,
       count: 0,
     ),
-    Menu(
-      name: 'Bảng xếp hạng',
-      pathImage: LocalImage.star,
-      to: AppRoute.leaderBoard,
-      needValidateParent: false,
-      requireValidate: false,
-      arguments: null,
-      count: 0,
-    )
   ].obs;
 
   void onPressTo(Menu menu) async {

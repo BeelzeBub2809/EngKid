@@ -19,30 +19,30 @@ class WeekController extends GetxController {
 
   late String curWeek = "04-10/08";
   late String preWeek = "28/07-03/08";
-  late double total = 52.5;
-  late double totalThisWeek = 28.5;
-  late double totalLastWeek = 24.0;
-  late double maxYThisWeek = 40.0;
-  late double maxYLastWeek = 40.0;
+  late double total = 0;
+  late double totalThisWeek = 0;
+  late double totalLastWeek = 0;
+  late double maxYThisWeek = 0;
+  late double maxYLastWeek = 0;
 
   final List<DayOf> daysOfThisWeek = [
-    const DayOf(text: "t2", left: 0.02, value: 12.0),
-    const DayOf(text: "t3", left: 0.1, value: 10.0),
-    const DayOf(text: "t4", left: 0.18, value: 20.0),
-    const DayOf(text: "t5", left: 0.26, value: 15.0),
-    const DayOf(text: "t6", left: 0.34, value: 40.0),
-    const DayOf(text: "t7", left: 0.42, value: 22.0),
-    const DayOf(text: "cn", left: 0.5, value: 24.0),
+    const DayOf(text: "t2", left: 0.02, value: 0),
+    const DayOf(text: "t3", left: 0.1, value: 0),
+    const DayOf(text: "t4", left: 0.18, value: 0),
+    const DayOf(text: "t5", left: 0.26, value: 0),
+    const DayOf(text: "t6", left: 0.34, value: 0),
+    const DayOf(text: "t7", left: 0.42, value: 0),
+    const DayOf(text: "cn", left: 0.5, value: 0),
   ];
 
   final List<DayOf> daysOfLastWeek = [
-    const DayOf(text: "t2", left: 0.02, value: 12.0),
-    const DayOf(text: "t3", left: 0.1, value: 10.0),
-    const DayOf(text: "t4", left: 0.18, value: 20.0),
-    const DayOf(text: "t5", left: 0.26, value: 15.0),
-    const DayOf(text: "t6", left: 0.34, value: 40.0),
-    const DayOf(text: "t7", left: 0.42, value: 22.0),
-    const DayOf(text: "cn", left: 0.5, value: 24.0),
+    const DayOf(text: "t2", left: 0.02, value: 0),
+    const DayOf(text: "t3", left: 0.1, value: 0),
+    const DayOf(text: "t4", left: 0.18, value: 0),
+    const DayOf(text: "t5", left: 0.26, value: 0),
+    const DayOf(text: "t6", left: 0.34, value: 0),
+    const DayOf(text: "t7", left: 0.42, value: 0),
+    const DayOf(text: "cn", left: 0.5, value: 0),
   ];
 
   final RxBool isLoading = false.obs;
@@ -69,20 +69,13 @@ class WeekController extends GetxController {
           "-${DateFormat('dd/MM').format(lastDayOfCurrentWeek).toString()}";
       try {
         late List<History> thisWeek = [];
-        if (_networkService.networkConnection.value) {
-          thisWeek = await starBoardUseCases.getStarsHistory(
-            studentId: _userService.currentUser.id,
-            startDate: DateFormat('yyyy-MM-dd')
-                .format(firstDayOfCurrentWeek)
-                .toString(),
-            endDate: DateFormat('yyyy-MM-dd')
-                .format(lastDayOfCurrentWeek)
-                .toString(),
-          );
-        } else {
-          thisWeek = LibFunction.getHistoryFromStorage(
-              KeySharedPreferences.starOfTwoYear);
-        }
+        thisWeek = await starBoardUseCases.getStarsHistory(
+          studentId: _userService.currentUser.id,
+          startDate:
+              DateFormat('yyyy-MM-dd').format(firstDayOfCurrentWeek).toString(),
+          endDate:
+              DateFormat('yyyy-MM-dd').format(lastDayOfCurrentWeek).toString(),
+        );
 
         daysOfThisWeek.asMap().forEach((index, value) {
           for (final History history in thisWeek) {
@@ -95,9 +88,6 @@ class WeekController extends GetxController {
                 weekOfCurrentDate == weekOfHistoryDate) {
               total += history.star;
 
-              if (history.star > maxYThisWeek) {
-                maxYThisWeek = history.star.toDouble();
-              }
               var currentStar = daysOfThisWeek[index].value;
 
               daysOfThisWeek[index] = daysOfThisWeek[index].copyWith(
@@ -145,9 +135,6 @@ class WeekController extends GetxController {
             if (index == LibFunction.getIndexDayInWeek(date) &&
                 weekOfCurrentDate == weekOfHistoryDate) {
               total += history.star;
-              if (history.star > maxYLastWeek) {
-                maxYLastWeek = history.star.toDouble();
-              }
               var currentStar = daysOfLastWeek[index].value;
 
               daysOfLastWeek[index] = daysOfLastWeek[index].copyWith(
@@ -161,6 +148,26 @@ class WeekController extends GetxController {
       } catch (e) {
         //
       }
+
+      // Tính maxY cho tuần hiện tại từ các giá trị ngày thực tế
+      maxYThisWeek = 0;
+      for (final day in daysOfThisWeek) {
+        if (day.value > maxYThisWeek) {
+          maxYThisWeek = day.value;
+        }
+      }
+
+      // Tính maxY cho tuần trước từ các giá trị ngày thực tế
+      maxYLastWeek = 0;
+      for (final day in daysOfLastWeek) {
+        if (day.value > maxYLastWeek) {
+          maxYLastWeek = day.value;
+        }
+      }
+
+      // Đảm bảo maxY ít nhất là 1 để tránh chia cho 0
+      if (maxYThisWeek == 0) maxYThisWeek = 1;
+      if (maxYLastWeek == 0) maxYLastWeek = 1;
     } catch (e) {
       //
     }
