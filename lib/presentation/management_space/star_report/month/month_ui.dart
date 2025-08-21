@@ -102,7 +102,7 @@ class MonthScreen extends GetView<MonthController> {
                           final double maxY = (index == 0
                                   ? controller.maxYThisMonth
                                   : controller.maxYLastMonth) +
-                              size.height * 0.1;
+                              2; // giảm padding để biểu đồ hiển thị tốt hơn
                           final List<DayOf> weeksOf = index == 0
                               ? controller.weeksOfThisMonth
                               : controller.weeksOfLastMonth;

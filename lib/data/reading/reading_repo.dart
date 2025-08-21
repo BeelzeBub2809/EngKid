@@ -90,4 +90,31 @@ class ReadingRepositoryImp implements ReadingRepository {
       return [];
     }
   }
+
+  @override
+  Future<dynamic> getLeaderboard(Map<String, dynamic> body) async {
+    try {
+      final ApiResponseObject response =
+          await studentReadingApi.getLeaderboard(body);
+      final data = response.data;
+      if (response.result && data != null) {
+        return data;
+      } else {
+        return [];
+      }
+    } catch (e, stackTrace) {
+      if (e is DioException) {
+        print('[Repository] DioException occurred:');
+        print('  → Type: ${e.type}');
+        print('  → Message: ${e.message}');
+        print('  → Response: ${e.response?.data}');
+        print('  → StatusCode: ${e.response?.statusCode}');
+        print('  → StackTrace: $stackTrace');
+      } else {
+        print('[Repository] Unknown exception: $e');
+        print('[Repository] StackTrace: $stackTrace');
+      }
+      return [];
+    }
+  }
 }

@@ -11,4 +11,6 @@ class ReadingUsecases {
       _readingRepository.submitReadingResult(body);
   Future<List<dynamic>> getListReading(String keyword) async =>
       _readingRepository.getListReading(keyword);
+  Future<dynamic> getLeaderboard(Map<String, dynamic> body) async =>
+      _readingRepository.getLeaderboard(body);
 }

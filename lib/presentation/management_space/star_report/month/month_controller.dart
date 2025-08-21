@@ -21,21 +21,21 @@ class MonthController extends GetxController {
   late RxDouble total = 0.0.obs;
   late RxDouble totalThisMonth = 0.0.obs;
   late RxDouble totalLastMonth = 0.0.obs;
-  late double maxYThisMonth = 22.4;
-  late double maxYLastMonth = 19.8;
+  late double maxYThisMonth = 0;
+  late double maxYLastMonth = 0;
 
   final RxList<DayOf> weeksOfThisMonth = <DayOf>[
-    const DayOf(text: "w1", subText: '\n01-07', left: 0.02, value: 15.6),
-    const DayOf(text: "w2", subText: '\n08-14', left: 0.1, value: 18.2),
-    const DayOf(text: "w3", subText: '\n15-21', left: 0.18, value: 22.4),
-    const DayOf(text: "w4", subText: '\n22-28', left: 0.26, value: 22.1),
+    const DayOf(text: "w1", subText: '\n01-07', left: 0.02, value: 0),
+    const DayOf(text: "w2", subText: '\n08-14', left: 0.1, value: 0),
+    const DayOf(text: "w3", subText: '\n15-21', left: 0.18, value: 0),
+    const DayOf(text: "w4", subText: '\n22-28', left: 0.26, value: 0),
   ].obs;
 
   final RxList<DayOf> weeksOfLastMonth = <DayOf>[
-    const DayOf(text: "w1", subText: '\n01-07', left: 0.02, value: 14.2),
-    const DayOf(text: "w2", subText: '\n08-14', left: 0.1, value: 17.5),
-    const DayOf(text: "w3", subText: '\n15-21', left: 0.18, value: 19.8),
-    const DayOf(text: "w4", subText: '\n22-28', left: 0.26, value: 18.7),
+    const DayOf(text: "w1", subText: '\n01-07', left: 0.02, value: 0),
+    const DayOf(text: "w2", subText: '\n08-14', left: 0.1, value: 0),
+    const DayOf(text: "w3", subText: '\n15-21', left: 0.18, value: 0),
+    const DayOf(text: "w4", subText: '\n22-28', left: 0.26, value: 0),
   ].obs;
 
   final RxBool isLoading = false.obs;
@@ -122,9 +122,6 @@ class MonthController extends GetxController {
         final double star = index < list.length ? list[index].value : 0.0;
 
         totalThisMonth.value += star;
-        if (star > maxYThisMonth) {
-          maxYThisMonth = star;
-        }
 
         weeksOfThisMonth[index] = weeksOfThisMonth[index].copyWith(
           value: star,
@@ -138,6 +135,15 @@ class MonthController extends GetxController {
         );
         debugPrint("Week ${index + 1} this month: $star stars");
       });
+
+      // Tính maxYThisMonth từ các giá trị tuần thực tế
+      maxYThisMonth = 0;
+      for (final week in weeksOfThisMonth) {
+        if (week.value > maxYThisMonth) {
+          maxYThisMonth = week.value;
+        }
+      }
+      if (maxYThisMonth == 0) maxYThisMonth = 1;
     } catch (e) {
       //
     }
@@ -201,9 +207,6 @@ class MonthController extends GetxController {
         final double star = index < list.length ? list[index].value : 0.0;
 
         totalLastMonth.value += star;
-        if (star > maxYLastMonth) {
-          maxYLastMonth = star;
-        }
 
         weeksOfLastMonth[index] = weeksOfLastMonth[index].copyWith(
           value: star,
@@ -213,6 +216,16 @@ class MonthController extends GetxController {
         );
         debugPrint("Week ${index + 1} last month: $star stars");
       });
+
+      // Tính maxYLastMonth từ các giá trị tuần thực tế
+      maxYLastMonth = 0;
+      for (final week in weeksOfLastMonth) {
+        if (week.value > maxYLastMonth) {
+          maxYLastMonth = week.value;
+        }
+      }
+      if (maxYLastMonth == 0) maxYLastMonth = 1;
+
       total.value = totalThisMonth.value + totalLastMonth.value;
     } catch (e) {
       //

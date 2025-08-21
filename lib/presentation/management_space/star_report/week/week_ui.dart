@@ -101,7 +101,7 @@ class WeekScreen extends GetView<WeekController> {
                         final double maxY = (index == 0
                                 ? controller.maxYThisWeek
                                 : controller.maxYLastWeek) +
-                            8; // thay đổi số để chart không bị tràn
+                            2; // giảm padding để biểu đồ hiển thị tốt hơn // thay đổi số để chart không bị tràn
 
                         return Column(
                           children: [

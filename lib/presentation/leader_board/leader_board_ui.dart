@@ -394,7 +394,6 @@ class LeaderBoardScreen extends GetView<LeaderBoardController> {
     if (topThree.length < 3) return const SizedBox();
 
     return SizedBox(
-      height: size.height * 0.23,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -453,7 +452,7 @@ class LeaderBoardScreen extends GetView<LeaderBoardController> {
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
-            maxLines: 1,
+            maxLines: 2,
           ),
         ),
         SizedBox(height: size.height * 0.003),
