@@ -42,7 +42,8 @@ class AchieveStarController extends GetxController {
     // Future.delayed(const Duration(milliseconds: 1000), () {
     //   LibFunction.playAudioLocal(LocalAudio.finishLesson);
     // });
-    totalStar = questionController.stars/5 * 5;
+    int totalQuestions = questionController.totalQuestion;
+    totalStar = totalQuestions > 5 ? questionController.stars/5 * 5 : questionController.stars/totalQuestions * 5;
     await _topicService.submitReadingResult(_userService.currentUser.id, questionController.readingId, questionController.stars, 1, questionController.doQuizDuration);
     getStars();
   }

@@ -92,33 +92,12 @@ class VideoController extends GetxController {
       }
 
       setHasVideoMong();
-      if (_language.value == 'vi') {
-        // if (kIsWeb) {
-        //   _videoController =
-        //       VideoPlayerController.networkUrl(Uri.parse(question.video));
-        // } else {
-        //   final File video = await LibFunction.getSingleFile(question.video);
-        //   _videoController = VideoPlayerController.file(video);
-        // }
-        final File video = await LibFunction.getSingleFile(question.video);
-        _videoController = VideoPlayerController.file(video);
-      } else {
-        if (!getLanguageVideoFromStorage()) {
-          handleShowDownload(question.video_mong);
-          return;
-        } else {
-          if (kIsWeb) {
-            _videoController = VideoPlayerController.networkUrl(
-                Uri.parse(question.video_mong));
-          } else {
-            final File videoMong =
-                await LibFunction.getSingleFile(question.video_mong);
-            _videoController = VideoPlayerController.file(videoMong);
-          }
-        }
-      }
+      final File video = await LibFunction.getSingleFile(question.video);
+      _videoController = VideoPlayerController.file(video);
       await _videoController!.initialize().timeout(const Duration(seconds: 10));
       await _videoController!.play();
+      print(video);
+      print(question.video);
       _videoController!.addListener(_handleVideoStatus);
       _videoController!.addListener(_handleVideoPosition);
 

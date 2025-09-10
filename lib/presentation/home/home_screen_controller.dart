@@ -62,7 +62,7 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
       count: 0,
     ),
     Menu(
-      name: 'add children',
+      name: 'Thêm tài khoản cho trẻ',
       pathImage: LocalImage.children,
       to: AppRoute.addChildrenCode,
       needValidateParent: true,
@@ -71,7 +71,7 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
       count: 0,
     ),
     Menu(
-      name: 'user_guide',
+      name: 'Hướng dẫn sử dụng',
       pathImage: LocalImage.guideApplication,
       to: AppRoute.userGuide,
       needValidateParent: false,

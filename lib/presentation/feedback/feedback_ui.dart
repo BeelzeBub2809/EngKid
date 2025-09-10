@@ -88,10 +88,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               fontSize: size.width * 0.07,
               fontWeight: FontWeight.bold,
               color: AppColor.primary,
-              shadows: [
+              shadows: const [
                 Shadow(
                   color: Colors.white,
-                  offset: const Offset(1, 1),
+                  offset: Offset(1, 1),
                   blurRadius: 2,
                 ),
               ],
@@ -120,7 +120,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Chọn bài đọc *',
+            'Chọn bài đọc',
             style: TextStyle(
               fontSize: size.width * 0.045,
               fontWeight: FontWeight.w600,
@@ -286,7 +286,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Đánh giá *',
+            'Đánh giá',
             style: TextStyle(
               fontSize: size.width * 0.045,
               fontWeight: FontWeight.w600,

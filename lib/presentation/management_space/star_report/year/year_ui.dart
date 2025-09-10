@@ -252,55 +252,76 @@ class YearScreen extends GetView<YearController> {
                                         ),
                                         ...List.generate(
                                           monthsOf.length,
-                                          (idx) => Positioned.fill(
-                                            top: heightChart -
+                                          (idx) {
+                                            // Tìm giá trị cao nhất để highlight
+                                            final isMaxValue = monthsOf[idx]
+                                                    .value ==
+                                                monthsOf
+                                                    .map((month) => month.value)
+                                                    .reduce((a, b) =>
+                                                        a > b ? a : b);
+
+                                            final double pointY = heightChart -
                                                 ((heightChart / maxY) *
-                                                    monthsOf[idx].value) -
-                                                0.07 * size.height,
-                                            left:
-                                                monthsOf[idx].left * size.width,
-                                            child: Align(
-                                              alignment: Alignment.topLeft,
-                                              child: Stack(
-                                                children: [
-                                                  Container(
-                                                    // color: Colors.amber,
-                                                    padding: EdgeInsets.only(
-                                                        top:
-                                                            0.02 * size.height),
-                                                    width: widthChart / 14,
-                                                    child: Text(
-                                                      monthsOf[idx]
-                                                          .value
-                                                          .toString(),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: AppColor.red,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        fontSize:
-                                                            Fontsize.smallest,
+                                                    monthsOf[idx].value);
+                                            final bool isNearTop =
+                                                pointY < 0.08 * size.height;
+
+                                            return Positioned.fill(
+                                              top: isNearTop
+                                                  ? pointY + 0.02 * size.height
+                                                  : pointY - 0.07 * size.height,
+                                              left: monthsOf[idx].left *
+                                                  size.width,
+                                              child: Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Stack(
+                                                  children: [
+                                                    Container(
+                                                      padding: EdgeInsets.only(
+                                                          top: 0.02 *
+                                                              size.height),
+                                                      width: widthChart / 14,
+                                                      child: Text(
+                                                        monthsOf[idx]
+                                                            .value
+                                                            .toStringAsFixed(1),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          color: isMaxValue
+                                                              ? AppColor.blue
+                                                              : AppColor.red,
+                                                          fontWeight: isMaxValue
+                                                              ? FontWeight.w900
+                                                              : FontWeight.w700,
+                                                          fontSize: isMaxValue
+                                                              ? Fontsize
+                                                                      .smallest +
+                                                                  1
+                                                              : Fontsize
+                                                                  .smallest,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  Positioned.fill(
-                                                    child: Align(
-                                                      alignment:
-                                                          Alignment.topRight,
-                                                      child: Image.asset(
-                                                        LocalImage.hightLight,
-                                                        width:
-                                                            0.012 * size.width,
-                                                        height:
-                                                            0.012 * size.width,
+                                                    Positioned.fill(
+                                                      child: Align(
+                                                        alignment:
+                                                            Alignment.topRight,
+                                                        child: Image.asset(
+                                                          LocalImage.hightLight,
+                                                          width: 0.012 *
+                                                              size.width,
+                                                          height: 0.012 *
+                                                              size.width,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ),
+                                            );
+                                          },
                                         ),
                                       ],
                                     ),

@@ -55,7 +55,9 @@ class ApiModule {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          options.headers['Content-Type'] = 'application/json';
+          if (options.data is! FormData) {
+            options.headers['Content-Type'] = 'application/json';
+          }
 
           final String? storageToken =
               preferencesManager.getString(KeySharedPreferences.token);

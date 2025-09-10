@@ -23,7 +23,6 @@ import 'package:EngKid/utils/key_shared_preferences.dart';
 import 'package:EngKid/utils/lib_function.dart';
 import 'package:EngKid/widgets/dialog/dialog_change_acc.dart';
 import 'package:EngKid/widgets/dialog/dialog_delete.dart';
-import 'package:EngKid/widgets/dialog/dialog_downloadall.dart';
 import 'package:EngKid/widgets/dialog/dialog_downloadwarning.dart';
 import 'package:EngKid/widgets/dialog/dialog_select_download_language.dart';
 import 'package:EngKid/widgets/dialog/dialog_warning_time.dart';
@@ -142,13 +141,27 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
   }
 
   Future<void> fetchData() async {
-    _isLoading.value = true;
-    final res = await _topicService.getTopicByGrade();
-    _topics.value = res;
-    _topicIndex.value = 0;
-    final readingRes =await _topicService.getReadingByTopic(_topicIndex.value + 1);
-    _readings.value = readingRes;
-    _isLoading.value = false;
+    try {
+      _isLoading.value = true;
+      _readings.clear();
+      _topics.clear();
+      final res = await _topicService.getTopicByGrade();
+      _topics.value = res;
+      _topicIndex.value = 0;
+
+      if (_topics.isNotEmpty) {
+        final readingRes = await _topicService.getReadingByTopic(_topics[_topicIndex.value].id);
+        _readings.value = readingRes;
+      }
+
+    } catch (e) {
+      _readings.clear();
+      if (kDebugMode) {
+        print("Lỗi khi fetchData: $e");
+      }
+    } finally {
+      _isLoading.value = false;
+    }
   }
 
   Future<void> onPressLesson(
@@ -156,7 +169,7 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     await LibFunction.effectConfirmPop();
     readingData = reading;
     indexReading = index;
-    var questions = await _topicService.getQuestionOfReading(index + 1);
+    var questions = await _topicService.getQuestionOfReading(readingData.id);
     var currentQuiz = Quiz(
       reading: QuizReading(
         name: reading.name,
@@ -174,38 +187,6 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
 
       ),
       questions: questions,
-      // questions: [
-      //   const Question(
-      //     questionId: 1,
-      //     type: 'Single Choice',
-      //     typeCode: 'S',
-      //     question: "What is the capital of France?",
-      //     options: [
-      //       Option(
-      //         optionId: 1,
-      //         option: "Paris",
-      //         isCorrect: '1',
-      //         image: "",
-      //       ),
-      //       Option(
-      //         optionId: 2,
-      //         option: "London",
-      //         isCorrect: '0',
-      //         image: "",
-      //       ),
-      //       Option(
-      //         optionId: 3,
-      //         option: "Berlin",
-      //         isCorrect: '0',
-      //         image: "",
-      //       ),
-      //     ],
-      //     achievedMark: 0.0,
-      //     background: "",
-      //     audio: "",
-      //   ),
-      // ],
-
     );
     await startLearning(currentQuiz, index);
     // setHasVideoMong();
@@ -277,18 +258,6 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     }
   }
 
-  Future<void> updateAttempt(Quiz quiz) async {
-    // mỗi lần vào học sẽ tăng một lần cố gắng lên
-    // await Future.forEach(quiz.questions, (Question element) async {
-    //   await _topicService.updateAttempt(
-    //     element.questionId,
-    //     double.parse(
-    //       element.achievedMark.toString(),
-    //     ),
-    //   );
-    // });
-  }
-
   String getPathLessonStatus(int index) {
     if (_readings[index].maxAchievedStars == _readings[index].stars) {
       return LocalImage.lessonCompleted;
@@ -298,45 +267,6 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     }
 
     return LocalImage.lessonProgress;
-  }
-
-  // Tải bài học
-  void onPressDownload() async {
-    try {
-      await LibFunction.effectConfirmPop();
-      _isDownloading.value = true;
-      handleChangeProgressBar();
-      late String language = "vi";
-      final Rx<Setting>? tmp = _userService.settings
-          .firstWhereOrNull((element) => element.value.key == 'language');
-      if (tmp != null) {
-        language = tmp.value.value;
-      }
-
-      // final Quiz datafile = await _topicService.getQuiz(readingData.id);
-      // _topicService.currentQuiz = datafile.copyWith(language: language);
-
-      // await saveReadingToCache(datafile.reading);
-      // debugPrint("check download1 : ${datafile.reading}");
-
-      // await saveQuestionsToCache(datafile.questions);
-      // await _topicService.saveQuizsToStorage();
-      // saveQuizDownloaded();
-
-      _loadingProgress.value = 100;
-      await Future.delayed(const Duration(milliseconds: 1000));
-      // onPressLesson(reading: , );
-      LibFunction.toast('download_success');
-      onPressLesson(reading: readingData, index: indexReading);
-      readingData = const Reading();
-      indexReading = -1;
-    } catch (e) {
-      LibFunction.toast('download_failed');
-    }
-    _isDownloading.value = false;
-    _isDownload.value = false;
-    _timerProgressBar.cancel();
-    _loadingProgress.value = 10;
   }
 
   Future<void> saveReadingToCache(QuizReading quizReading) async {
@@ -523,251 +453,12 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     }
   }
 
-  Future<void> handleShowDownload(String url) async {
-    try {
-      _isDownload.value = true;
-      _loadingVideo.value = true;
-      final mediaQueryData =
-      MediaQueryData.fromWindow(WidgetsBinding.instance.window);
-      thumbVideo = await VideoThumbnail.thumbnailData(
-        video: url,
-        imageFormat: ImageFormat.JPEG,
-        maxWidth: mediaQueryData.size.width.ceil(),
-        quality: 100,
-      );
-      _loadingVideo.value = false;
-    } on TimeoutException {
-      LibFunction.toast("timeout_video_initialize");
-    } catch (error) {
-      debugPrint("Error on initialize remote video: $error");
-    }
-  }
-
   @override
   void onClose() {
     // save timer use app to local
     saveTimeLimitToStorage();
     WidgetsBinding.instance.removeObserver(this);
     super.onClose();
-  }
-
-    void handleShowDownloadAll(ReadingSpaceController controller) {
-    checkIsDownloaded();
-    setIsVideoDownloaded();
-    handleChangeDownloadedScreen(false);
-    setHasVideoMong();
-    setIsDownloadedVideoMong();
-    _isMultipleDownloading.value = RxList<bool>.filled(2000, false);
-    _isCheckAll.value = false;
-    Get.dialog(
-      DialogDownloadAll(
-        controller: controller,
-      ),
-      barrierDismissible: false,
-      barrierColor: null,
-    );
-  }
-
-  void checkIsDownloaded() {
-    for (Reading reading in _topicService.topicReadings.topicReadings
-        .readings) {
-      String? isVideoDownloaded = _preferencesManager.getString(
-        "${_userService.currentUser.id}_${reading.id}_datafile.json",
-      );
-      if (isVideoDownloaded != null) {
-        _isDownloaded[reading.id] = true;
-      }
-      else {
-        _isDownloaded[reading.id] = false;
-      }
-    }
-  }
-
-  void setIsDownloadedVideoMong() {
-    for (Reading reading
-    in _topicService.topicReadings.topicReadings.readings) {
-      String? isVideoDownloaded = _preferencesManager.getString(
-        "${_userService.currentUser.id}_${reading.id}_video_mo.json",
-      );
-      if (isVideoDownloaded != null) {
-        _isDownloadedVideoMong[reading.id] = true;
-      } else {
-        _isDownloadedVideoMong[reading.id] = false;
-      }
-    }
-  }
-
-  void setIsVideoDownloaded() {
-    for (Reading reading
-    in _topicService.topicReadings.topicReadings.readings) {
-      String? isVideoDownloaded = _preferencesManager.getString(
-        "${_userService.currentUser.id}_${reading.id}_datafile.json",
-      );
-      if (isVideoDownloaded != null) {
-        _isVideoDownloaded[reading.id] = true;
-      } else {
-        _isVideoDownloaded[reading.id] = false;
-      }
-    }
-  }
-
-  void handleDownloadStatusChange(int readingId, bool currentStatus) {
-    _isDownloaded[readingId] = !currentStatus;
-  }
-
-  void handleDelete() async {
-    bool isContinue = false;
-    await Get.dialog(
-      DialogDelete(
-          onTapContinue: () async {
-            //start delete
-            isContinue = true;
-            // Get.dialog(ModalBarrier(dismissible: false, color: Colors.transparent));
-            Get.dialog(LoadingDialog());
-            showToastWidget(ToastDialog("delete_4".tr),
-                duration: const Duration(seconds: 2));
-            for (Reading reading in _topicService.topicReadings.topicReadings
-                .readings) {
-              // print("Reading download status");
-              // print(reading.id);
-              // print(_isVideoDownloaded[reading.id]);
-              if (_isDownloaded[reading.id] == true) {
-                await deleteQuizFromStorage(reading.id);
-                // final Quiz datafile = await _topicService.getQuiz(reading.id);
-                // await LibFunction.removeFileCache(datafile.reading.thumImg);
-                // await LibFunction.removeFileCache(datafile.reading.background);
-                // await LibFunction.removeFileCache(datafile.reading.video);
-                // await LibFunction.removeFileCache(datafile.reading.videoMong);
-                // await removeQuestionsFromCache(datafile.questions);
-
-                _isVideoDownloaded[reading.id] = false;
-                _isDownloaded[reading.id] = false;
-                _topicService.downloadAllReadingList.remove(reading);
-                _isDownloadedVideoMong[reading.id] = false;
-              }
-            }
-            await Future.delayed(const Duration(milliseconds: 2000));
-            showToastWidget(ToastDialog("delete_3".tr),
-                duration: const Duration(seconds: 3));
-            Get.back();
-          }),
-      barrierDismissible: false,
-      barrierColor: null,
-    );
-    if (isContinue) {
-      // Get.back();
-
-      // await Future.delayed(const Duration(milliseconds: 2000));
-      // showToastWidget(ToastDialog("delete_3".tr), duration: const Duration(seconds: 3));
-      // Get.back();
-    }
-  }
-
-  void handleDeleteSingle(Reading reading) async {
-    bool isContinue = false;
-    await Get.dialog(
-      DialogDelete(
-          onTapContinue: () async {
-            //start delete
-            isContinue = true;
-            Get.dialog(LoadingDialog());
-            showToastWidget(ToastDialog("delete_4".tr),
-                duration: const Duration(seconds: 2));
-            if (_isDownloaded[reading.id] == true) {
-              await deleteQuizFromStorage(reading.id);
-              // final Quiz datafile = await _topicService.getQuiz(reading.id);
-              // await LibFunction.removeFileCache(datafile.reading.thumImg);
-              // await LibFunction.removeFileCache(datafile.reading.background);
-              // await LibFunction.removeFileCache(datafile.reading.video);
-              // await LibFunction.removeFileCache(datafile.reading.videoMong);
-              // await removeQuestionsFromCache(datafile.questions);
-              // await LibFunction.removeFileCache(datafile.reading.video);
-              _isVideoDownloaded[reading.id] = false;
-              _isDownloaded[reading.id] = false;
-              _isVideoDownloaded[reading.id] = false;
-              _topicService.downloadAllReadingList.remove(reading);
-              _isDownloadedVideoMong[reading.id] = false;
-            }
-            await Future.delayed(const Duration(milliseconds: 2000));
-            showToastWidget(ToastDialog("delete_3".tr),
-                duration: const Duration(seconds: 3));
-            Get.back();
-          }),
-      barrierDismissible: false,
-      barrierColor: null,
-    );
-    if (isContinue) {
-      // Get.back();
-      // Get.dialog(ModalBarrier(dismissible: false, color: Colors.transparent));
-      // showToastWidget(ToastDialog("delete_4".tr), duration: const Duration(seconds: 2 ));
-      // await Future.delayed(const Duration(milliseconds: 2000));
-      // showToastWidget(ToastDialog("delete_3".tr), duration: const Duration(seconds: 3));
-      // Get.back();
-    }
-  }
-
-  void handleDownload() async {
-    bool isContinue = false;
-    await Get.dialog(
-      DialogDownloadWarning(onTapContinue: () async {
-        //start delete
-        for (Reading reading
-        in _topicService.topicReadings.topicReadings.readings) {
-          if (_isDownloaded[reading.id] == true) {
-            String? isVideoDownloaded = _preferencesManager.getString(
-              "${_userService.currentUser.id}_${reading.id}_datafile.json",
-            );
-            if (isVideoDownloaded == null) {
-              _isMultipleDownloading[reading.id] = true;
-            }
-          }
-        }
-        for (Reading reading
-        in _topicService.topicReadings.topicReadings.readings) {
-          String? isVideoDownloaded = _preferencesManager.getString(
-            "${_userService.currentUser.id}_${reading.id}_datafile.json",
-          );
-
-          if (_isDownloaded[reading.id] == true && isVideoDownloaded == null) {
-            // final Quiz datafile = await _topicService.getQuiz(reading.id);
-            _isMultipleDownloading[reading.id] = true;
-
-            // await saveReadingToCache(datafile.reading);
-            //
-            // await saveQuestionsToCache(datafile.questions);
-            // await _preferencesManager.putString(
-            //   key: "${_userService.currentUser.id}_${reading.id}_datafile.json",
-            //   value: jsonEncode(datafile.toJson()),
-            // );
-
-            if (_isCheckedMong[reading.id] == true &&
-                _isHasVideoMong[reading.id] &&
-                !_isDownloadedVideoMong[reading.id]) {
-              // await LibFunction.getSingleFile(datafile.reading.videoMong);
-              // await _preferencesManager.putString(
-              //     key:
-              //     "${_userService.currentUser.id}_${reading.id}_video_mo.json",
-              //     value: datafile.reading.videoMong);
-              _isDownloadedVideoMong[reading.id] = true;
-            }
-
-            _isMultipleDownloading[reading.id] = false;
-            _isVideoDownloaded[reading.id] = true;
-            _topicService.downloadAllReadingList.remove(reading);
-            _isDownloaded[reading.id] = true;
-
-            // print("Reading download status");
-            // print(reading.id);
-            // print(_isVideoDownloaded[reading.id]);
-          }
-        }
-      }),
-      barrierDismissible: false,
-      barrierColor: null,
-    );
-
-    // print("Video downloaded List");
-    // print(_isVideoDownloaded);
   }
 
   Future<void> deleteQuizFromStorage(int readingId) async {
@@ -781,160 +472,11 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     await _preferencesManager.remove(quizVideoMong);
   }
 
-  void handleCheckAll() {
-    _isCheckAll.value = !_isCheckAll.value;
-    _isDownloaded.value = RxList<bool>.filled(2000, _isCheckAll.value);
-  }
-
-  void handleChangeDownloadedScreen(bool value) {
-    _isDownloadedScreen.value = value;
-
-    _topicService.downloadAllReadingList.clear();
-    for (Reading reading
-    in _topicService.topicReadings.topicReadings.readings) {
-      if (_isVideoDownloaded[reading.id] == value) {
-        _topicService.downloadAllReadingList.add(reading);
-      }
-    }
-  }
-
-  void handleSelectLanguageAll(ReadingSpaceController controller,
-      int readingId) async {
-    if (!_isDownloadedScreen.value) {
-      bool isContinue = false;
-
-      _isSelectedMong.value =
-      readingId == 0 ? _isCheckedAllMong.value : _isCheckedMong[readingId];
-      await Get.dialog(
-        DialogSelectDownloadLanguage(
-          onTapContinue: () async {
-            //start change language
-            isContinue = true;
-            readingId == 0
-                ? applyAllSelectedLanguage()
-                : applySingleSelectedLanguage(readingId);
-          },
-          controller: controller,
-          readingId: readingId,
-          continueText: 'apply'.tr,
-        ),
-        barrierDismissible: false,
-        barrierColor: null,
-      );
-
-      if (isContinue) {
-        // Get.back();
-        Get.dialog(
-            const ModalBarrier(dismissible: false, color: Colors.transparent));
-        // showToastWidget(ToastDialog("Đang tải ngôn ngữ"), duration: const Duration(seconds: 2 ));
-        // await Future.delayed(const Duration(milliseconds: 2000));
-        // showToastWidget(ToastDialog("Đã tải ngôn ngữ".tr), duration: const Duration(seconds: 3));
-        Get.back();
-      }
-    } else {
-      bool isContinue = false;
-
-      await Get.dialog(
-        DialogSelectDownloadLanguage(
-          onTapContinue: () async {
-            //start change language
-            isContinue = true;
-            if (_isSelectedMong.value) {
-              // Get.dialog(ModalBarrier(dismissible: false, color: Colors.transparent));
-              Get.dialog(const LoadingDialog());
-              showToastWidget(ToastDialog("language_downloading".tr),
-                  duration: const Duration(seconds: 2));
-              if (readingId != 0) {
-                // final Quiz datafile = await _topicService.getQuiz(readingId);
-                if (!_isDownloadedVideoMong[readingId]) {
-                  // await LibFunction.getSingleFile(datafile.reading.videoMong);
-                  // await _preferencesManager.putString(
-                  //     key:
-                  //     "${_userService.currentUser.id}_${readingId}_video_mo.json",
-                  //     value: datafile.reading.videoMong);
-                  _isDownloadedVideoMong[readingId] = true;
-                  await Future.delayed(const Duration(milliseconds: 2000));
-                  Get.back();
-                  showToastWidget(ToastDialog("language_download_done".tr),
-                      duration: const Duration(seconds: 2));
-                } else {
-                  await Future.delayed(const Duration(milliseconds: 2000));
-                  Get.back();
-                  showToastWidget(ToastDialog("languague_download_error_1".tr),
-                      duration: const Duration(seconds: 2));
-                }
-              } else {
-                for (Reading reading in _topicService.downloadAllReadingList) {
-                  // final Quiz datafile = await _topicService.getQuiz(reading.id);
-                  if (_isHasVideoMong[reading.id] &&
-                      !_isDownloadedVideoMong[reading.id]) {
-                    // await LibFunction.getSingleFile(datafile.reading.videoMong);
-                    // await _preferencesManager.putString(
-                    //     key:
-                    //     "${_userService.currentUser.id}_${reading.id}_video_mo.json",
-                    //     value: datafile.reading.videoMong);
-                    _isDownloadedVideoMong[reading.id] = true;
-                  }
-                }
-                await Future.delayed(const Duration(milliseconds: 2000));
-                Get.back();
-                showToastWidget(ToastDialog("language_download_done".tr),
-                    duration: const Duration(seconds: 2));
-              }
-            } else {
-              Get.dialog(const ModalBarrier(
-                  dismissible: false, color: Colors.transparent));
-              showToastWidget(ToastDialog("languague_download_error_2".tr),
-                  duration: const Duration(seconds: 2));
-              Get.back();
-            }
-          },
-          controller: controller,
-          readingId: readingId,
-          continueText: 'download'.tr,
-        ),
-        barrierDismissible: false,
-        barrierColor: null,
-      );
-
-      if (isContinue) {
-        // Get.back();
-        // Get.back();
-      }
-    }
-  }
-
   void handleChangeLanguageDownload(String languageCode) {
     switch (languageCode) {
       case "mo":
         _isSelectedMong.value = !_isSelectedMong.value;
         break;
-    }
-  }
-
-  void applyAllSelectedLanguage() {
-    // print('ngu');
-    _isCheckedAllMong.value = _isSelectedMong.value;
-    for (int i = 1; i < _isCheckedMong.length; i++) {
-      if (_isHasVideoMong[i]) {
-        _isCheckedMong[i] = _isSelectedMong.value;
-      } else {
-        _isCheckedMong[i] = false;
-      }
-    }
-  }
-
-  void applySingleSelectedLanguage(int readingId) {
-    _isCheckedMong[readingId] = _isSelectedMong.value;
-    if (!_isSelectedMong.value) _isCheckedAllMong.value = false;
-  }
-
-  void setHasVideoMong() async {
-    _isHasVideoMong[0] = true;
-    for (Reading reading
-    in _topicService.topicReadings.topicReadings.readings) {
-      // var response = await http.get(Uri.parse(reading.readingVideoMong));
-      _isHasVideoMong[reading.id] = _isVideo(reading.readingVideoMong);
     }
   }
 
@@ -958,10 +500,21 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
   }
 
   void onChangeTopicReadings(int index) async {
-    _isLoading.value = true;
-    _topicIndex.value = index;
-    final readingRes =await _topicService.getReadingByTopic(index + 1);
-    _readings.value = readingRes;
-    _isLoading.value = false;
+    try {
+      _isLoading.value = true;
+      _topicIndex.value = index;
+      _readings.clear();
+
+      final readingRes = await _topicService.getReadingByTopic(_topics[topicIndex].id);
+      _readings.value = readingRes;
+
+    } catch (e) {
+      _readings.clear();
+      if (kDebugMode) {
+        print("Lỗi khi onChangeTopicReadings: $e");
+      }
+    } finally {
+      _isLoading.value = false;
+    }
   }
 }

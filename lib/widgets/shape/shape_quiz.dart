@@ -76,9 +76,9 @@ class ShapeQuiz extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(bottom: 0.03 * size.height),
                     child: Image.asset(
-                      level == "Recognise"
+                      level == "1"
                           ? LocalImage.level1
-                          : level == "Acknowledge"
+                          : level == "2"
                               ? LocalImage.level2
                               : LocalImage.level3,
                       width: 0.18 * size.width,

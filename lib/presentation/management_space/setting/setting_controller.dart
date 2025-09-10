@@ -108,6 +108,11 @@ class SettingController extends GetxController {
       return false;
     }
 
+    _preferencesManager.putString(
+      key: KeySharedPreferences.safetyCode,
+      value: newParentCodeInput
+    );
+
     LibFunction.showSnackbar(
       message: "updated_safety_code",
       backgroundColor: AppColor.primary,

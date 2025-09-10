@@ -350,12 +350,10 @@ class ElibraryScreen extends GetView<ElibraryController> {
                                       onTap: () async {
                                         controller.startBook(elibraryService.bookIndex);
                                       },
-                                      semantics: 'play',
                                       pathImage: LocalImage.playButton,
                                       width: size.width * 0.35 * 0.25,
                                       height: size.height * 0.85 * 0.25,
                                     ),
-                                    RegularText('play'.tr, style: TextStyle(fontSize: Fontsize.large, color: AppColor.red),)
                                   ],
                                 ),
                               )
@@ -523,7 +521,7 @@ class ElibraryScreen extends GetView<ElibraryController> {
                                 left: size.width * 0.1,
                                 child: Obx(
                                   () => RegularText(
-                                    "${elibraryService.completedBook}/${elibraryService.totalBook}",
+                                    "${elibraryService.totalBook}",
                                     style: TextStyle(
                                         color: Colors.orange,
                                         fontSize: Fontsize.large,
@@ -683,33 +681,6 @@ class DownloadLesson extends StatelessWidget  {
   }
 }
 
-class DownloadAll extends StatelessWidget {
-  const DownloadAll({
-    super.key,
-    required this.controller,
-  });
-  final ElibraryController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-
-    return Column(
-      children: [
-        ImageButton(
-          pathImage: LocalImage.downloadButton,
-          semantics: 'download',
-          onTap: () {
-            controller.handleShowDownloadAll(controller);
-          },
-          width: 0.09 * size.width,
-          height: 0.12 * size.height,
-        ),
-
-      ],
-    );
-  }
-}
 
 class Header extends StatelessWidget {
   const Header({
@@ -734,7 +705,7 @@ class Header extends StatelessWidget {
           // DownloadAll(controller: controller),
           GestureDetector(
             onTap: () {
-              userService.onPressProfile();
+              // userService.onPressProfile();
             },
             child: Container(
               decoration: BoxDecoration(
@@ -786,7 +757,7 @@ class Header extends StatelessWidget {
                         RegularText(
                           // "grade",
                           // data: const {"grade": '3'},
-                          userService.currentUser.gradeId.toString() ?? '',
+                          'Lớp: ${userService.currentUser.gradeId}' ?? '',
                           style: TextStyle(
                             color: AppColor.gray,
                             fontWeight: FontWeight.w800,

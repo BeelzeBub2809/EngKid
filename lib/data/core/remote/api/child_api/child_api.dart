@@ -13,4 +13,9 @@ abstract class ChildApi {
 
   @POST('kid-student/parent/create-child')
   Future<ApiResponseObject> createChild(@Body() Map<String, dynamic> body);
+  @POST('kid-student/parent/update-child/{id}')
+  Future<ApiResponseObject> updateChild(
+      @Path("id") int id,
+      @Body() FormData formData
+  );
 }

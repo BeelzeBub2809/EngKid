@@ -15,5 +15,5 @@ import 'entities/lesson/lesson.dart';
 abstract class AppRepository {
   Future<UserInfo> getUserInfo(int id);
   Future<ChildProfiles> getChildProfiles(int parentUserId);
-  Future<void> updateParentProfile(int id,FormData formData);
+  Future<dynamic> updateParentProfile(int id,FormData formData);
 }

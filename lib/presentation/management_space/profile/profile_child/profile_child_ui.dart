@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:EngKid/presentation/core/user_service.dart';
 import 'package:EngKid/presentation/management_space/profile/profile_child/profile_child_controlller.dart';
 import 'package:EngKid/utils/app_color.dart';
@@ -38,20 +40,14 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
             padding: EdgeInsets.only(left: 0.06 * size.width),
             child: ImageText(
               text:
-                  controller.isEdit ? 'update_profile'.tr : 'delete_account'.tr,
-              pathImage: controller.isEdit
-                  ? LocalImage.shapeButton
-                  : LocalImage.buttonElibrary,
+                  'update_profile'.tr,
+              pathImage: LocalImage.shapeButton,
               isUpperCase: true,
               onTap: controller.isEdit
                   ? () async {
-                      // await controller.updateProfileParent();
+                      await controller.updateProfileChild();
                     }
                   : () async {
-                      Get.dialog(const DialogAlert(
-                        message: 'confirm_delete_account',
-                        isCancel: true,
-                      ));
                     },
               width: size.width * 0.6,
               height: size.height * 0.07,
@@ -79,25 +75,9 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                   _buildHeader(size, context),
                   Row(
                     children: [
-                      ImageButton(
-                        pathImage: LocalImage.swiperBack,
-                        onTap: () {
-                          int previousIndex = controller.indexChild.value - 1;
-                          if (previousIndex >= 0) {
-                            controller.pageController.animateToPage(
-                              previousIndex,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                            controller.onChangeChild(
-                                userService
-                                    .childProfiles.childProfiles[previousIndex],
-                                previousIndex);
-                          }
-                        },
+                      SizedBox(
                         width: size.width * 0.08,
                         height: size.width * 0.13,
-                        semantics: 'back',
                       ),
                       SizedBox(
                         width: size.width * 0.05,
@@ -105,131 +85,137 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                       Expanded(
                         child: SizedBox(
                           height: LibFunction.scaleForCurrentValue(size, 500),
-                          child: PageView.builder(
-                            controller: controller.pageController,
-                            itemCount:
-                                userService.childProfiles.childProfiles.length,
-                            onPageChanged: (index) {
-                              controller.onChangeChild(
-                                  userService
-                                      .childProfiles.childProfiles[index],
-                                  index);
-                            },
-                            itemBuilder: (context, index) {
-                              return AnimatedBuilder(
-                                animation: controller.pageController,
-                                builder: (context, child) {
-                                  double value = 1.0;
-                                  if (controller
-                                      .pageController.position.haveDimensions) {
-                                    value =
-                                        controller.pageController.page! - index;
-                                    value = (1 - (value.abs() * 0.3))
-                                        .clamp(0.7, 1.0);
-                                  }
-                                  return Center(
-                                    child: Transform.scale(
-                                      scale: value,
-                                      child: Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 5),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: index ==
-                                                    controller.indexChild.value
-                                                ? AppColor.red
-                                                : Colors.transparent,
-                                            width: 1,
-                                          ),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Stack(
-                                          clipBehavior: Clip.none,
-                                          children: [
-                                            Obx(() {
-                                              final path = controller
-                                                      .pathAvatars[index] ??
-                                                  userService
-                                                      .childProfiles
-                                                      .childProfiles[index]
-                                                      .avatar;
-                                              return ClipOval(
-                                                child: CacheImage(
-                                                  url: path,
-                                                  width: LibFunction
-                                                      .scaleForCurrentValue(
-                                                          size,
-                                                          index ==
-                                                                  controller
-                                                                      .indexChild
-                                                                      .value
-                                                              ? 450
-                                                              : 400),
-                                                  height: LibFunction
-                                                      .scaleForCurrentValue(
-                                                          size,
-                                                          index ==
-                                                                  controller
-                                                                      .indexChild
-                                                                      .value
-                                                              ? 450
-                                                              : 400),
-                                                ),
-                                              );
-                                            }),
-                                            Obx(
-                                              () => index ==
-                                                          controller.indexChild
-                                                              .value &&
-                                                      controller.isEdit
-                                                  ? Positioned(
-                                                      bottom: -10,
-                                                      right: 0,
-                                                      left: 0,
-                                                      child: GestureDetector(
-                                                          onTap: () {
-                                                            _diaLogChangeAvt(
-                                                                size);
-                                                          },
-                                                          child: const Icon(
-                                                              Icons.camera_alt,
-                                                              size: 20)),
-                                                    )
-                                                  : const SizedBox(),
+                          // --- BỌC WIDGET BÊN TRONG BẰNG Obx ---
+                          child: Obx(() {
+                            // Lấy danh sách children từ service.
+                            // `Obx` sẽ theo dõi `userService.childProfiles` và rebuild khi nó thay đổi.
+                            final childrenList = userService.childProfiles.childProfiles;
+
+                            // Trả về PageView.builder với dữ liệu mới nhất
+                            return PageView.builder(
+                              controller: controller.pageController,
+                              // Dùng `childrenList` đã lấy ở trên
+                              itemCount: childrenList.length,
+                              onPageChanged: (index) {
+                                // Bây giờ hàm này sẽ được gọi khi bạn vuốt
+                                controller.onChangeChild(childrenList[index], index);
+                              },
+                              itemBuilder: (context, index) {
+                                return AnimatedBuilder(
+                                  animation: controller.pageController,
+                                  builder: (context, child) {
+                                    double value = 1.0;
+                                    if (controller.pageController.position.haveDimensions) {
+                                      value = controller.pageController.page! - index;
+                                      value = (1 - (value.abs() * 0.3)).clamp(0.7, 1.0);
+                                    }
+                                    return Center(
+                                      child: Transform.scale(
+                                        scale: value,
+                                        child: Container(
+                                          margin: const EdgeInsets.symmetric(horizontal: 5),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              // Vẫn dùng controller.indexChild để check border
+                                              color: index == controller.indexChild.value
+                                                  ? AppColor.red
+                                                  : Colors.transparent,
+                                              width: 1,
                                             ),
-                                          ],
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Stack(
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                              // Obx(() {
+                                              //   // Lấy path avatar từ controller hoặc từ `childrenList`
+                                              //   final path = controller.pathAvatars[index] ??
+                                              //       childrenList[index].avatar;
+                                              //   return ClipOval(
+                                              //     child: CacheImage(
+                                              //       url: path,
+                                              //       width: LibFunction.scaleForCurrentValue(
+                                              //           size,
+                                              //           index == controller.indexChild.value
+                                              //               ? 450
+                                              //               : 400),
+                                              //       height: LibFunction.scaleForCurrentValue(
+                                              //           size,
+                                              //           index == controller.indexChild.value
+                                              //               ? 450
+                                              //               : 400),
+                                              //     ),
+                                              //   );
+                                              // }),
+                                              Obx(
+                                                    () => ClipOval(
+                                                  child: controller.imagePath.isNotEmpty && index == controller.indexChild.value
+                                                      ? Image.file(
+                                                    File(controller.imagePath),
+                                                    fit: BoxFit.cover,
+                                                    height: 0.11 * size.height,
+                                                    width: 0.11 * size.height,
+                                                    errorBuilder: (context, error, stackTrace) {
+                                                      return Image.asset(
+                                                        LocalImage.avatarParent,
+                                                        width: 0.11 * size.height,
+                                                        height: 0.11 * size.height,
+                                                        fit: BoxFit.cover,
+                                                      );
+                                                    },
+                                                  )
+                                                      : ClipRRect(
+                                                    borderRadius: BorderRadius.circular(
+                                                        0.06 * size.height),
+                                                    child: CacheImage(
+                                                      url: controller.pathAvatars[index] ?? childrenList[index].avatar,
+                                                      width: 0.11 * size.height,
+                                                      height: 0.11 * size.height,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Obx(
+                                                    () => index == controller.indexChild.value &&
+                                                    controller.isEdit // Dùng .value cho biến RxBool
+                                                    ? Positioned(
+                                                  bottom: -10,
+                                                  right: 0,
+                                                  left: 0,
+                                                  child: GestureDetector(
+                                                      onTap: () {
+                                                        CommonWidget.bottomSheet(
+                                                          controller.listItemBts,
+                                                              (index) {
+                                                            controller.getFunctionByIndex(
+                                                                index, context);
+                                                          },
+                                                          context,
+                                                        );
+                                                      },
+                                                      child: const Icon(Icons.camera_alt,
+                                                          size: 20)),
+                                                )
+                                                    : const SizedBox(),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          ),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          }),
                         ),
                       ),
                       SizedBox(
                         width: size.width * 0.05,
                       ),
-                      ImageButton(
-                        pathImage: LocalImage.swiperNext,
-                        onTap: () {
-                          int nextIndex = controller.indexChild.value + 1;
-                          if (nextIndex < userService.userInfos.length) {
-                            controller.pageController.animateToPage(
-                              nextIndex,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                            controller.onChangeChild(
-                                userService
-                                    .childProfiles.childProfiles[nextIndex],
-                                nextIndex);
-                          }
-                        },
+                      SizedBox(
                         width: size.width * 0.08,
                         height: size.width * 0.13,
-                        semantics: 'next',
                       ),
                     ],
                   ),
@@ -261,41 +247,14 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                                         input: val,
                                         type: ProfileChildInputType.childName);
                                   },
+                                  controller: controller.childNameController,
                                   hintText: ''),
                             )),
                       ),
                     ),
                   ),
                   Obx(
-                    () => SizedBox(
-                      width: Get.width,
-                      child: CommonWidget.textFieldWithTitle(
-                          validateNotify: controller.validateChildId,
-                          horizontal: 6,
-                          vertical: 0,
-                          title: 'child_identifier',
-                          child: TextFieldWidget(
-                              enabled: controller.isEdit ? true : false,
-                              prefixIcon: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.code,
-                                    color: AppColor.red,
-                                    size: 22,
-                                  ),
-                                ],
-                              ),
-                              onChange: (val) {
-                                controller.onChangeInput(
-                                    input: val,
-                                    type: ProfileChildInputType.childId);
-                              },
-                              hintText: '')),
-                    ),
-                  ),
-                  Obx(
-                    () => SizedBox(
+                        () => SizedBox(
                       width: Get.width,
                       child: CommonWidget.textFieldWithTitle(
                         validateNotify: controller.validateDateOfBirth,
@@ -303,6 +262,7 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                         vertical: 0,
                         title: 'date_of_birth'.tr,
                         child: TextFieldWidget(
+                            controller: controller.dateOfBirthController,
                             enabled: controller.isEdit ? true : false,
                             prefixIcon: const Row(
                               mainAxisSize: MainAxisSize.min,
@@ -323,16 +283,16 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                             suffixIcon: GestureDetector(
                               onTap: () async {
                                 final selectedDates =
-                                    await showCalendarDatePicker2Dialog(
+                                await showCalendarDatePicker2Dialog(
                                   context: Get.context!,
                                   config:
-                                      CalendarDatePicker2WithActionButtonsConfig(
+                                  CalendarDatePicker2WithActionButtonsConfig(
                                     calendarType:
-                                        CalendarDatePicker2Type.single,
+                                    CalendarDatePicker2Type.single,
                                     selectedDayHighlightColor: Colors.red,
                                   ),
                                   dialogSize:
-                                      Size(Get.width * 0.8, Get.height * 0.5),
+                                  Size(Get.width * 0.8, Get.height * 0.5),
                                   value: [
                                     controller.selectedDate ?? DateTime.now()
                                   ],
@@ -344,8 +304,7 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                                   controller.dateOfBirthRx =
                                       DateFormat('dd/MM/yyyy')
                                           .format(selectedDates.first!);
-                                  print(
-                                      'controller.dateOfBirthRx : ${controller.dateOfBirthRx}');
+
                                   controller.onChangeInput(
                                       input: controller.dateOfBirthRx,
                                       type: ProfileChildInputType.dateOfBirth);

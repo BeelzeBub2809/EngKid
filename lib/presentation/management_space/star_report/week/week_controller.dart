@@ -81,9 +81,9 @@ class WeekController extends GetxController {
           for (final History history in thisWeek) {
             final DateTime date = LibFunction.parseDate(history.date);
             final String weekOfCurrentDate =
-                "${((firstDayOfCurrentWeek.difference(DateTime(now.year, 1, 1)).inDays + 1) / 7).ceil() + 1}";
+                "${((firstDayOfCurrentWeek.difference(DateTime(now.year, 1, 1)).inDays) / 7).ceil() + 1}";
             final String weekOfHistoryDate =
-                "${((LibFunction.parseDate(history.date).difference(DateTime(now.year, 1, 1)).inDays + 1) / 7).ceil() + 1}";
+                "${((LibFunction.parseDate(history.date).difference(DateTime(now.year, 1, 1)).inDays) / 7).ceil() + 1}";
             if (index == LibFunction.getIndexDayInWeek(date) &&
                 weekOfCurrentDate == weekOfHistoryDate) {
               total += history.star;
@@ -129,9 +129,9 @@ class WeekController extends GetxController {
           for (final History history in lastWeek) {
             final DateTime date = LibFunction.parseDate(history.date);
             final String weekOfCurrentDate =
-                "${((lastWeekStart.difference(DateTime(now.year, 1, 1)).inDays + 1) / 7).ceil() + 1}";
+                "${((lastWeekStart.difference(DateTime(now.year, 1, 1)).inDays) / 7).ceil() + 1}";
             final String weekOfHistoryDate =
-                "${((LibFunction.parseDate(history.date).difference(DateTime(now.year, 1, 1)).inDays + 1) / 7).ceil() + 1}";
+                "${((LibFunction.parseDate(history.date).difference(DateTime(now.year, 1, 1)).inDays) / 7).ceil() + 1}";
             if (index == LibFunction.getIndexDayInWeek(date) &&
                 weekOfCurrentDate == weekOfHistoryDate) {
               total += history.star;

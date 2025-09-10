@@ -261,56 +261,79 @@ class MonthScreen extends GetView<MonthController> {
                                         ),
                                         ...List.generate(
                                           weeksOf.length,
-                                          (idx) => Positioned.fill(
-                                            top: heightChart -
+                                          (idx) {
+                                            // Tìm giá trị cao nhất để highlight
+                                            final isMaxValue = weeksOf[idx]
+                                                    .value ==
+                                                weeksOf
+                                                    .map((week) => week.value)
+                                                    .reduce((a, b) =>
+                                                        a > b ? a : b);
+
+                                            final double pointY = heightChart -
                                                 ((heightChart / maxY) *
-                                                    weeksOf[idx].value) -
-                                                0.07 * size.height,
-                                            left:
-                                                weeksOf[idx].left * size.width -
-                                                    0.016 * size.width,
-                                            child: Align(
-                                              alignment: Alignment.topLeft,
-                                              child: Stack(
-                                                children: [
-                                                  Container(
-                                                    padding: EdgeInsets.only(
-                                                      top: 0.015 * size.height,
-                                                    ),
-                                                    width: widthChart / 4.5,
-                                                    child: RegularText(
-                                                      weeksOf[idx]
-                                                          .value
-                                                          .toString(),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: AppColor.red,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        fontSize:
-                                                            Fontsize.smallest,
+                                                    weeksOf[idx].value);
+                                            final bool isNearTop =
+                                                pointY < 0.08 * size.height;
+
+                                            return Positioned.fill(
+                                              top: isNearTop
+                                                  ? pointY + 0.02 * size.height
+                                                  : pointY - 0.07 * size.height,
+                                              left: weeksOf[idx].left *
+                                                      size.width -
+                                                  0.016 * size.width,
+                                              child: Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Stack(
+                                                  children: [
+                                                    Container(
+                                                      padding: EdgeInsets.only(
+                                                        top:
+                                                            0.015 * size.height,
+                                                      ),
+                                                      width: widthChart / 4.5,
+                                                      child: RegularText(
+                                                        weeksOf[idx]
+                                                            .value
+                                                            .toStringAsFixed(1),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          color: isMaxValue
+                                                              ? AppColor.blue
+                                                              : AppColor.red,
+                                                          fontWeight: isMaxValue
+                                                              ? FontWeight.w900
+                                                              : FontWeight.w700,
+                                                          fontSize: isMaxValue
+                                                              ? Fontsize
+                                                                      .smallest +
+                                                                  1
+                                                              : Fontsize
+                                                                  .smallest,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  Positioned.fill(
-                                                    right: 0.01 * size.width,
-                                                    child: Align(
-                                                      alignment:
-                                                          Alignment.topRight,
-                                                      child: Image.asset(
-                                                        LocalImage.hightLight,
-                                                        width:
-                                                            0.012 * size.width,
-                                                        height:
-                                                            0.012 * size.width,
+                                                    Positioned.fill(
+                                                      right: 0.01 * size.width,
+                                                      child: Align(
+                                                        alignment:
+                                                            Alignment.topRight,
+                                                        child: Image.asset(
+                                                          LocalImage.hightLight,
+                                                          width: 0.012 *
+                                                              size.width,
+                                                          height: 0.012 *
+                                                              size.width,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ),
+                                            );
+                                          },
                                         ),
                                       ],
                                     ),

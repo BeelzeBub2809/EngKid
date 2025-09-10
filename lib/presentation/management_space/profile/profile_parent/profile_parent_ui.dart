@@ -184,44 +184,7 @@ class ProfileParentScreen extends GetView<ProfileParentController> {
                                 ],
                               ),
                               keyboardType: TextInputType.number,
-                              suffixIcon: controller.isEdit
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        _diaLogEnterOtp();
-                                        WidgetsBinding.instance
-                                            .addPostFrameCallback((_) {
-                                          controller.timeController.restart();
-                                        });
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        width: IMUtils.isMobile()
-                                            ? size.width * 0.25
-                                            : size.width * 0.2,
-                                        margin: const EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          color: AppColor.red.withOpacity(0.8),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  AppColor.red.withOpacity(0.2),
-                                              blurRadius: 10,
-                                              spreadRadius: 2,
-                                            ),
-                                          ],
-                                        ),
-                                        child: RegularText(
-                                          'update'.tr,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: Fontsize.smaller,
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                    )
-                                  : const SizedBox(),
+                              suffixIcon: const SizedBox(),
                               onChange: (val) {
                                 controller.onChangeInput(
                                     input: val,
@@ -421,10 +384,6 @@ class ProfileParentScreen extends GetView<ProfileParentController> {
                           await controller.updateProfileParent();
                         }
                       : () async {
-                          Get.dialog(const DialogAlert(
-                            message: 'confirm_delete_account',
-                            isCancel: true,
-                          ));
                         },
                   width: size.width * 0.6,
                   height: size.height * 0.08,

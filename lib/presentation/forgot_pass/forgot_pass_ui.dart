@@ -82,7 +82,7 @@ class ForgotPassScreen extends GetView<ForgotPassController> {
                                   () => SizedBox(
                                     width: 0.3 * size.width,
                                     child: LandScapeTextField(
-                                      maxLength: 30,
+                                      maxLength: 100,
                                       input: controller.email,
                                       keyboardType: TextInputType.text,
                                       backgroundColor: Colors.transparent,
@@ -108,6 +108,7 @@ class ForgotPassScreen extends GetView<ForgotPassController> {
                                       text: 'send_otp'.tr,
                                       pathImage: LocalImage.shapeButton,
                                       onTap: () {
+                                        controller.onSendOtp();
                                       },
                                       isUpperCase: true,
                                       width: size.width * 0.1,
@@ -271,7 +272,9 @@ class ForgotPassScreen extends GetView<ForgotPassController> {
                         ImageText(
                           text: 'change_password'.tr,
                           pathImage: LocalImage.shapeButtonSubmit,
-                          onTap: () {},
+                          onTap: () {
+                            controller.onResetPassword();
+                          },
                           isUpperCase: true,
                           width: size.width * 0.18,
                           height: size.height * 0.14,

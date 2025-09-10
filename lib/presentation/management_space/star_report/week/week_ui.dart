@@ -233,6 +233,14 @@ class WeekScreen extends GetView<WeekController> {
                                       ...List.generate(
                                         daysOf.length,
                                         (idx) {
+                                          // Tìm giá trị cao nhất để highlight
+                                          final isMaxValue = daysOf[idx]
+                                                  .value ==
+                                              daysOf
+                                                  .map((day) => day.value)
+                                                  .reduce(
+                                                      (a, b) => a > b ? a : b);
+
                                           final double pointY = heightChart -
                                               ((heightChart / maxY) *
                                                   daysOf[idx].value);
@@ -241,13 +249,8 @@ class WeekScreen extends GetView<WeekController> {
 
                                           return Positioned.fill(
                                             top: isNearTop
-                                                ? pointY +
-                                                    0.02 *
-                                                        size
-                                                            .height // Hiển thị phía dưới khi gần đỉnh
-                                                : pointY -
-                                                    0.062 *
-                                                        size.height, // Hiển thị phía trên bình thường
+                                                ? pointY + 0.02 * size.height
+                                                : pointY - 0.062 * size.height,
                                             left:
                                                 daysOf[idx].left * size.width +
                                                     0.02 * size.width -
@@ -264,11 +267,17 @@ class WeekScreen extends GetView<WeekController> {
                                                           .value
                                                           .toStringAsFixed(1),
                                                       style: TextStyle(
-                                                        color: AppColor.red,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        fontSize:
-                                                            Fontsize.smallest,
+                                                        color: isMaxValue
+                                                            ? AppColor.blue
+                                                            : AppColor.red,
+                                                        fontWeight: isMaxValue
+                                                            ? FontWeight.w900
+                                                            : FontWeight.w700,
+                                                        fontSize: isMaxValue
+                                                            ? Fontsize
+                                                                    .smallest +
+                                                                1
+                                                            : Fontsize.smallest,
                                                       ),
                                                     ),
                                                   ),

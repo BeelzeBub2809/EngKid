@@ -16,6 +16,6 @@ class AppUseCases {
   final AppRepository _appRepository;
   AppUseCases(this._appRepository);
   Future<UserInfo> getUserInfo(int id) => _appRepository.getUserInfo(id);
-  Future<void> updateParentProfile(int id, FormData formData) async => _appRepository.updateParentProfile(id, formData);
+  Future<dynamic> updateParentProfile(int id, FormData formData) async => _appRepository.updateParentProfile(id, formData);
   Future<ChildProfiles> getChildProfiles(int parentUserId) => _appRepository.getChildProfiles(parentUserId);
 }

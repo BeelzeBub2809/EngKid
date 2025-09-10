@@ -77,4 +77,42 @@ class LoginRepositoryImp implements LoginRepository {
       return response.code;
     }
   }
+
+  @override
+  Future<void> resetPassword(Map<String, dynamic> body) async {
+    try {
+      await authApi.resetPassword(body);
+    } catch (e, stackTrace) {
+      if (e is DioException) {
+        print('[Repository] DioException occurred:');
+        print('  → Type: ${e.type}');
+        print('  → Message: ${e.message}');
+        print('  → Response: ${e.response?.data}');
+        print('  → StatusCode: ${e.response?.statusCode}');
+        print('  → StackTrace: $stackTrace');
+      } else {
+        print('[Repository] Unknown exception: $e');
+        print('[Repository] StackTrace: $stackTrace');
+      }
+    }
+  }
+
+  @override
+  Future<void> sendOtp(Map<String, dynamic> body) async {
+    try {
+      await authApi.sendOtp(body);
+    } catch (e, stackTrace) {
+      if (e is DioException) {
+        print('[Repository] DioException occurred:');
+        print('  → Type: ${e.type}');
+        print('  → Message: ${e.message}');
+        print('  → Response: ${e.response?.data}');
+        print('  → StatusCode: ${e.response?.statusCode}');
+        print('  → StackTrace: $stackTrace');
+      } else {
+        print('[Repository] Unknown exception: $e');
+        print('[Repository] StackTrace: $stackTrace');
+      }
+    }
+  }
 }

@@ -7,7 +7,7 @@ class ForgotPassBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(
-      () => ForgotPassController(),
+      () => ForgotPassController(loginUsecases: Get.find()),
     );
   }
 }

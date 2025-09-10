@@ -276,90 +276,91 @@ class PersonalInfoScreen extends GetView<PersonalInfoController> {
                             ),
                           ),
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Obx(
-                                () => controller.pathAvatar.value != ""
-                                    ? Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 3.0),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            controller.cancelUpload();
-                                          },
-                                          child: Container(
-                                            margin: EdgeInsets.symmetric(
-                                              vertical: 0.01 * size.height,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: AppColor.gray,
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(
-                                                    0.06 * size.height),
-                                              ),
-                                            ),
-                                            padding: EdgeInsets.only(
-                                              left: 0.01 * size.width,
-                                              right: 0.01 * size.width,
-                                              top: 0.005 * size.width,
-                                              bottom: 0.005 * size.width,
-                                            ),
-                                            child: RegularText(
-                                              'cancel',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: Fontsize.smallest,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    : const SizedBox(),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  if (controller.pathAvatar.value != "") {
-                                    controller.onUploadChildAvatar();
-                                  } else {
-                                    controller.toogleImagePicker();
-                                  }
-                                },
-                                child: Obx(
-                                  () => Container(
-                                    margin: EdgeInsets.symmetric(
-                                      vertical: 0.01 * size.height,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: controller.pathAvatar.value != ""
-                                          ? AppColor.red
-                                          : AppColor.blue,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(0.06 * size.height),
-                                      ),
-                                    ),
-                                    padding: EdgeInsets.only(
-                                      left: 0.01 * size.width,
-                                      right: 0.01 * size.width,
-                                      top: 0.005 * size.width,
-                                      bottom: 0.005 * size.width,
-                                    ),
-                                    child: RegularText(
-                                      controller.pathAvatar.value != ""
-                                          ? 'confirm'
-                                          : 'upload_avatar',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: Fontsize.smallest,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     Obx(
+                          //       () => controller.pathAvatar.value != ""
+                          //           ? Padding(
+                          //               padding:
+                          //                   const EdgeInsets.only(right: 3.0),
+                          //               child: GestureDetector(
+                          //                 onTap: () {
+                          //                   controller.cancelUpload();
+                          //                 },
+                          //                 child: Container(
+                          //                   margin: EdgeInsets.symmetric(
+                          //                     vertical: 0.01 * size.height,
+                          //                   ),
+                          //                   decoration: BoxDecoration(
+                          //                     color: AppColor.gray,
+                          //                     borderRadius: BorderRadius.all(
+                          //                       Radius.circular(
+                          //                           0.06 * size.height),
+                          //                     ),
+                          //                   ),
+                          //                   padding: EdgeInsets.only(
+                          //                     left: 0.01 * size.width,
+                          //                     right: 0.01 * size.width,
+                          //                     top: 0.005 * size.width,
+                          //                     bottom: 0.005 * size.width,
+                          //                   ),
+                          //                   child: RegularText(
+                          //                     'cancel',
+                          //                     style: TextStyle(
+                          //                       color: Colors.white,
+                          //                       fontWeight: FontWeight.w600,
+                          //                       fontSize: Fontsize.smallest,
+                          //                     ),
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //             )
+                          //           : const SizedBox(),
+                          //     ),
+                          //     GestureDetector(
+                          //       onTap: () {
+                          //         if (controller.pathAvatar.value != "") {
+                          //           controller.onUploadChildAvatar();
+                          //         } else {
+                          //           controller.toogleImagePicker();
+                          //         }
+                          //       },
+                          //       child: Obx(
+                          //         () => Container(
+                          //           margin: EdgeInsets.symmetric(
+                          //             vertical: 0.01 * size.height,
+                          //           ),
+                          //           decoration: BoxDecoration(
+                          //             color: controller.pathAvatar.value != ""
+                          //                 ? AppColor.red
+                          //                 : AppColor.blue,
+                          //             borderRadius: BorderRadius.all(
+                          //               Radius.circular(0.06 * size.height),
+                          //             ),
+                          //           ),
+                          //           padding: EdgeInsets.only(
+                          //             left: 0.01 * size.width,
+                          //             right: 0.01 * size.width,
+                          //             top: 0.005 * size.width,
+                          //             bottom: 0.005 * size.width,
+                          //           ),
+                          //           child: RegularText(
+                          //             controller.pathAvatar.value != ""
+                          //                 ? 'confirm'
+                          //                 : 'upload_avatar',
+                          //             style: TextStyle(
+                          //               color: Colors.white,
+                          //               fontWeight: FontWeight.w600,
+                          //               fontSize: Fontsize.smallest,
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                          const SizedBox(height: 10),
                           Obx(
                             () => Column(
                               children: [
@@ -370,7 +371,7 @@ class PersonalInfoScreen extends GetView<PersonalInfoController> {
                                         .childProfiles[controller.indexChild.value]
                                         .name),
                                 LabelValueInfo(
-                                  label: 'gender:',
+                                  label: 'Giới tính:',
                                   value: userService
                                       .childProfiles
                                       .childProfiles[controller.indexChild.value]

@@ -96,16 +96,16 @@ class AchieveStarScreen extends StatelessWidget {
                           //   height: 0.075 * size.width,
                           //   width: 0.075 * size.width,
                           // ),
-                          SizedBox(width: 0.03 * size.width),
-                          ImageButton(
-                            onTap: () {
-                              controller.relearn();
-                            },
-                            semantics: 'reset_question',
-                            pathImage: LocalImage.questionResetButton,
-                            height: 0.075 * size.width,
-                            width: 0.075 * size.width,
-                          ),
+                          // SizedBox(width: 0.03 * size.width),
+                          // ImageButton(
+                          //   onTap: () {
+                          //     controller.relearn();
+                          //   },
+                          //   semantics: 'reset_question',
+                          //   pathImage: LocalImage.questionResetButton,
+                          //   height: 0.075 * size.width,
+                          //   width: 0.075 * size.width,
+                          // ),
                           SizedBox(width: 0.03 * size.width),
                           ImageButton(
                             onTap: () {

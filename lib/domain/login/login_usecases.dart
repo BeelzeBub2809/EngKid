@@ -13,4 +13,8 @@ class LoginUsecases {
       _loginRepository.checkSignUp(body);
   Future<dynamic> checkOtp(Map<String, dynamic> body) async =>
       _loginRepository.checkOtp(body);
+  Future<void> sendOtp(Map<String, dynamic> body) async =>
+      _loginRepository.sendOtp(body);
+  Future<void> resetPassword(Map<String, dynamic> body) async =>
+      _loginRepository.resetPassword(body);
 }

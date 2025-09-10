@@ -60,59 +60,48 @@ class GameUI extends GetView<GameController> {
                 ),
                 // Games grid
                 Expanded(
-                  child: Wrap(
-                    spacing: 40,
-                    runSpacing: 40,
-                    alignment: WrapAlignment.center,
-                    children: [
-                      // Wordle Game
-                      _buildGameCard(
-                        context,
-                        'WORDLE',
-                        Icons.grid_3x3,
-                        Colors.green,
-                        () => Get.toNamed(AppRoute.wordleGame,
-                            arguments: [true, false]),
-                      ),
-                      // Puzzle Game
-                      _buildGameCard(
-                        context,
-                        'PUZZLE',
-                        Icons.extension,
-                        Colors.blue,
-                        () => Get.toNamed(AppRoute.puzzleGame,
-                              arguments: [true, false])
-                        // () => showDialog(
-                        //   context: context,
-                        //   builder: (context) => AlertDialog(
-                        //     title: const Text('Work in Progress'),
-                        //     content: const Text('This feature is coming soon!'),
-                        //     actions: [
-                        //       TextButton(
-                        //         onPressed: () => Get.toNamed(AppRoute.puzzleGame,
-                        //     arguments: [true, false]),
-                        //         child: const Text('OK'),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                      ),
-                      _buildGameCard(
-                        context,
-                        'MEMORY',
-                        Icons.psychology,
-                        Colors.purple,
-                        () => Get.toNamed(AppRoute.memoryGame,
-                            arguments: [true, false]),
-                      ),
-                      _buildGameCard(
-                        context,
-                        'MISSING WORD',
-                        Icons.abc,
-                        Colors.green,
-                        () => Get.toNamed(AppRoute.missingWordGame),
-                      ),
-                    ],
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Wrap(
+                      spacing: 40,
+                      runSpacing: 40,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        // Wordle Game
+                        _buildGameCard(
+                          context,
+                          'WORDLE',
+                          Icons.grid_3x3,
+                          Colors.green,
+                          () => Get.toNamed(AppRoute.wordleGame,
+                              arguments: [true, false]),
+                        ),
+                        // Puzzle Game
+                        _buildGameCard(
+                          context,
+                          'PUZZLE',
+                          Icons.extension,
+                          Colors.blue,
+                          () => Get.toNamed(AppRoute.puzzleGame,
+                              arguments: [true, false]),
+                        ),
+                        _buildGameCard(
+                          context,
+                          'MEMORY',
+                          Icons.psychology,
+                          Colors.purple,
+                          () => Get.toNamed(AppRoute.memoryGame,
+                              arguments: [true, false]),
+                        ),
+                        _buildGameCard(
+                          context,
+                          'MISSING WORD',
+                          Icons.abc,
+                          Colors.green,
+                          () => Get.toNamed(AppRoute.missingWordGame),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

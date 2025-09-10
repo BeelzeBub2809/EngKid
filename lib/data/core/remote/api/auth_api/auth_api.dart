@@ -35,4 +35,16 @@ abstract class AuthApi {
   Future<ApiResponseObject> checkOtp(
     @Body() Map<String, dynamic> body,
   );
+
+  @POST('auth/forgot-password-mobile')
+  @FormUrlEncoded()
+  Future<void> sendOtp(
+      @Body() Map<String, dynamic> body,
+  );
+
+  @POST('auth/reset-password-mobile')
+  @FormUrlEncoded()
+  Future<void> resetPassword(
+      @Body() Map<String, dynamic> body,
+  );
 }

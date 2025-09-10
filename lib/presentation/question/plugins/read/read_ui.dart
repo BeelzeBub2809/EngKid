@@ -146,7 +146,6 @@ class ReadScreen extends StatelessWidget {
                                     width: 0.1 * size.width,
                                     height: 0.1 * size.width,
                                   ),
-                                  RegularText(controller.isPlaying ? 'pause_video'.tr : 'listen_again'.tr, style: TextStyle(fontSize: Fontsize.normal, color: Colors.red),)
                                 ],
                               ),
                             ),

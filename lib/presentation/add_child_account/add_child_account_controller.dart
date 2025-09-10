@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/domain/organization/entities/entities.dart';
 import 'package:EngKid/utils/app_route.dart';
+import 'package:intl/intl.dart';
 import '../../domain/core/app_usecases.dart';
 import '../../domain/core/entities/child_profile/entities/child/child.dart';
 import '../../domain/login/login_usecases.dart';
@@ -232,7 +233,7 @@ class AddChildAccountController extends GetxController {
             dob: statusCode['dob'],
           );
           _userService.updateListChild(child);
-          resetAll(); // i am gay
+          resetAll();
           Get.back();
         }
 
@@ -292,9 +293,20 @@ class AddChildAccountController extends GetxController {
     _validateStudentId.value = _studentId.value.isEmpty
         ? "please_enter_student_id"
         : "";
-    _validateDateOfBirth.value = _dateOfBirth.value.isEmpty
-        ? "please_enter_date_of_birth"
-        : "";
+    if (_dateOfBirth.value.isEmpty) {
+      _validateDateOfBirth.value = "please_enter_date_of_birth";
+    } else {
+      try {
+        final dob = DateFormat("dd/MM/yyyy").parseStrict(_dateOfBirth.value);
+        if (dob.isAfter(DateTime.now())) {
+          _validateDateOfBirth.value = "date_of_birth_cannot_be_in_future";
+        } else {
+          _validateDateOfBirth.value = "";
+        }
+      } catch (e) {
+        _validateDateOfBirth.value = "invalid_date_format";
+      }
+    }
     return _validateChildName.value.isEmpty &&
         _validateSex.value.isEmpty &&
         _validateGrade.value.isEmpty &&

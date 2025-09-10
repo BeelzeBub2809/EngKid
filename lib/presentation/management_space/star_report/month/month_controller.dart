@@ -100,7 +100,7 @@ class MonthController extends GetxController {
         // Định dạng ngày thành chuỗi "yyyy-Www" (vd: "2023-21")
         // Tính toán tổng số liệu cho từng tuần
         final DateTime date = LibFunction.parseDate(history.date);
-        final int tmp = date.difference(startDateOfYear).inDays + 1;
+        final int tmp = date.difference(startDateOfYear).inDays;
         if ((tmp / 7).ceil() >= (dayOfYear / 7).ceil() &&
             date.month == firstDayOfMonth.month) {
           final String week =
@@ -109,7 +109,7 @@ class MonthController extends GetxController {
         }
       }
 
-      int dayOfYearNow = now.difference(startDateOfYear).inDays + 1;
+      int dayOfYearNow = now.difference(startDateOfYear).inDays;
       String currentWeek =
           "${DateFormat('yyyy').format(now)}-${(dayOfYearNow / 7).ceil()}";
 
@@ -170,8 +170,7 @@ class MonthController extends GetxController {
         lastMonth = LibFunction.getHistoryFromStorage(
             KeySharedPreferences.starOfTwoYear);
       }
-      int dayOfYear =
-          firstDayOfLastMonth.difference(startDateOfYear).inDays + 1;
+      int dayOfYear = firstDayOfLastMonth.difference(startDateOfYear).inDays;
       final String weekFirstOfLastMonth =
           "${DateFormat('yyyy').format(firstDayOfLastMonth)}-${(dayOfYear / 7).ceil()}";
 
@@ -188,7 +187,7 @@ class MonthController extends GetxController {
         // Định dạng ngày thành chuỗi "yyyy-w" (vd: "2023-21")
         // Tính toán tổng số liệu cho từng tuần
         final DateTime date = LibFunction.parseDate(history.date);
-        final int tmp = date.difference(startDateOfYear).inDays + 1;
+        final int tmp = date.difference(startDateOfYear).inDays;
         if ((tmp / 7).ceil() >= (dayOfYear / 7).ceil() &&
             date.month == lastDayOfLastMonth.month) {
           final String week =

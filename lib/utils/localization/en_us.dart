@@ -381,5 +381,7 @@ const Map<String, String> en = {
   //Video
   "pause_video" : "Paused",
   "next_video" : "Continue",
-  "review_video" : "Play again"
+  "review_video" : "Play again",
+
+"date_of_birth_cannot_be_in_future" : "Date of birth cannot be in the future"
 };

@@ -45,9 +45,14 @@ class AppRepositoryImp extends AppRepository {
   }
 
   @override
-  Future<void> updateParentProfile(int id, FormData formData) async {
+  Future<dynamic> updateParentProfile(int id, FormData formData) async {
     try {
-      await userApi.updateParentProfile(id, formData);
+      final ApiResponseObject response = await userApi.updateParentProfile(id, formData);
+      if (response.result) {
+        return response.data;
+      } else {
+        throw response.message;
+      }
     } catch (e, stackTrace) {
       if (e is DioException) {
         print('[Repository] DioException occurred:');

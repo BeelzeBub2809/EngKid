@@ -235,12 +235,11 @@ class ElibraryVideoScreen extends GetView<ElibraryVideoController> {
                               onTap: () {
                                 controller.closeVideo();
                               },
-                              semantics: 'home',
-                              pathImage: LocalImage.buttonHome,
+                              semantics: 'back',
+                              pathImage: LocalImage.backButton,
                               height: 0.075 * size.width,
                               width: 0.075 * size.width,
                             ),
-                            RegularText('home'.tr, style: TextStyle(fontSize: Fontsize.normal, color: Colors.white),)
                           ],
                         ),
                       ),
@@ -255,7 +254,6 @@ class ElibraryVideoScreen extends GetView<ElibraryVideoController> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            RegularText('next'.tr, style: TextStyle(fontSize: Fontsize.normal, color: Colors.white),),
                             ImageButton(
                               onTap: () {
                                 controller.completeLesson(1);

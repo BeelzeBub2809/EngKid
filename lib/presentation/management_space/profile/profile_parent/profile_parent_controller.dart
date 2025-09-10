@@ -180,7 +180,7 @@ class ProfileParentController extends GetxController {
 
 
         LibFunction.showLoading();
-        await _userService.updateProfileParent(formData);
+        final responseData = await _userService.updateProfileParent(formData);
         // final data = [
         //     'name': _nameParent.value,
         //     'email': _email.value,
@@ -193,11 +193,34 @@ class ProfileParentController extends GetxController {
         //     image: data['image']
         //   );
         //   print('dataUpdateProfile: ${data}');
-        Login updatedParentInfo = Login.fromJson(body);
-        await _userService.assignUseLogin(updatedParentInfo);
+        if (responseData != null && responseData is Map<String, dynamic>) {
+          Login updatedParentInfo = Login(
+            id: responseData['id'] ?? _userService.userLogin.id,
+            username: responseData['username'] ?? '',
+            name: _nameParent.value,
+            email: _email.value,
+            phone: _phoneNumber.value,
+            gender: _sex.value,
+            dob: _dateOfBirth.value,
+            roleId: responseData['role_id'] ?? _userService.userLogin.roleId,
+            image: responseData['image'] ?? '',
+          );
+          await _userService.assignUseLogin(updatedParentInfo);
           LibFunction.hideLoading();
           LibFunction.toast('Cập nhật thông tin thành công');
-        // }
+
+        } else {
+          LibFunction.hideLoading();
+          // Xử lý trường hợp có lỗi
+          LibFunction.toast('Có lỗi xảy ra, không nhận được dữ liệu cập nhật');
+        }
+        Login updatedParentInfo = _userService.userLogin.copyWith(
+          name: _nameParent.value,
+          email: _email.value,
+          phone: _phoneNumber.value,
+          gender: _sex.value,
+          dob: _dateOfBirth.value,
+        );
 
       } catch(e) {
         print('Error updateProfileParent: $e');

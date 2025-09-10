@@ -114,7 +114,6 @@ class UserService extends GetxService {
   Future<void> onInit() async {
     super.onInit();
     debugPrint('Init User Service');
-    getRemoteLanguages();
   }
 
   Future<UserInfo> getUserInfo(int id) async {
@@ -128,59 +127,53 @@ class UserService extends GetxService {
 
   Future<void> getChildProfiles(int parentUserId) async {
     try {
-      final ChildProfiles childProfiles =
-          await appUseCases.getChildProfiles(parentUserId);
-      _userInfos.assignAll([]);
-      final List<UserInfo> tmpUserInfo = [];
-      await Future.forEach(childProfiles.childProfiles, (Child child) async {
-        LibFunction.getFileStream(child.avatar);
-        try {
-          final UserInfo userInfo = await getUserInfo(child.id);
-
-          tmpUserInfo.add(userInfo);
-        } catch (e) {
-          //
-        }
-      });
-
-      assignUsersProfile(tmpUserInfo);
-
-      final String? tmp = _preferencesManager.getString(
+      final ChildProfiles childProfilesResponse =
+      await appUseCases.getChildProfiles(parentUserId);
+      final List<Child> children = childProfilesResponse.childProfiles;
+      print('--- BẮT ĐẦU LOG DANH SÁCH CHILDREN ---');
+      print('Tổng số trẻ: ${children.length}');
+      for (var child in children) {
+        print(child);
+      }
+      print('--- KẾT THÚC LOG ---');
+      if (children.isNotEmpty) {
+        await Future.wait(
+          children.map((child) async => LibFunction.getFileStream(child.avatar)),
+        );
+      }
+      await assignChildProfiles(childProfilesResponse);
+      final String? storedCurrentUserJson = _preferencesManager.getString(
         KeySharedPreferences.currentUser,
       );
 
-      if (tmp == null) {
-        if (childProfiles.childProfiles.isNotEmpty) {
-          _currentUser.value = childProfiles.childProfiles[0];
+      if (storedCurrentUserJson == null) {
+        if (children.isNotEmpty) {
+          _currentUser.value = children.first;
           await saveCurrentUserToStorage();
+        } else {
+          _currentUser.value = const Child();
         }
       } else {
-        final decodeCurrentUser =
-            Child.fromJson(jsonDecode(tmp) as Map<String, dynamic>);
-        final int index = childProfiles.childProfiles
-            .indexWhere((element) => element.id == decodeCurrentUser.id);
-        if (index != -1) {
-          _currentUser.value = decodeCurrentUser;
-        } else if (childProfiles.childProfiles.isNotEmpty) {
-          _currentUser.value = childProfiles.childProfiles[0];
-          await saveCurrentUserToStorage();
+        final storedChild =
+        Child.fromJson(jsonDecode(storedCurrentUserJson) as Map<String, dynamic>);
+
+        final Child? existingChild = children.firstWhereOrNull(
+              (child) => child.id == storedChild.id,
+        );
+
+        if (existingChild != null) {
+          _currentUser.value = existingChild;
+        } else {
+          if (children.isNotEmpty) {
+            _currentUser.value = children.first;
+            await saveCurrentUserToStorage();
+          } else {
+            _currentUser.value = const Child();
+          }
         }
-      }
-
-      final String? tmpChildProfiles = _preferencesManager.getString(
-        KeySharedPreferences.childProfiles,
-      );
-      if (tmpChildProfiles != null) {
-        final decodeChildProfiles = ChildProfiles.fromJson(
-            jsonDecode(tmpChildProfiles) as Map<String, dynamic>);
-
-        final List<Child> mapChilds = childProfiles.childProfiles.toList();
-        await assignChildProfiles(
-            childProfiles.copyWith(childProfiles: mapChilds));
-      } else {
-        await assignChildProfiles(childProfiles);
       }
     } catch (e) {
+      print('Lỗi trong getChildProfiles: $e');
       rethrow;
     }
   }
@@ -433,7 +426,7 @@ class UserService extends GetxService {
   }
 
   Future<void> assignChildProfiles(ChildProfiles childProfiles) async {
-    _childProfiles(childProfiles);
+    _childProfiles.value = childProfiles;
     await saveChildProfilesToStorage();
   }
 
@@ -491,21 +484,6 @@ class UserService extends GetxService {
     await _preferencesManager.clear();
 
     Get.offAllNamed(AppRoute.login);
-  }
-
-  Future<void> getRemoteLanguages() async {
-    try {
-      // final dynamic languagues = await appUseCases.getRemoteLanguages();
-      // debugPrint("hahaha: ${languagues}");
-      // await Future.delayed(const Duration(seconds: 3));
-      // LocalizationService.setVi = {
-      //   'class_three': 'hahhahahah',
-      // };
-      // debugPrint("vi: ${Language.vi}");
-      // LocalizationService.changeLocale(Language.vi);
-    } catch (e) {
-      // debugPrint("e: $e");
-    }
   }
 
   void updateParentInfo(String parentName, String parentPhone) {
@@ -571,12 +549,24 @@ class UserService extends GetxService {
   }
 
   //calling API from Apprepository
-  Future<void> updateProfileParent(dio.FormData formData) async {
+  Future<dynamic> updateProfileParent(dio.FormData formData) async {
     try {
       print('Login ID: ${userLogin.id}');
-      await appUseCases.updateParentProfile(userLogin.id, formData);
+      final dynamic responseData = await appUseCases.updateParentProfile(userLogin.id, formData);
+      return responseData;
     } catch (e){
       rethrow;
     }
   }
+
+  Future<dynamic> updateProfileChild(int id, dio.FormData formData) async {
+    try {
+      print('Child ID: $id');
+      final dynamic responseData = await childProfilesUsecases.updateChildProfile(id, formData);
+      return responseData;
+    } catch (e){
+      rethrow;
+    }
+  }
+
 }

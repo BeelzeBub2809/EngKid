@@ -25,7 +25,7 @@ class Question with _$Question {
     @Default('') String video,
     @JsonKey(name: 'achieved_mark') @Default("0") dynamic achievedMark,
     @JsonKey(name: 'attempt') @Default(0) int attempt,
-    @Default("Recognise") String level,
+    @JsonKey(name: 'level')@Default("1") String level,
     @JsonKey(name: 'isLearned')
     @Default(false)
     bool isLearned, // true: đã học - false: chưa học

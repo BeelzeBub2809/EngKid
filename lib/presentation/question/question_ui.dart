@@ -372,7 +372,6 @@ class QuestionScreen extends GetView<QuestionController> {
                           height: 0.075 * size.width,
                           width: 0.075 * size.width,
                         ),
-                        Text('home'.tr, style: TextStyle(fontSize: Fontsize.normal, color: Colors.white),)
                       ],
                     ),
                   ),

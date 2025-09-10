@@ -7,4 +7,6 @@ abstract class LoginRepository {
   Future<dynamic> checkSignUp(Map<String, dynamic> body);
 
   Future<dynamic> checkOtp(Map<String, dynamic> body);
+  Future<void> sendOtp(Map<String, dynamic> body);
+  Future<void> resetPassword(Map<String, dynamic> body);
 }

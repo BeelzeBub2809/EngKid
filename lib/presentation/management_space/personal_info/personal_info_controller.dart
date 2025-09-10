@@ -204,7 +204,7 @@ class PersonalInfoController extends GetxController {
       if (pickedFile != null) {
         //rotate image
         final fixRotate =
-            await FlutterExifRotation.rotateImage(path: pickedFile.path);
+        await FlutterExifRotation.rotateImage(path: pickedFile.path);
         fileAvatar = File(fixRotate.path);
         pathAvatar.value = fixRotate.path;
         print('pathAvatar : ${pathAvatar}');

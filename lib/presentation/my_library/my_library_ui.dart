@@ -272,7 +272,7 @@ class Header extends StatelessWidget {
           // ),
           GestureDetector(
             onTap: () {
-              userService.onPressProfile();
+              // userService.onPressProfile();
             },
             child: Container(
               decoration: BoxDecoration(
@@ -323,7 +323,7 @@ class Header extends StatelessWidget {
                         ),
                         RegularText(
                           // "grade",
-                          userService.currentUser.gradeId.toString(),
+                          'Lớp: ${userService.currentUser.gradeId}' ?? '',
                           style: TextStyle(
                             color: AppColor.gray,
                             fontWeight: FontWeight.w800,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:EngKid/utils/lib_function.dart';
 import 'package:EngKid/widgets/dialog/dialog_wordle_result.dart';
 import 'package:EngKid/widgets/dialog/dialog_word_definition.dart';
@@ -16,6 +17,7 @@ class WordleLetter {
 
 class WordleGameController extends GetxController {
   final dio.Dio _dio = dio.Dio();
+  late FlutterTts _flutterTts;
   // ignore: constant_identifier_names
   static const List<String> API_URLS = [
     'https://random-word-api-eight.vercel.app/word/english/noun',
@@ -56,7 +58,16 @@ class WordleGameController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _initTts();
     startNewGame();
+  }
+
+  void _initTts() async {
+    _flutterTts = FlutterTts();
+    await _flutterTts.setLanguage('en-US');
+    await _flutterTts.setSpeechRate(0.5);
+    await _flutterTts.setVolume(1.0);
+    await _flutterTts.setPitch(1.0);
   }
 
   Future<String?> _fetchRandomWord() async {
@@ -373,11 +384,26 @@ class WordleGameController extends GetxController {
     }
   }
 
-  void showHint() {
+  void showHint() async {
     if (_gameFinished.value) return;
 
-    String hint = _targetWord.value[0]; // Show first letter as hint
-    LibFunction.toast('Hint: Word starts with "$hint"');
+    await _flutterTts.speak(_targetWord.value);
+
+    // Fetch and show definition as toast
+    final wordInfo = await fetchWordDefinition(_targetWord.value);
+    if (wordInfo != null) {
+      String definition = wordInfo['definition'] ?? 'Definition not available';
+      String pronunciation = wordInfo['pronunciation'] ?? '';
+
+      String hintMessage = 'Definition: $definition';
+      if (pronunciation.isNotEmpty) {
+        hintMessage += '\nPronunciation: $pronunciation';
+      }
+
+      LibFunction.toast(hintMessage);
+    } else {
+      LibFunction.toast('Hint: Could not fetch word definition');
+    }
   }
 
   void resetGame() {
@@ -396,11 +422,17 @@ class WordleGameController extends GetxController {
     _isKeyboardVisible.value = !_isKeyboardVisible.value;
   }
 
+  @override
+  void onClose() {
+    _flutterTts.stop();
+    super.onClose();
+  }
+
   void _showResultDialog() {
     Get.dialog(
       DialogWordleResult(
         gameWon: _gameWon.value,
-        attempts: _currentRow.value,
+        attempts: _currentRow.value + 1,
         targetWord: _targetWord.value,
         onNewGame: () {
           Get.back(); // Close dialog

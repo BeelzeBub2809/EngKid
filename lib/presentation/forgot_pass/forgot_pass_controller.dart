@@ -18,8 +18,9 @@ enum ForgotPassInputType { email, otp, password, confirmPassword, }
 
 class ForgotPassController extends GetxController {
   final UserService _userService = Get.find<UserService>();
+  final LoginUsecases loginUsecases;
 
-  ForgotPassController();
+  ForgotPassController({required this.loginUsecases});
 
   final _preferencesManager = getIt<SharedPreferencesManager>();
 
@@ -117,6 +118,66 @@ class ForgotPassController extends GetxController {
       );
     } else {
       Get.offAllNamed(AppRoute.home);
+    }
+  }
+
+  Future<void> sendOtp(Map<String, dynamic> body) async {
+    try {
+    await loginUsecases.sendOtp(body);
+    } catch (e){
+    rethrow;
+    }
+  }
+
+  Future<void> resetPassword(Map<String, dynamic> body) async {
+    try {
+      await loginUsecases.resetPassword(body);
+    } catch (e){
+      rethrow;
+    }
+  }
+
+  void onSendOtp() async {
+    print('onSendOtp Called');
+      Map<String, dynamic> body = {
+        'email' : _email.value,
+      };
+      try {
+        LibFunction.showLoading();
+        await sendOtp(body);
+        LibFunction.hideLoading();
+        LibFunction.toast('OTP đã được gửi về email');
+      }catch (e) {
+        LibFunction.toast('Có lỗi xảy ra khi gửi otp');
+        print('Error in createChildAccount: $e');
+        LibFunction.hideLoading();
+      }
+  }
+  void onResetPassword() async {
+    print('onResetPassword Called');
+    Map<String, dynamic> body = {
+      'email' : _email.value,
+      'otp': _otp.value,
+      'newPassword': _password.value
+    };
+    LibFunction.showLoading();
+    try {
+      if (_password.value.isEmpty || _confirmPassword.value.isEmpty) {
+        LibFunction.hideLoading();
+        LibFunction.toast('Vui lòng nhập đầy đủ thông tin');
+      } else {
+        if (_password.value == _confirmPassword.value) {
+          await resetPassword(body);
+          LibFunction.hideLoading();
+          LibFunction.toast('Đổi mật khẩu thành công');
+        } else {
+          LibFunction.hideLoading();
+          LibFunction.toast('Mật khẩu và mật khẩu nhập lại không khớp');
+        }
+      }
+    }catch (e) {
+      print('Error in createChildAccount: $e');
+      LibFunction.hideLoading();
     }
   }
 }

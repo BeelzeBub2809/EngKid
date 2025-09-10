@@ -59,7 +59,6 @@ class FeedbackController extends GetxController with WidgetsBindingObserver {
     isSearching.value = true;
     try {
       var dynamicList = await _readingUsecases.getListReading(query);
-      print('Search results for "$query": ${dynamicList.length} items');
 
       searchResults.clear();
 
@@ -121,28 +120,6 @@ class FeedbackController extends GetxController with WidgetsBindingObserver {
 
   void submitFeedback() async {
     if (formKey.currentState?.validate() ?? false) {
-      if (selectedStoryId.value == null) {
-        Get.snackbar(
-          'Lỗi',
-          'Vui lòng chọn bài đọc',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-        return;
-      }
-
-      if (rating.value == 0) {
-        Get.snackbar(
-          'Lỗi',
-          'Vui lòng đánh giá số sao',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-        return;
-      }
-
       isLoading.value = true;
 
       try {
@@ -160,8 +137,8 @@ class FeedbackController extends GetxController with WidgetsBindingObserver {
 
         await _feedbackUsecases.sendFeedback(
           userId: userId,
-          readingId: selectedStoryId.value as int,
-          rating: rating.value,
+          readingId: selectedStoryId.value,
+          rating: rating.value == 0 ? null : rating.value,
           comment: commentController.text.trim().isEmpty
               ? null
               : commentController.text.trim(),

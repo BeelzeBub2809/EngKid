@@ -21,7 +21,6 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../data/core/local/share_preferences_manager.dart';
 import '../../di/injection.dart';
-import '../../widgets/dialog/dialog_downloadall.dart';
 import '../core/user_service.dart';
 
 class ElibraryController extends GetxController with WidgetsBindingObserver {
@@ -181,19 +180,6 @@ class ElibraryController extends GetxController with WidgetsBindingObserver {
     _loadingProgress.value = 10;
   }
 
-  void handleShowDownloadAll(ElibraryController controller) {
-    setIsVideoDownloaded();
-    handleChangeDownloadedScreen(false);
-    _isMultipleDownloading.value = RxList<bool>.filled(2000, false);
-    _isCheckAll.value = false;
-    Get.dialog(
-      DialogELibraryDownloadAll(
-        controller: controller,
-      ),
-      barrierDismissible: false,
-      barrierColor: null,
-    );
-  }
 
   void handleCheckAll() {
     _isCheckAll.value = !_isCheckAll.value;

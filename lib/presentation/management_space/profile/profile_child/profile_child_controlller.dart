@@ -1,16 +1,25 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:EngKid/domain/core/entities/entities.dart';
 import 'package:EngKid/domain/grade/entities/entities.dart';
 import 'package:EngKid/presentation/core/user_service.dart';
+import 'package:EngKid/utils/im_utils.dart';
 import 'package:EngKid/utils/lib_function.dart';
+import 'package:EngKid/widgets/commom/item_bottom_sheet_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
+import 'package:dio/dio.dart' as dio;
+import 'package:intl/intl.dart';
+import 'package:path/path.dart' as p;
 
 import '../../../../domain/core/entities/child_profile/entities/child/child.dart';
 
-enum ProfileChildInputType { childName, childId, dateOfBirth }
+enum ProfileChildInputType { childName, dateOfBirth }
 
 class ProfileChildController extends GetxController {
   ProfileChildController();
@@ -27,13 +36,11 @@ class ProfileChildController extends GetxController {
   final RxString _childName = ''.obs;
   final RxString _gender = ''.obs;
   final RxString _disability = ''.obs;
-  final RxString _childId = ''.obs;
   final RxString _sex = 'male'.obs;
 
   String get childName => _childName.value;
   String get gender => _gender.value;
   String get disability => _disability.value;
-  String get childId => _childId.value;
   String get sex => _sex.value;
 
   TextEditingController childNameController = TextEditingController();
@@ -69,8 +76,13 @@ class ProfileChildController extends GetxController {
   final RxMap<String, dynamic> _selectedGrade = <String, dynamic>{}.obs;
   Map<String, dynamic> get selectedGrade => _selectedGrade.value;
 
+  final RxList<XFile> _listFile = <XFile>[].obs;
+  List<XFile> get listFile => _listFile.value;
+
+  final RxList<ItemBottomSheetModel> _listItemBts = <ItemBottomSheetModel>[].obs;
+  List<ItemBottomSheetModel> get listItemBts => _listItemBts.value;
+
   final PageController pageController = PageController(
-    initialPage: 1,
     viewportFraction: 0.4,
   );
 
@@ -83,6 +95,8 @@ class ProfileChildController extends GetxController {
   List<String> get listImageAvt => _listImageAvt;
   late final RxList<Grade> _gradeList;
   List<Grade> get gradeList => _gradeList.value;
+  final RxString _imagePath = ''.obs;
+  String get imagePath => _imagePath.value;
 
   @override
   void onInit() {
@@ -106,38 +120,29 @@ class ProfileChildController extends GetxController {
       Grade(id: 5, name: grade5),
     ].obs;
 
-    _userService.userInfos.asMap().forEach((index, value) {
-      if (value.value.user.id == _userService.currentUser.id) {
-        indexChild.value = index;
-        userInfo(value.value);
-        _childName.value = _userService.currentUser.name;
-        _childId.value = _userService.currentUser.id.toString();
-        _selectedGrade.value = {
-          "id": _userService.currentUser.gradeId,
-        };
+    _listItemBts.value = [
+      ItemBottomSheetModel("camera", '', Icons.camera_alt),
+      ItemBottomSheetModel("storage", '', Icons.image_rounded),
+    ];
 
-        _dateOfBirth.value = "29/11/2003";
+    final List<Child> children = _userService.childProfiles.childProfiles;
+
+    if (children.isNotEmpty) {
+      final Child currentChild = _userService.currentUser;
+      int initialIndex = children.indexWhere((c) => c.id == currentChild.id);
+      if (initialIndex == -1) {
+        initialIndex = 0;
       }
-    });
-    
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      initData();
-      // getOrganization(3, _selectedProvince.value['id']);
-    });
-    dateOfBirthController.text = _dateOfBirth.value;
-    childNameController.text = _childName.value;
-    childIdController.text = _childId.value;
-    if (_userService.childProfiles.childProfiles.length > 1) {
-      indexChild.value = 1;
 
-      onChangeChild(_userService.childProfiles.childProfiles[1], 1);
+      onChangeChild(children[initialIndex], initialIndex);
 
-      Future.delayed(const Duration(milliseconds: 300), () {
-        pageController.jumpToPage(1);
+      // Cập nhật PageController để trượt đến đúng vị trí child
+      // Dùng addPostFrameCallback để đảm bảo widget đã được build
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (pageController.hasClients) {
+          pageController.jumpToPage(initialIndex);
+        }
       });
-    } else if (_userService.userInfos.isNotEmpty) {
-      indexChild.value = 0;
-      onChangeChild(_userService.childProfiles.childProfiles[0], 0);
     }
   }
 
@@ -153,17 +158,27 @@ class ProfileChildController extends GetxController {
   void initData() async {}
 
   void onChangeChild(Child child, int index) {
+    print('onChangeChild được gọi cho: ${child.name} (ID: ${child.id})');
     try {
+      _userService.updateListChild(child);
+
       indexChild.value = index;
-      _childName.value = userInfo.value.user.name;
-      _childId.value = child.id.toString();
-      childNameController.text = child.name;
-      childIdController.text = child.id.toString();
+
+      _childName.value = child.name;
+      _dateOfBirth.value = child.dob;
+      _sex.value = child.gender;
 
       _selectedGrade.value = {
         "id": child.gradeId,
       };
+
+      childNameController.text = child.name;
+      childIdController.text = child.id.toString();
+      dateOfBirthController.text = child.dob;
+
+      _imagePath.value = '';
     } catch (e) {
+      print("Lỗi onChangeChild: $e");
       LibFunction.toast('error_try_again');
     }
   }
@@ -183,10 +198,6 @@ class ProfileChildController extends GetxController {
         _childName.value = input;
         childNameController.text = input;
         break;
-      case ProfileChildInputType.childId:
-        _childId.value = input;
-        childIdController.text = input;
-        break;
       case ProfileChildInputType.dateOfBirth:
         _dateOfBirth.value = input;
         dateOfBirthController.text = dateOfBirthRx;
@@ -202,6 +213,37 @@ class ProfileChildController extends GetxController {
     _isEdit.value = !_isEdit.value;
   }
 
+  bool validateFormRegister() {
+    _validateChildName.value = _childName.value.isEmpty
+        ? "please_enter_child_name"
+        : "";
+    _validateSex.value =
+    _sex.value.isEmpty ? "please_enter_sex" : "";
+    _validateGrade.value =
+    _selectedGrade.value.isEmpty ? "please_enter_grade" : "";
+
+    if (_dateOfBirth.value.isEmpty) {
+      _validateDateOfBirth.value = "please_enter_date_of_birth";
+    } else {
+      try {
+        final dob = DateFormat("dd/MM/yyyy").parseStrict(_dateOfBirth.value);
+        if (dob.isAfter(DateTime.now())) {
+          _validateDateOfBirth.value = "date_of_birth_cannot_be_in_future";
+        } else {
+          _validateDateOfBirth.value = "";
+        }
+      } catch (e) {
+        _validateDateOfBirth.value = "invalid_date_format";
+      }
+    }
+
+
+    return _validateChildName.value.isEmpty &&
+        _validateSex.value.isEmpty &&
+        _validateGrade.value.isEmpty &&
+        _validateDateOfBirth.isEmpty;
+  }
+
   @override
   void onClose() {
     super.onClose();
@@ -213,5 +255,124 @@ class ProfileChildController extends GetxController {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+  }
+
+  Future<void> updateProfileChild() async {
+    if(validateFormRegister()) {
+      try {
+        Map<String, dynamic> body = {
+          'name': _childName.value,
+          'gender': _sex.value,
+          'dob': _dateOfBirth.value,
+          'grade_id': _selectedGrade.value['id'],
+        };
+
+        dio.FormData formData = dio.FormData.fromMap(body);
+
+        if (_imagePath.value.isNotEmpty) {
+          File imageFile = File(_imagePath.value);
+          body['image'] = imageFile;
+          print("imageFile : $imageFile");
+          print("File size: ${await imageFile.length()} bytes");
+          formData.files.add(MapEntry(
+            'image',
+            await dio.MultipartFile.fromFile(
+              imagePath,
+              filename: p.basename(imagePath),
+            ),
+          ));
+        } else {
+        }
+        Map<String, dynamic> loggableBody = Map.from(body);
+
+        if (loggableBody['image'] is File) {
+          loggableBody['image'] = (loggableBody['image'] as File).path;
+        }
+        const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+        final String prettyJson = encoder.convert(loggableBody);
+
+        print('---------- BEGIN REQUEST BODY ----------');
+        print(prettyJson);
+        print('----------- END REQUEST BODY -----------');
+
+
+        LibFunction.showLoading();
+        final responseData = await _userService.updateProfileChild(
+            _userService.childProfiles.childProfiles[indexChild.value].id, formData);
+        if (responseData != null && responseData is Map<String, dynamic>) {
+          Child updatedChildInfo = Child(
+            id: responseData['id'] ?? _userService.childProfiles.childProfiles[indexChild.value].id,
+            parentId: responseData['kid_parent_id'] ?? _userService.childProfiles.childProfiles[indexChild.value].parentId,
+            name: responseData['name'] ?? '',
+            gender: responseData['gender'] ?? '',
+            dob: responseData['dob'] ?? '',
+            gradeId: int.tryParse(responseData['grade_id'].toString()) ?? 1,
+            avatar: responseData['image'] ?? '',
+          );
+          await _userService.updateListChild(updatedChildInfo);
+          LibFunction.hideLoading();
+          LibFunction.toast('Cập nhật thông tin thành công');
+
+        } else {
+          LibFunction.hideLoading();
+          // Xử lý trường hợp có lỗi
+          LibFunction.toast('Có lỗi xảy ra, không nhận được dữ liệu cập nhật');
+        }
+
+      } catch(e) {
+        print('Error updateProfileParent: $e');
+        LibFunction.hideLoading();
+      }
+    }
+  }
+
+  Future<void> getFunctionByIndex(int index, BuildContext context) async {
+    print(index);
+    switch (index) {
+      case 0:
+        final List<String>? value = await IMUtils.openCamera();
+        if (value != null && value.isNotEmpty) {
+          LibFunction.showLoading();
+          await Future.delayed(const Duration(milliseconds: 500));
+
+          _listFile.clear();
+          for (String imagePath in value) {
+            _listFile.add(XFile(imagePath));
+          }
+          if (kDebugMode) {
+            print('Selected image path: ${_listFile[0].path}');
+          }
+          pathAvatars[indexAvt.value] = _listFile[0].path;
+          _imagePath.value = _listFile[0].path;
+          LibFunction.hideLoading();
+          Get.back();
+        }
+        break;
+
+      case 1:
+        final List<String>? value = await IMUtils.pickImageFromLibrary();
+        if (value != null && value.isNotEmpty) {
+          LibFunction.showLoading();
+          await Future.delayed(const Duration(milliseconds: 500));
+
+          _listFile.clear();
+          for (String imagePath in value) {
+            _listFile.add(XFile(imagePath));
+          }
+
+          print(_listFile[0].path);
+          if (_listFile.isNotEmpty) {
+            pathAvatars[indexAvt.value] = _listFile[0].path;
+            _imagePath.value = _listFile[0].path;
+          } else {
+            if (kDebugMode) {
+              print("⚠️ No valid image file selected!");
+            }
+          }
+          LibFunction.hideLoading();
+          Get.back();
+        }
+        break;
+    }
   }
 }

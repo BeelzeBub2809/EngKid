@@ -42,8 +42,8 @@ class SettingScreen extends GetView<SettingController> {
               height: 0.5 * size.height,
               child: Row(
                 children: [
-                  LeftSetting(size: size, controller: controller),
-                  SizedBox(width: 0.02 * size.width),
+                  // LeftSetting(size: size, controller: controller),
+                  // SizedBox(width: 0.02 * size.width),
                   RightSetting(size: size, controller: controller),
                 ],
               ),

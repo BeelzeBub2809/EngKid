@@ -133,10 +133,16 @@ class RightContent extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Row(
-
                               children: [
-                                RegularText('back'.tr, style: TextStyle(fontSize: Fontsize.smaller, color: AppColor.blue),),
-                                SizedBox(width: size.height * 0.01,),
+                                RegularText(
+                                  'back'.tr,
+                                  style: TextStyle(
+                                      fontSize: Fontsize.smaller,
+                                      color: AppColor.blue),
+                                ),
+                                SizedBox(
+                                  width: size.height * 0.01,
+                                ),
                                 ImageButton(
                                   pathImage: LocalImage.backAcc,
                                   onTap: () {
@@ -152,7 +158,6 @@ class RightContent extends StatelessWidget {
                               width: 0.01 * size.width,
                             ),
                             Container(
-
                               width: 0.2 * size.width,
                               height: 0.08 * size.height,
                               decoration: const BoxDecoration(
@@ -179,8 +184,11 @@ class RightContent extends StatelessWidget {
                                                   controller.isShowThis.value
                                               ? "this_month".tr
                                               : controller.indexActive == 2
-                                                  ? "num_of_year".trParams(
-                                                      {"year": controller.currentDate.year.toString()})
+                                                  ? "num_of_year".trParams({
+                                                      "year": controller
+                                                          .currentDate.year
+                                                          .toString()
+                                                    })
                                                   : '',
                                       style: TextStyle(
                                         color: AppColor.blue,
@@ -226,8 +234,15 @@ class RightContent extends StatelessWidget {
                                   width: 0.05 * size.width,
                                   height: 0.05 * size.width,
                                 ),
-                                RegularText('next'.tr, style: TextStyle(fontSize: Fontsize.smaller, color: AppColor.blue),),
-                                SizedBox(width: size.height * 0.01,),
+                                RegularText(
+                                  'next'.tr,
+                                  style: TextStyle(
+                                      fontSize: Fontsize.smaller,
+                                      color: AppColor.blue),
+                                ),
+                                SizedBox(
+                                  width: size.height * 0.01,
+                                ),
                               ],
                             ),
                           ],
@@ -257,30 +272,6 @@ class RightContent extends StatelessWidget {
               ),
             ],
           ),
-          // Obx(
-          //   () => Positioned.fill(
-          //     top: 0.24 * size.height,
-          //     left: controller.indexActive == 0
-          //         ? 0.01 * size.width
-          //         : controller.indexActive == 1
-          //             ? 0.04 * size.width
-          //             : 0,
-          //     child: Align(
-          //       alignment: Alignment.topLeft,
-          //       child: SizedBox(
-          //         width: 0.04 * size.width,
-          //         child: RegularText(
-          //           'minute'.tr[0].toUpperCase() +
-          //               'minute'.tr.substring(1).toLowerCase(),
-          //           maxLines: 1,
-          //           style: TextStyle(
-          //             fontSize: Fontsize.smallest,
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // )
         ],
       ),
     );
@@ -334,7 +325,7 @@ class ContentLeft extends StatelessWidget {
                   title: "average_time_per_day",
                   sub: "minute",
                   image: LocalImage.reportSandclock,
-                  number: controller.averageTime.ceil(),
+                  number: (controller.averageTime / 60).ceil(),
                 ),
               ),
               SizedBox(height: 0.02 * size.height),
@@ -342,7 +333,7 @@ class ContentLeft extends StatelessWidget {
                 () => ItemContentLeft(
                   size: size,
                   title: "total_time",
-                  sub: "hour",
+                  sub: "minute",
                   image: LocalImage.reportClock,
                   number: (controller.totalTime / 60).ceil(),
                 ),
@@ -424,10 +415,10 @@ class ItemContentLeft extends StatelessWidget {
                     ),
                     const Expanded(child: SizedBox()),
                     ImageButton(
-                      pathImage:
-                        image,
-                        onTap: (){},
-                        width: 0.03 * size.width, height: 0.03 * size.width)
+                        pathImage: image,
+                        onTap: () {},
+                        width: 0.03 * size.width,
+                        height: 0.03 * size.width)
                   ],
                 ),
               ],

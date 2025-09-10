@@ -387,5 +387,12 @@ const Map<String, String> vi = {
   //Video
   "pause_video" : "Dừng",
   "next_video" : "Tiếp tục",
-  "review_video" : "Phát lại"
+  "review_video" : "Phát lại",
+
+  //Star board
+  "star_board" : "Số sao đã học",
+
+  //Validate
+  "please_enter_date_of_birth" : "Vui lòng nhập ngày sinh",
+  "date_of_birth_cannot_be_in_future" : "Ngày sinh không thể đặt ở tương lai"
 };

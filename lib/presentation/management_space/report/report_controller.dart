@@ -212,15 +212,12 @@ class ReportController extends GetxController {
         if (_networkService.networkConnection.value) {
           dataWeek = await _userService.getReadingHistory(
             _userService.currentUser.id,
-            DateFormat('yyyy-MM-dd')
-                .format(firstDayOfCurrentWeek)
-                .toString(),
-            DateFormat('yyyy-MM-dd')
-                .format(lastDayOfCurrentWeek)
-                .toString(),
+            DateFormat('yyyy-MM-dd').format(firstDayOfCurrentWeek).toString(),
+            DateFormat('yyyy-MM-dd').format(lastDayOfCurrentWeek).toString(),
           );
         } else {
-          dataWeek = LibFunction.getHistoryFromStorage(KeySharedPreferences.timeYear);
+          dataWeek =
+              LibFunction.getHistoryFromStorage(KeySharedPreferences.timeYear);
         }
         if ("${((currentDate.difference(DateTime(now.year, 1, 1)).inDays + 1) / 7).ceil() + 1}" ==
             "${((now.difference(DateTime(now.year, 1, 1)).inDays + 1) / 7).ceil() + 1}") {
@@ -231,13 +228,15 @@ class ReportController extends GetxController {
             final DateTime date = LibFunction.parseDate(history.date);
             if (index == LibFunction.getIndexDayInWeek(date)) {
               final List<String> arr = history.duration.split(":");
-              final double duration = arr.isNotEmpty ? double.parse(arr[0]) : 0;
+              final double duration =
+                  arr.isNotEmpty ? double.parse(arr[0]) / 60 : 0;
               if (daysOfWeek[index].value + duration > maxY) {
                 maxY = daysOfWeek[index].value + duration;
               }
               daysOfWeek[index] = daysOfWeek[index].copyWith(
                 value: daysOfWeek[index].value + duration,
-                isHighlight: history.date == DateFormat('dd/MM/yyyy').format(now).toString(),
+                isHighlight: history.date ==
+                    DateFormat('dd/MM/yyyy').format(now).toString(),
               );
             }
           }
@@ -245,7 +244,7 @@ class ReportController extends GetxController {
         totalReaded.value = getTotalReaded(dataWeek);
         totalTime.value = sumTime(dataWeek);
         final int totalDayReaded = getDayReaded(dataWeek);
-        averageTime.value = totalDayReaded != 0 ? totalTime.value / totalDayReaded : 0;
+        averageTime.value = totalDayReaded != 0 ? totalTime.value / 7 : 0;
       } catch (e) {
         print("-----ERROR-----");
         print(e);
@@ -284,22 +283,24 @@ class ReportController extends GetxController {
             DateFormat('yyyy-MM-dd').format(lastDayOfMonth).toString(),
           );
         } else {
-          dataMonth = LibFunction.getHistoryFromStorage(KeySharedPreferences.timeYear);
+          dataMonth =
+              LibFunction.getHistoryFromStorage(KeySharedPreferences.timeYear);
         }
         totalReaded.value = getTotalReaded(dataMonth);
         final Map<String, double> thisWeeklyData = {};
-        List.generate( 4, (index) =>
-          thisWeeklyData["${index}"] = 0
-        );
+        List.generate(4, (index) => thisWeeklyData["${index}"] = 0);
 
         for (final History history in dataMonth) {
           final DateTime date = LibFunction.parseDate(history.date);
-          final int currentWeek = LibFunction.getWeekNumberForDate(date, weeksOfMonth);
+          final int currentWeek =
+              LibFunction.getWeekNumberForDate(date, weeksOfMonth);
           final List<String> arr = history.duration.split(":");
-          final double duration = arr.isNotEmpty ? double.parse(arr[0]) : 0;
+          final double duration =
+              arr.isNotEmpty ? double.parse(arr[0]) / 60 : 0;
 
-          if(currentWeek < weeksOfMonth.length){
-            thisWeeklyData[currentWeek.toString()] = thisWeeklyData[currentWeek.toString()]! + duration;
+          if (currentWeek < weeksOfMonth.length) {
+            thisWeeklyData[currentWeek.toString()] =
+                thisWeeklyData[currentWeek.toString()]! + duration;
           } else {
             final MapEntry<String, dynamic> lastEntry =
                 thisWeeklyData.entries.last;
@@ -314,7 +315,8 @@ class ReportController extends GetxController {
         };
         List<MapEntry<String, dynamic>> list = sortedMapWeek.entries.toList();
 
-        int nowWeek = LibFunction.getWeekNumberForDate(DateTime.now(), weeksOfMonth);
+        int nowWeek =
+            LibFunction.getWeekNumberForDate(DateTime.now(), weeksOfMonth);
         weeksOfMonth.asMap().forEach((index, value) {
           final double val = double.parse(list[index].value.toString());
           if (val > maxY) {
@@ -336,8 +338,7 @@ class ReportController extends GetxController {
         totalReaded.value = getTotalReaded(dataMonth);
         totalTime.value = sumTime(dataMonth);
         final int totalDayReaded = getDayReaded(dataMonth);
-        averageTime.value =
-            totalDayReaded != 0 ? totalTime.value / totalDayReaded : 0;
+        averageTime.value = totalDayReaded != 0 ? totalTime.value / 30 : 0;
       } catch (e) {
         print("-----ERROR-----");
         print(e);
@@ -390,7 +391,7 @@ class ReportController extends GetxController {
             isShowThis.value = true;
           }
           monthsOfYear[index] = monthsOfYear[index].copyWith(
-            value: sum,
+            value: sum / 60,
             isHighlight: now.month == index + 1 ? true : false,
           );
         });
@@ -398,8 +399,7 @@ class ReportController extends GetxController {
         totalReaded.value = getTotalReaded(dataYear);
         totalTime.value = sumTime(dataYear);
         final int totalDayReaded = getDayReaded(dataYear);
-        averageTime.value =
-            totalDayReaded != 0 ? totalTime.value / totalDayReaded : 0;
+        averageTime.value = totalDayReaded != 0 ? totalTime.value / 365 : 0;
       } catch (e) {
         //
       }
@@ -447,5 +447,11 @@ class ReportController extends GetxController {
       hashCode: (a) => a.date.hashCode,
     )..addAll(data);
     return dataUniq.length;
+  }
+
+  String secondsToMinutesSeconds(int seconds) {
+    final minutes = (seconds ~/ 60);
+    final remainingSeconds = seconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 }

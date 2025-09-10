@@ -16,6 +16,7 @@ class QuestionRepositoryImp implements QuestionRepository {
       final data = response.data;
       if (response.result && data != null && data['records'] != null) {
         final List<dynamic> records = data['records'];
+        print(records);
         final s = records.map((e) => Question.fromJson(e)).toList();
         return s;
       } else {

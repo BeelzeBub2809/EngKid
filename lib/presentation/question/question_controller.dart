@@ -56,6 +56,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
   late double _doQuizDuration = 0;
   late int videoDuration = 0;
   double get doQuizDuration => _doQuizDuration;
+  late int totalQuestion = 0;
 
   set isFullScreen(bool value) {
     _isFullScreen.value = value;
@@ -109,6 +110,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
 
   void _initQuestion() {
     final Quiz quiz = Get.arguments[0] as Quiz;
+    totalQuestion = quiz.questions.length;
 
     quizUseCases.reading = Get.arguments[2] as Reading;
 
@@ -136,23 +138,23 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     } catch (e) {
 //
     }
-    _unCompleteQuestions.add(const Question(
-        typeCode: 'read',
-        question: "But today Mr Brown isn't in the kitchen."
-            "'Tom!' she calls. No answer."
-            "'That's strange,' she thinks."
-            "Mrs Brown goes outside and calls Max, her dog."
-            "'Max!' she calls. Max doesn't come."
-            "'That's strange,' she thinks."
-            "Mrs Brown goes to feed the chickens."
-            "She looks in the backyard. No chickens."
-            "'That's strange,' she thinks."
-            "Mrs Brown goes to see the cows."
-            "She looks in the barn. No cows."
-            "'That's strange,' she thinks.'"
-            "Mrs Brown looks in the field. No animals."
-            "'Where are the sheep? Where are the pigs? Where's the horse? That's very strange!' she thinks."
-            "Mrs Brown hears a noise behind the house."));
+    // _unCompleteQuestions.add(const Question(
+    //     typeCode: 'read',
+    //     question: "But today Mr Brown isn't in the kitchen."
+    //         "'Tom!' she calls. No answer."
+    //         "'That's strange,' she thinks."
+    //         "Mrs Brown goes outside and calls Max, her dog."
+    //         "'Max!' she calls. Max doesn't come."
+    //         "'That's strange,' she thinks."
+    //         "Mrs Brown goes to feed the chickens."
+    //         "She looks in the backyard. No chickens."
+    //         "'That's strange,' she thinks."
+    //         "Mrs Brown goes to see the cows."
+    //         "She looks in the barn. No cows."
+    //         "'That's strange,' she thinks.'"
+    //         "Mrs Brown looks in the field. No animals."
+    //         "'Where are the sheep? Where are the pigs? Where's the horse? That's very strange!' she thinks."
+    //         "Mrs Brown hears a noise behind the house."));
     _unCompleteQuestions.addAll(quiz.questions.sublist(0));
 
     _unCompleteQuestions.add(const Question(typeCode: 'achieve_star'));
@@ -212,7 +214,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     } else {
       handleMyProgress();
       submitCompletedQuestion();
-      Get.back();
+      Get.back(result: true);
     }
   }
 

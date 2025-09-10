@@ -236,11 +236,6 @@ class Header extends StatelessWidget {
                 height: 0.075 * size.width,
                 width: 0.075 * size.width,
               ),
-              RegularText(
-                'home'.tr,
-                style:
-                    TextStyle(fontSize: Fontsize.normal, color: AppColor.red),
-              )
             ],
           ),
           Row(
@@ -272,7 +267,7 @@ class Header extends StatelessWidget {
                 onTap: () async {
                   await LibFunction.effectConfirmPop();
                   // userService.logout();
-                  userService.onPressProfile();
+                  // userService.onPressProfile();
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -323,7 +318,7 @@ class Header extends StatelessWidget {
                               ),
                             ),
                             RegularText(
-                              userService.currentUser.gradeId.toString() ?? '',
+                              'Lớp: ${userService.currentUser.gradeId}' ?? '',
                               style: TextStyle(
                                 color: AppColor.gray,
                                 fontWeight: FontWeight.w800,

@@ -45,7 +45,7 @@ class TopicService extends GetxService {
   final RxInt _totalReading = 0.obs;
   final RxInt _completedReading = 0.obs;
   final RxInt _totalStar = 0.obs;
-  final RxInt _completedStar = 0.obs;
+  final RxDouble _completedStar = 0.0.obs;
   List<Topic> topicList = List<Topic>.empty(growable: true);
   final RxList<Reading> downloadAllReadingList =
       RxList<Reading>.empty(growable: true);
@@ -61,7 +61,7 @@ class TopicService extends GetxService {
   int get totalReading => _totalReading.value;
   int get completedReading => _completedReading.value;
   int get totalStar => _totalStar.value;
-  int get completedStar => _completedStar.value;
+  double get completedStar => _completedStar.value;
 
   set currentGrade(Grade value) {
     _currentGrade = value;
@@ -138,7 +138,7 @@ class TopicService extends GetxService {
         _totalReading.value = 0;
         _completedReading.value = 0;
         _totalStar.value = 0;
-        _completedStar.value = 0;
+        _completedStar.value = 0.0;
         return [];
       }
 
@@ -159,7 +159,7 @@ class TopicService extends GetxService {
       _totalReading.value = result.length;
       _completedReading.value = completedReadingsCount;
       _totalStar.value = totalStarsCount;
-      _completedStar.value = completedStarsCount.toInt();
+      _completedStar.value = completedStarsCount;
       _readings.clear();
       _readings.assignAll(result);
 

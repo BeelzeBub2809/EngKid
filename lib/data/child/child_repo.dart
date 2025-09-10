@@ -57,4 +57,27 @@ class ChildRepositoryImp implements ChildRepository {
       return Future.error(error);
     }
   }
+  @override
+  Future<dynamic> updateChildProfile(int id, FormData formData) async {
+    try {
+      final ApiResponseObject response = await childApi.updateChild(id, formData);
+      if (response.result) {
+        return response.data;
+      } else {
+        throw response.message;
+      }
+    } catch (e, stackTrace) {
+      if (e is DioException) {
+        print('[Repository] DioException occurred:');
+        print('  → Type: ${e.type}');
+        print('  → Message: ${e.message}');
+        print('  → Response: ${e.response?.data}');
+        print('  → StatusCode: ${e.response?.statusCode}');
+        print('  → StackTrace: $stackTrace');
+      } else {
+        print('[Repository] Unknown exception: $e');
+        print('[Repository] StackTrace: $stackTrace');
+      }
+    }
+  }
 }
