@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EngKid/presentation/core/topic_service.dart';
 import 'package:EngKid/presentation/core/user_service.dart';
 import 'package:EngKid/presentation/my_library/my_library_controller.dart';
 import 'package:EngKid/utils/app_color.dart';
@@ -11,13 +10,12 @@ import 'package:EngKid/widgets/image/cache_image.dart';
 import 'package:EngKid/widgets/text/image_text.dart';
 import 'package:EngKid/widgets/text/regular_text.dart';
 
-class MyLibraryScreen extends GetView<MyLibraryController>{
+class MyLibraryScreen extends GetView<MyLibraryController> {
   const MyLibraryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final TopicService topicService = Get.find<TopicService>();
     return Scaffold(
       body: Container(
         width: size.width,
@@ -46,37 +44,45 @@ class MyLibraryScreen extends GetView<MyLibraryController>{
                       ),
                     ),
                     Obx(
-                          () => Padding(
+                      () => Padding(
                         padding: EdgeInsets.only(top: 0.04 * size.height),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: List.generate(
-                              topicService.grades.length-2, (index) {
-                            return GradeIcon(
-                                image: topicService.grades[index].image,
-                                isOpen: topicService.grades[index].isOpen,
-                                name: topicService.grades[index].name,
-                                onPressGrade: () => controller
-                                    .onPressGrade(topicService.grades[index]));
+                              controller.learningPaths.length > 3
+                                  ? 3
+                                  : controller.learningPaths.length, (index) {
+                            return LearningPathIcon(
+                                image: controller.learningPaths[index]['image'],
+                                isOpen: controller.learningPaths[index]
+                                    ['isOpen'],
+                                name: controller.learningPaths[index]['name'],
+                                onPressLearningPath: () =>
+                                    controller.onPressLearningPath(
+                                        controller.learningPaths[index]));
                           }),
                         ),
                       ),
                     ),
                     Obx(
-                          () => topicService.grades.length > 3
+                      () => controller.learningPaths.length > 3
                           ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                            topicService.grades.length-3, (index) {
-                          return GradeIcon(
-                            image: topicService.grades[3+index].image,
-                            isOpen: topicService.grades[3+index].isOpen,
-                            name: topicService.grades[3+index].name,
-                            onPressGrade: () => controller.onPressGrade(
-                                topicService.grades[3+index]),
-                          );
-                        }),
-                      )
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(
+                                  controller.learningPaths.length - 3, (index) {
+                                return LearningPathIcon(
+                                  image: controller.learningPaths[3 + index]
+                                      ['image'],
+                                  isOpen: controller.learningPaths[3 + index]
+                                      ['isOpen'],
+                                  name: controller.learningPaths[3 + index]
+                                      ['name'],
+                                  onPressLearningPath: () =>
+                                      controller.onPressLearningPath(
+                                          controller.learningPaths[3 + index]),
+                                );
+                              }),
+                            )
                           : const SizedBox(),
                     ),
                   ],
@@ -90,7 +96,6 @@ class MyLibraryScreen extends GetView<MyLibraryController>{
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-
                       Image.asset(
                         LocalImage.mascotWelcome,
                         height: 0.18 * size.width,
@@ -113,7 +118,6 @@ class MyLibraryScreen extends GetView<MyLibraryController>{
                           controller.onBackPress();
                         },
                       ),
-
                     ],
                   )),
             )
@@ -124,26 +128,26 @@ class MyLibraryScreen extends GetView<MyLibraryController>{
   }
 }
 
-class GradeIcon extends StatelessWidget {
-  const GradeIcon({
+class LearningPathIcon extends StatelessWidget {
+  const LearningPathIcon({
     super.key,
     required this.image,
     required this.isOpen,
     required this.name,
-    required this.onPressGrade,
+    required this.onPressLearningPath,
   });
 
   final String image;
   final bool isOpen;
   final String name;
-  final Function onPressGrade;
+  final Function onPressLearningPath;
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
-        onPressGrade();
+        onPressLearningPath();
       },
       child: Stack(
         children: [
@@ -168,6 +172,13 @@ class GradeIcon extends StatelessWidget {
                   image,
                   width: size.height * 0.18,
                   height: size.height * 0.18,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(
+                      Icons.book,
+                      size: size.height * 0.18,
+                      color: Colors.blue,
+                    );
+                  },
                 ),
               ),
             ),
@@ -208,7 +219,6 @@ class GradeIcon extends StatelessWidget {
                     color: Colors.white,
                     fontWeight: FontWeight.w700),
                 text: name,
-                // data: {'grade': name},
                 maxLines: 1,
                 isUpperCase: true,
                 pathImage: LocalImage.gradeName,
@@ -322,8 +332,7 @@ class Header extends StatelessWidget {
                           ),
                         ),
                         RegularText(
-                          // "grade",
-                          'Lớp: ${userService.currentUser.gradeId}' ?? '',
+                          'Lớp: ${userService.currentUser.gradeId}',
                           style: TextStyle(
                             color: AppColor.gray,
                             fontWeight: FontWeight.w800,

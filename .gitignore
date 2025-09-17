@@ -57,3 +57,4 @@ assets/.env
 *.freezed.dart
 android/app/google-services.json
 .github/instructions/EngKidInstructor.instructions.md
+.github/copilot-instructions.md
