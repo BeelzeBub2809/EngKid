@@ -6,6 +6,7 @@ import 'package:EngKid/domain/core/entities/entities.dart';
 import 'package:EngKid/domain/core/entities/grade_reading/grade_reading.dart';
 import 'package:EngKid/domain/core/entities/lesson/lesson.dart';
 import 'package:EngKid/domain/core/entities/submit_answer/submit_answer.dart';
+import 'package:EngKid/domain/core/entities/advice/advice_response.dart';
 import 'package:EngKid/domain/grade/entities/entities.dart';
 import 'package:EngKid/domain/quiz/entities/entites.dart';
 import 'package:EngKid/domain/start_board/entities/entities.dart';
@@ -18,4 +19,5 @@ class AppUseCases {
   Future<UserInfo> getUserInfo(int id) => _appRepository.getUserInfo(id);
   Future<dynamic> updateParentProfile(int id, FormData formData) async => _appRepository.updateParentProfile(id, formData);
   Future<ChildProfiles> getChildProfiles(int parentUserId) => _appRepository.getChildProfiles(parentUserId);
+  Future<AdviceResponse> getAdviceFromAI(String endpoint) => _appRepository.getAdviceFromAI(endpoint);
 }

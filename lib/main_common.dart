@@ -9,6 +9,7 @@ import 'package:EngKid/presentation/e_library/e_library_video_binding.dart';
 import 'package:EngKid/presentation/e_library/e_library_video_ui.dart';
 import 'package:EngKid/presentation/forgot_pass/forgot_pass_binding.dart';
 import 'package:EngKid/presentation/forgot_pass/forgot_pass_ui.dart';
+import 'package:EngKid/presentation/game/image_puzzle/image_puzzle_ui.dart';
 import 'package:EngKid/presentation/game/wordle_game/wordle_game_binding.dart';
 import 'package:EngKid/presentation/game/wordle_game/wordle_game_ui.dart';
 import 'package:EngKid/presentation/game/puzzle_game/puzzle_game_binding.dart';
@@ -17,6 +18,8 @@ import 'package:EngKid/presentation/game/memory_game/memory_game_binding.dart';
 import 'package:EngKid/presentation/game/memory_game/memory_game_ui.dart';
 import 'package:EngKid/presentation/game/missing_word/missing_word_binding.dart';
 import 'package:EngKid/presentation/game/missing_word/missing_word_ui.dart';
+import 'package:EngKid/presentation/game/image_puzzle/image_puzzle_binding.dart';
+import 'package:EngKid/presentation/game/image_puzzle/image_puzzle_ui.dart';
 import 'package:EngKid/presentation/home/home_screen_binding.dart';
 import 'package:EngKid/presentation/home/home_screen_ui.dart';
 import 'package:EngKid/presentation/management_space/management_space_binding.dart';
@@ -251,6 +254,11 @@ class _MyAppState extends State<MyApp> {
               name: AppRoute.notificationSystem,
               page: () => const NotificationSystemScreen(),
               binding: NotificationSystemBinding(),
+            ),
+            GetPage(
+              name: AppRoute.imagePuzzleGame,
+              page: () => const ImagePuzzleGameUI(),
+              binding: ImagePuzzleBinding(),
             ),
             GetPage(
               name: AppRoute.userGuide,

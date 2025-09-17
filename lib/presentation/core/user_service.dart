@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:EngKid/domain/core/entities/child_profile/child_profiles_usecase.dart';
 import 'package:EngKid/domain/core/entities/child_profile/child_repository.dart';
 import 'package:EngKid/domain/start_board/star_board_usecases.dart';
+import 'package:EngKid/domain/core/entities/advice/advice_response.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -565,6 +566,17 @@ class UserService extends GetxService {
       final dynamic responseData = await childProfilesUsecases.updateChildProfile(id, formData);
       return responseData;
     } catch (e){
+      rethrow;
+    }
+  }
+
+  /// Get AI advice for student based on period
+  Future<AdviceResponse?> getAdviceFromAI(String endpoint, int kidStudentId) async {
+    try {
+      final response = await appUseCases.getAdviceFromAI('$endpoint/$kidStudentId');
+      return response;
+    } catch (e) {
+      debugPrint('Error getting advice from AI: $e');
       rethrow;
     }
   }

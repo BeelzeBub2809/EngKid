@@ -4,6 +4,7 @@ import 'package:EngKid/domain/core/entities/app_setting/entities/star_setting/st
 import 'package:EngKid/domain/core/entities/entities.dart';
 import 'package:EngKid/domain/core/entities/grade_reading/grade_reading.dart';
 import 'package:EngKid/domain/core/entities/submit_answer/submit_answer.dart';
+import 'package:EngKid/domain/core/entities/advice/advice_response.dart';
 import 'package:EngKid/domain/grade/entities/entities.dart';
 import 'package:EngKid/domain/quiz/entities/entites.dart';
 import 'package:EngKid/domain/start_board/entities/entities.dart';
@@ -16,4 +17,5 @@ abstract class AppRepository {
   Future<UserInfo> getUserInfo(int id);
   Future<ChildProfiles> getChildProfiles(int parentUserId);
   Future<dynamic> updateParentProfile(int id,FormData formData);
+  Future<AdviceResponse> getAdviceFromAI(String endpoint);
 }

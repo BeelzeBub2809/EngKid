@@ -57,6 +57,7 @@ class AppRoute {
   static const puzzleGame = '/puzzle_game';
   static const memoryGame = '/memory_game';
   static const missingWordGame = '/missing_word_game';
+  static const imagePuzzleGame = '/image_puzzle_game'; // NEW
 
   static const notificationSystem = '/notification_system';
 
