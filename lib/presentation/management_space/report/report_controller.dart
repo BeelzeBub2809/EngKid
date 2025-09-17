@@ -5,10 +5,12 @@ import 'package:intl/intl.dart';
 import 'package:EngKid/domain/core/entities/day_of/day_of.dart';
 import 'package:EngKid/domain/core/entities/nav_item/nav_item.dart';
 import 'package:EngKid/domain/start_board/entities/entities.dart';
+import 'package:EngKid/domain/core/entities/advice/advice_response.dart';
 import 'package:EngKid/presentation/core/network_service.dart';
 import 'package:EngKid/presentation/core/user_service.dart';
 import 'package:EngKid/utils/key_shared_preferences.dart';
 import 'package:EngKid/utils/lib_function.dart';
+import 'package:EngKid/widgets/dialog/advice_dialog.dart';
 
 enum TypeFunc { prev, next }
 
@@ -27,6 +29,7 @@ class ReportController extends GetxController {
   final RxDouble totalTime = (0.0).obs;
   final RxInt _indexActive = 0.obs;
   final RxBool isLoading = false.obs;
+  final RxBool isLoadingAdvice = false.obs;
   final RxBool isShowThis = false.obs;
 
   late DateTime currentDate;
@@ -453,5 +456,75 @@ class ReportController extends GetxController {
     final minutes = (seconds ~/ 60);
     final remainingSeconds = seconds % 60;
     return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
+  }
+
+  Future<void> getAdviceFromAI() async {
+    if (!_networkService.networkConnection.value) {
+      Get.snackbar(
+        'Lỗi mạng',
+        'Vui lòng kiểm tra kết nối mạng',
+        snackPosition: SnackPosition.TOP,
+      );
+      return;
+    }
+
+    try {
+      LibFunction.showLoading();
+      isLoadingAdvice.value = true;
+
+      String period;
+      String endpoint;
+      switch (_indexActive.value) {
+        case 0:
+          period = 'weekly';
+          endpoint = 'student-advice/weekly';
+          break;
+        case 1:
+          period = 'monthly';
+          endpoint = 'student-advice/monthly';
+          break;
+        case 2:
+          period = 'yearly';
+          endpoint = 'student-advice/yearly';
+          break;
+        default:
+          period = 'weekly';
+          endpoint = 'student-advice/weekly';
+      }
+
+      final int kidStudentId = _userService.currentUser.id;
+      final response = await _userService.getAdviceFromAI(endpoint, kidStudentId);
+
+      LibFunction.hideLoading();
+      isLoadingAdvice.value = false;
+
+      if (response != null) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        _showAdviceDialog(response);
+      } else {
+        Get.snackbar(
+          'Lỗi',
+          'Không thể lấy lời khuyên từ AI',
+          snackPosition: SnackPosition.TOP,
+        );
+      }
+    } catch (e) {
+      LibFunction.hideLoading();
+      isLoadingAdvice.value = false;
+
+      debugPrint('Error getting advice: $e');
+      Get.snackbar(
+        'Lỗi',
+        'Không thể lấy lời khuyên từ AI',
+        snackPosition: SnackPosition.TOP,
+      );
+    }
+  }
+
+  void _showAdviceDialog(AdviceResponse response) {
+    Get.dialog(
+      AdviceDialog(adviceData: response.data),
+      barrierDismissible: true,
+    );
   }
 }

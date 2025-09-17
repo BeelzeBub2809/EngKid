@@ -63,45 +63,121 @@ class RightContent extends StatelessWidget {
           Column(
             children: [
               Obx(
-                () => Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: List.generate(
-                    controller.navBar.length,
-                    (index) => GestureDetector(
-                      onTap: () {
-                        controller.onChooseFeature(index);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: controller.navBar[index].value.isActive
-                              ? AppColor.red
-                              : Colors.white,
-                          borderRadius:
-                              BorderRadius.circular(0.018 * size.width),
-                        ),
-                        width: 0.1 * size.width,
-                        margin: EdgeInsets.symmetric(
-                            horizontal: 0.015 * size.height),
-                        padding: EdgeInsets.only(
-                          top: 0.02 * size.height,
-                          bottom: 0.02 * size.height,
-                          left: 0.02 * size.width,
-                          right: 0.02 * size.width,
-                        ),
-                        child: RegularText(
-                          controller.navBar[index].value.title,
-                          data: const {"week": ""},
-                          maxLines: 1,
-                          style: TextStyle(
-                            color: controller.navBar[index].value.isActive
-                                ? Colors.white
-                                : AppColor.gray,
-                            fontWeight: FontWeight.w700,
-                            fontSize: Fontsize.small,
+                () => Container(
+                  width: double.infinity,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // AI Advice Button
+                        Obx(
+                          () => GestureDetector(
+                            onTap: controller.isLoadingAdvice.value
+                                ? null
+                                : () => controller.getAdviceFromAI(),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColor.primary,
+                                borderRadius: BorderRadius.circular(0.018 * size.width),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 0.015 * size.width,
+                                vertical: 0.012 * size.height,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (controller.isLoadingAdvice.value)
+                                    SizedBox(
+                                      width: 0.012 * size.width,
+                                      height: 0.012 * size.width,
+                                      child: const CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                      ),
+                                    )
+                                  else
+                                    Icon(
+                                      Icons.psychology,
+                                      color: Colors.white,
+                                      size: 0.018 * size.width,
+                                    ),
+                                  SizedBox(width: 0.006 * size.width),
+                                  RegularText(
+                                    'Lời khuyên từ AI',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: Fontsize.smallest,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+
+                        SizedBox(width: 0.02 * size.width),
+
+                        // Navigation tabs - wrapped in flexible container
+                        Row(
+                          children: List.generate(
+                            controller.navBar.length,
+                            (index) => Container(
+                              margin: EdgeInsets.only(
+                                right: index < controller.navBar.length - 1
+                                    ? 0.01 * size.width
+                                    : 0
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  controller.onChooseFeature(index);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: controller.navBar[index].value.isActive
+                                        ? AppColor.red
+                                        : Colors.white,
+                                    borderRadius:
+                                        BorderRadius.circular(0.018 * size.width),
+                                  ),
+                                  constraints: BoxConstraints(
+                                    minWidth: 0.08 * size.width,
+                                    maxWidth: 0.12 * size.width,
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 0.015 * size.width,
+                                    vertical: 0.015 * size.height,
+                                  ),
+                                  child: Center(
+                                    child: RegularText(
+                                      controller.navBar[index].value.title,
+                                      data: const {"week": ""},
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: controller.navBar[index].value.isActive
+                                            ? Colors.white
+                                            : AppColor.gray,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: Fontsize.smallest,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

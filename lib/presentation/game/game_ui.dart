@@ -100,6 +100,14 @@ class GameUI extends GetView<GameController> {
                           Colors.green,
                           () => Get.toNamed(AppRoute.missingWordGame),
                         ),
+                        // Image Puzzle Game - NEW
+                        _buildGameCard(
+                          context,
+                          'IMAGE PUZZLE',
+                          Icons.photo_library,
+                          Colors.orange,
+                          () => Get.toNamed(AppRoute.imagePuzzleGame),
+                        ),
                       ],
                     ),
                   ),

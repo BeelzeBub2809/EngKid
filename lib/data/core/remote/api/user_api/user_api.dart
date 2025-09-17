@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:EngKid/data/core/remote/api_response_object/api_response_object.dart';
+import 'package:EngKid/domain/core/entities/advice/advice_response.dart';
 import 'package:retrofit/http.dart';
 
 part 'user_api.g.dart';
@@ -21,10 +22,16 @@ abstract class UserApi {
   Future<ApiResponseObject> getChildProfiles(
     @Query("parent_user_id") int parentUserId,
   );
+
   @PUT('user/edit-m/{id}')
   @MultiPart()
   Future<ApiResponseObject> updateParentProfile(
       @Path("id") int id,
       @Body() FormData formData
+  );
+
+  @GET('{endpoint}')
+  Future<ApiResponseObject> getAdviceFromAI(
+    @Path("endpoint") String endpoint,
   );
 }

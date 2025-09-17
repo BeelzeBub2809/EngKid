@@ -17,4 +17,9 @@ class AppColor {
   static const lightBlue = Color(0xFFE3F2FD);
   static const organe = Color(0XFFe1723a);
   static const blackBgUser = Color(0XFFCCCCCC);
+
+  // Colors for AdviceDialog
+  static const darkBlue = Color(0xFF0D47A1);
+  static const lightGray = Color(0xFFE0E0E0);
+  static const darkGray = Color(0xFF424242);
 }
