@@ -34,7 +34,8 @@ import 'package:http/http.dart' as http;
 
 import '../../widgets/dialog/toast_dialog.dart';
 
-class ReadingSpaceController extends GetxController with WidgetsBindingObserver {
+class ReadingSpaceController extends GetxController
+    with WidgetsBindingObserver {
   ReadingSpaceController();
 
   final UserService _userService = Get.find<UserService>();
@@ -42,6 +43,179 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
   final _preferencesManager = getIt.get<SharedPreferencesManager>();
 
   late VideoPlayerController? _videoController;
+
+  // Learning Path Variables
+  final Rxn<Map<String, dynamic>> selectedLearningPath =
+      Rxn<Map<String, dynamic>>();
+  final RxList<Map<String, dynamic>> learningPathItems =
+      <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> learningPathCategories =
+      <Map<String, dynamic>>[].obs;
+  final RxInt selectedCategoryIndex = 0.obs;
+
+  // Mock Learning Path Data with Categories
+  final Map<String, dynamic> mockLearningPathWithCategories = {
+    "id": 1,
+    "title": "English for Beginners",
+    "description": "Lộ trình học tiếng Anh cơ bản cho trẻ em",
+    "categories": [
+      {
+        "id": 1,
+        "title": "Animals",
+        "description": "Học về các loài động vật",
+        "image": "https://minio-url/categories/animals.jpg",
+        "items": [
+          {
+            "id": 1,
+            "reading_id": 15,
+            "game_id": null,
+            "sequence_order": 1,
+            "reading": {
+              "id": 15,
+              "title": "The Little Cat",
+              "description": "Câu chuyện về chú mèo nhỏ đáng yêu",
+              "image": "https://minio-url/kid_reading/cat_story_001.jpg",
+              "file": "https://minio-url/kid_reading/cat_story_001.mp4",
+              "difficulty_level": 1
+            },
+            "game": null,
+            "student_progress": {"is_completed": 1, "score": 85, "star": 4.5}
+          },
+          {
+            "id": 2,
+            "reading_id": null,
+            "game_id": 1,
+            "sequence_order": 2,
+            "reading": null,
+            "game": {
+              "id": 1,
+              "name": "Animal Matching Game",
+              "description": "Ghép các con vật với tên của chúng",
+              "type": 1
+            },
+            "student_progress": {"is_completed": 1, "score": null, "star": 5.0}
+          },
+          {
+            "id": 3,
+            "reading_id": 16,
+            "game_id": null,
+            "sequence_order": 3,
+            "reading": {
+              "id": 16,
+              "title": "The Big Dog",
+              "description": "Chú chó lớn thân thiện",
+              "image": "https://minio-url/kid_reading/dog_story_001.jpg",
+              "file": "https://minio-url/kid_reading/dog_story_001.mp4",
+              "difficulty_level": 1
+            },
+            "game": null,
+            "student_progress": {"is_completed": 0, "score": null, "star": null}
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Colors",
+        "description": "Học về các màu sắc",
+        "image": "https://minio-url/categories/colors.jpg",
+        "items": [
+          {
+            "id": 4,
+            "reading_id": 17,
+            "game_id": null,
+            "sequence_order": 1,
+            "reading": {
+              "id": 17,
+              "title": "Rainbow Colors",
+              "description": "Câu chuyện về cầu vồng nhiều màu",
+              "image": "https://minio-url/kid_reading/rainbow_001.jpg",
+              "file": "https://minio-url/kid_reading/rainbow_001.mp4",
+              "difficulty_level": 1
+            },
+            "game": null,
+            "student_progress": {"is_completed": 1, "score": 92, "star": 5.0}
+          },
+          {
+            "id": 5,
+            "reading_id": null,
+            "game_id": 2,
+            "sequence_order": 2,
+            "reading": null,
+            "game": {
+              "id": 2,
+              "name": "Color Puzzle",
+              "description": "Xếp hình theo màu sắc",
+              "type": 2
+            },
+            "student_progress": {"is_completed": 0, "score": null, "star": null}
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Numbers",
+        "description": "Học đếm số từ 1 đến 10",
+        "image": "https://minio-url/categories/numbers.jpg",
+        "items": [
+          {
+            "id": 6,
+            "reading_id": 18,
+            "game_id": null,
+            "sequence_order": 1,
+            "reading": {
+              "id": 18,
+              "title": "Counting to Ten",
+              "description": "Học đếm từ 1 đến 10",
+              "image": "https://minio-url/kid_reading/numbers_001.jpg",
+              "file": "https://minio-url/kid_reading/numbers_001.mp4",
+              "difficulty_level": 1
+            },
+            "game": null,
+            "student_progress": {"is_completed": 0, "score": null, "star": null}
+          },
+          {
+            "id": 7,
+            "reading_id": null,
+            "game_id": 3,
+            "sequence_order": 2,
+            "reading": null,
+            "game": {
+              "id": 3,
+              "name": "Number Quiz",
+              "description": "Trắc nghiệm về số",
+              "type": 3
+            },
+            "student_progress": {"is_completed": 0, "score": null, "star": null}
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Family",
+        "description": "Học về các thành viên trong gia đình",
+        "image": "https://minio-url/categories/family.jpg",
+        "items": [
+          {
+            "id": 8,
+            "reading_id": 19,
+            "game_id": null,
+            "sequence_order": 1,
+            "reading": {
+              "id": 19,
+              "title": "My Family",
+              "description": "Câu chuyện về gia đình tôi",
+              "image": "https://minio-url/kid_reading/family_001.jpg",
+              "file": "https://minio-url/kid_reading/family_001.mp4",
+              "difficulty_level": 1
+            },
+            "game": null,
+            "student_progress": {"is_completed": 1, "score": 78, "star": 3.5}
+          }
+        ]
+      }
+    ]
+  };
+
   final ScrollController scrollControllerTopic = ScrollController();
   final ScrollController scrollControllerLesson = ScrollController();
   final ScrollController scrollControllerDownloadLesson = ScrollController();
@@ -128,13 +302,22 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
   @override
   Future<void> onInit() async {
     super.onInit();
-    // _userService.getReadingSequenceSetting();
+    final arguments = Get.arguments;
+    if (arguments is Map<String, dynamic>) {
+      selectedLearningPath.value = arguments;
+    } else {
+      selectedLearningPath.value = null;
+    }
     _readingSequence.value =
         _userService.readingSequenceSetting.readingSequenceSetting;
     WidgetsBinding.instance.addObserver(this);
-    // get topics
-    await fetchData();
+    if (selectedLearningPath.value != null) {
+      await fetchLearningPathCategories();
+    } else {
+      await fetchData();
+    }
   }
+
   @override
   void onReady() async {
     await fetchData();
@@ -150,10 +333,10 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
       _topicIndex.value = 0;
 
       if (_topics.isNotEmpty) {
-        final readingRes = await _topicService.getReadingByTopic(_topics[_topicIndex.value].id);
+        final readingRes = await _topicService
+            .getReadingByTopic(_topics[_topicIndex.value].id);
         _readings.value = readingRes;
       }
-
     } catch (e) {
       _readings.clear();
       if (kDebugMode) {
@@ -161,6 +344,77 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
       }
     } finally {
       _isLoading.value = false;
+    }
+  }
+
+  // Learning Path Methods
+  Future<void> fetchLearningPathCategories() async {
+    try {
+      _isLoading.value = true;
+      learningPathCategories.clear();
+      learningPathItems.clear();
+
+      if (selectedLearningPath.value != null) {
+        final categories = mockLearningPathWithCategories['categories'] as List;
+        learningPathCategories.value =
+            List<Map<String, dynamic>>.from(categories);
+
+        if (learningPathCategories.isNotEmpty) {
+          selectedCategoryIndex.value = 0;
+          await fetchLearningPathItems();
+        }
+      }
+    } catch (e) {
+      learningPathCategories.clear();
+      learningPathItems.clear();
+      if (kDebugMode) {
+        print("Lỗi khi fetchLearningPathCategories: $e");
+      }
+    } finally {
+      _isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchLearningPathItems() async {
+    try {
+      learningPathItems.clear();
+
+      if (learningPathCategories.isNotEmpty &&
+          selectedCategoryIndex.value < learningPathCategories.length) {
+        final selectedCategory =
+            learningPathCategories[selectedCategoryIndex.value];
+        final items = selectedCategory['items'] as List;
+        learningPathItems.value = List<Map<String, dynamic>>.from(items);
+      }
+    } catch (e) {
+      learningPathItems.clear();
+      if (kDebugMode) {
+        print("Lỗi khi fetchLearningPathItems: $e");
+      }
+    }
+  }
+
+  void onChangeLearningPathCategory(int index) {
+    selectedCategoryIndex.value = index;
+    fetchLearningPathItems();
+  }
+
+  void onPressLearningPathItem(Map<String, dynamic> item, int index) {
+    // Handle learning path item press (reading or game)
+    final isReading = item['reading'] != null;
+
+    if (isReading) {
+      // Handle reading item
+      if (kDebugMode) {
+        print("Pressed reading item: ${item['reading']['title']}");
+      }
+      // Add navigation to reading screen here
+    } else {
+      // Handle game item
+      if (kDebugMode) {
+        print("Pressed game item: ${item['game']['name']}");
+      }
+      // Add navigation to game screen here
     }
   }
 
@@ -184,7 +438,6 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
                 total: reading.totalQuiz,
                 complete: reading.totalCompleteQuiz,
               ),
-
       ),
       questions: questions,
     );
@@ -266,6 +519,14 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
       return LocalImage.lessonProgress;
     }
 
+    return LocalImage.lessonProgress;
+  }
+
+  String getLearningPathItemStatus(Map<String, dynamic> item) {
+    final progress = item['student_progress'];
+    if (progress['is_completed'] == 1) {
+      return LocalImage.lessonCompleted;
+    }
     return LocalImage.lessonProgress;
   }
 
@@ -404,18 +665,14 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
     if (!_topicService.isCaculator) return;
     await _preferencesManager.putInt(
         key:
-        "${_topicService.currentGrade.id}_${LibFunction
-            .startOfDateNow()
-            .microsecondsSinceEpoch}_timeLimit",
+            "${_topicService.currentGrade.id}_${LibFunction.startOfDateNow().microsecondsSinceEpoch}_timeLimit",
         value: _remainingTime);
   }
 
   int getTimeLimitFromStorage() {
     try {
       final int? timeLimit = _preferencesManager.getInt(
-          "${_topicService.currentGrade.id}_${LibFunction
-              .startOfDateNow()
-              .microsecondsSinceEpoch}_timeLimit");
+          "${_topicService.currentGrade.id}_${LibFunction.startOfDateNow().microsecondsSinceEpoch}_timeLimit");
       if (timeLimit != null) {
         return timeLimit;
       }
@@ -505,9 +762,9 @@ class ReadingSpaceController extends GetxController with WidgetsBindingObserver 
       _topicIndex.value = index;
       _readings.clear();
 
-      final readingRes = await _topicService.getReadingByTopic(_topics[topicIndex].id);
+      final readingRes =
+          await _topicService.getReadingByTopic(_topics[topicIndex].id);
       _readings.value = readingRes;
-
     } catch (e) {
       _readings.clear();
       if (kDebugMode) {
