@@ -169,6 +169,24 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
     Get.toNamed(AppRoute.eLibrary, arguments: [true, true]);
   }
 
+  void onPressDraw() async {
+    if (_userService.userLogin.roleId == "2") return;
+    if (_userService.childProfiles.childProfiles.isEmpty) {
+      Get.toNamed(AppRoute.addChildrenCode);
+      return;
+    }
+    Get.toNamed(AppRoute.drawing);
+  }
+
+  void onPressColoring() async {
+    if (_userService.userLogin.roleId == "2") return;
+    if (_userService.childProfiles.childProfiles.isEmpty) {
+      Get.toNamed(AppRoute.addChildrenCode);
+      return;
+    }
+    Get.toNamed(AppRoute.coloring);
+  }
+
   int indexCurrentUserInChildProfiles() {
     return _userService.childProfiles.childProfiles
         .indexWhere((element) => element.id == _userService.currentUser.id);

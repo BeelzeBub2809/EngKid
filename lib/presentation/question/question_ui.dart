@@ -67,8 +67,8 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => VideoScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => VideoController(
+                          () => Get.create(
+                            () => VideoController(
                               question: controller
                                   .questionList[controller.questionIndex],
                               readingId: controller.readingId,
@@ -85,15 +85,14 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => SingleChoiceScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => SingleChoiceController(
+                          () => Get.create(
+                            () => SingleChoiceController(
                                 question: controller
                                     .questionList[controller.questionIndex],
                                 readingId: controller.readingId,
                                 quizUseCases: Get.find(),
                                 nextQuestion: () => controller.onNextBtnPress(),
-                                questionController: controller
-                            ),
+                                questionController: controller),
                           ),
                         ),
                         transition: controller.isBack
@@ -104,15 +103,14 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => MultipleChoiceScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => MultipleChoiceController(
+                          () => Get.create(
+                            () => MultipleChoiceController(
                                 question: controller
                                     .questionList[controller.questionIndex],
                                 readingId: controller.readingId,
                                 quizUseCases: Get.find(),
                                 nextQuestion: () => controller.onNextBtnPress(),
-                                questionController: controller
-                            ),
+                                questionController: controller),
                           ),
                         ),
                         transition: controller.isBack
@@ -123,15 +121,14 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => MatchedScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => MatchedController(
+                          () => Get.create(
+                            () => MatchedController(
                                 question: controller
                                     .questionList[controller.questionIndex],
                                 readingId: controller.readingId,
                                 quizUseCases: Get.find(),
                                 nextQuestion: () => controller.onNextBtnPress(),
-                                questionController: controller
-                            ),
+                                questionController: controller),
                           ),
                         ),
                         transition: controller.isBack
@@ -142,16 +139,14 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => FillWordScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => FillWordController(
+                          () => Get.create(
+                            () => FillWordController(
                                 question: controller
                                     .questionList[controller.questionIndex],
                                 readingId: controller.readingId,
                                 quizUseCases: Get.find(),
-                                nextQuestion: () =>
-                                    controller.onNextBtnPress(),
+                                nextQuestion: () => controller.onNextBtnPress(),
                                 questionController: controller),
-
                           ),
                         ),
                         transition: controller.isBack
@@ -162,8 +157,8 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => FillBlankScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => FillBlankController(
+                          () => Get.create(
+                            () => FillBlankController(
                                 question: controller
                                     .questionList[controller.questionIndex],
                                 readingId: controller.readingId,
@@ -172,8 +167,7 @@ class QuestionScreen extends GetView<QuestionController> {
                                 setIsFullScreen: (bool value) {
                                   controller.isFullScreen = value;
                                 },
-                                questionController: controller
-                            ),
+                                questionController: controller),
                           ),
                         ),
                         transition: controller.isBack
@@ -184,8 +178,8 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => FillTableScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => FillTableController(
+                          () => Get.create(
+                            () => FillTableController(
                                 question: controller
                                     .questionList[controller.questionIndex],
                                 readingId: controller.readingId,
@@ -194,8 +188,7 @@ class QuestionScreen extends GetView<QuestionController> {
                                 setIsFullScreen: (bool value) {
                                   controller.isFullScreen = value;
                                 },
-                                questionController: controller
-                            ),
+                                questionController: controller),
                           ),
                         ),
                         transition: controller.isBack
@@ -206,8 +199,8 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => CrosswordPuzzleScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => CrosswordPuzzleController(
+                          () => Get.create(
+                            () => CrosswordPuzzleController(
                                 question: controller
                                     .questionList[controller.questionIndex],
                                 readingId: controller.readingId,
@@ -216,8 +209,7 @@ class QuestionScreen extends GetView<QuestionController> {
                                 setIsFullScreen: (bool value) {
                                   controller.isFullScreen = value;
                                 },
-                                questionController: controller
-                            ),
+                                questionController: controller),
                           ),
                         ),
                         transition: controller.isBack
@@ -228,15 +220,8 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => const ColoringScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => ColoringController(
-                              question: controller
-                                  .questionList[controller.questionIndex],
-                              readingId: controller.readingId,
-                              quizUseCases: Get.find(),
-                              nextQuestion: () => controller.onNextBtnPress(),
-                              coloringUrl: controller.coloringUrl,
-                            ),
+                          () => Get.create(
+                            () => ColoringController(),
                           ),
                         ),
                         transition: controller.isBack
@@ -247,15 +232,14 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => JigsawPuzzleScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => JigsawPuzzleController(
+                          () => Get.create(
+                            () => JigsawPuzzleController(
                                 question: controller
                                     .questionList[controller.questionIndex],
                                 readingId: controller.readingId,
                                 quizUseCases: Get.find(),
                                 nextQuestion: () => controller.onNextBtnPress(),
-                                questionController: controller
-                            ),
+                                questionController: controller),
                           ),
                         ),
                         transition: controller.isBack
@@ -267,8 +251,8 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => ReadScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => ReadController(
+                          () => Get.create(
+                            () => ReadController(
                               question: controller
                                   .questionList[controller.questionIndex],
                               readingId: controller.readingId,
@@ -288,13 +272,8 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => const DrawingScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => DrawingController(
-                              question: controller
-                                  .questionList[controller.questionIndex],
-                              quizUseCases: Get.find(),
-                              nextQuestion: () => controller.onNextBtnPress(),
-                            ),
+                          () => Get.create(
+                            () => DrawingController(),
                           ),
                         ),
                         transition: controller.isBack
@@ -305,20 +284,19 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => AchieveStarScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => AchieveStarController(
-                              question: controller
-                                  .questionList[controller.questionIndex],
-                              quizUseCases: Get.find(),
-                              nextQuestion: () => controller.onNextBtnPress(),
-                              backQuestion: () => controller.backQuestion(),
-                              relearn: () => controller.relearnQuestion(),
-                              setIsFullScreen: (bool value) {
-                                controller.isFullScreen = value;
-                              },
-                              readingId: controller.readingId,
-                              questionController: controller
-                            ),
+                          () => Get.create(
+                            () => AchieveStarController(
+                                question: controller
+                                    .questionList[controller.questionIndex],
+                                quizUseCases: Get.find(),
+                                nextQuestion: () => controller.onNextBtnPress(),
+                                backQuestion: () => controller.backQuestion(),
+                                relearn: () => controller.relearnQuestion(),
+                                setIsFullScreen: (bool value) {
+                                  controller.isFullScreen = value;
+                                },
+                                readingId: controller.readingId,
+                                questionController: controller),
                           ),
                         ),
                         transition: controller.isBack
@@ -329,8 +307,8 @@ class QuestionScreen extends GetView<QuestionController> {
                       return GetPageRoute(
                         page: () => FinalQuestionScreen(),
                         binding: BindingsBuilder(
-                              () => Get.create(
-                                () => FinalQuestionScreenController(
+                          () => Get.create(
+                            () => FinalQuestionScreenController(
                               question: controller
                                   .questionList[controller.questionIndex],
                               quizUseCases: Get.find(),
@@ -354,93 +332,92 @@ class QuestionScreen extends GetView<QuestionController> {
                 },
               ),
               Obx(
-                    () => controller.isFullScreen
+                () => controller.isFullScreen
                     ? const SizedBox()
                     : Positioned.fill(
-                  top: 0.02 * size.height,
-                  left: 0.01 * size.width,
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Column(
-                      children: [
-                        ImageButton(
-                          onTap: () {
-                            controller.onStopBtnPress();
-                          },
-                          semantics: 'home',
-                          pathImage: LocalImage.buttonHome,
-                          height: 0.075 * size.width,
-                          width: 0.075 * size.width,
+                        top: 0.02 * size.height,
+                        left: 0.01 * size.width,
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Column(
+                            children: [
+                              ImageButton(
+                                onTap: () {
+                                  controller.onStopBtnPress();
+                                },
+                                semantics: 'home',
+                                pathImage: LocalImage.buttonHome,
+                                height: 0.075 * size.width,
+                                width: 0.075 * size.width,
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
               ),
-
-              if(!_topicService.isCaculator)
+              if (!_topicService.isCaculator)
                 Obx(
-                      () => controller.isFullScreen
+                  () => controller.isFullScreen
                       ? const SizedBox()
                       : Positioned.fill(
-                    bottom: 0.02 * size.height,
-                    left: 0.01 * size.width,
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: ImageButton(
-                        onTap: () {
-                          controller.backQuestion();
-                        },
-                        semantics: 'back',
-                        pathImage: LocalImage.backButton,
-                        height: 0.075 * size.width,
-                        width: 0.075 * size.width,
-                      ),
-                    ),
-                  ),
+                          bottom: 0.02 * size.height,
+                          left: 0.01 * size.width,
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: ImageButton(
+                              onTap: () {
+                                controller.backQuestion();
+                              },
+                              semantics: 'back',
+                              pathImage: LocalImage.backButton,
+                              height: 0.075 * size.width,
+                              width: 0.075 * size.width,
+                            ),
+                          ),
+                        ),
                 ),
               if (_topicService.isCaculator)
                 Obx(
-                      () => (controller.isFullScreen ||
-                      !controller
-                          .questionList[controller.questionIndex].isLearned)
+                  () => (controller.isFullScreen ||
+                          !controller
+                              .questionList[controller.questionIndex].isLearned)
                       ? const SizedBox()
                       : Positioned.fill(
-                    bottom: 0.02 * size.height,
-                    left: 0.01 * size.width,
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: ImageButton(
-                        onTap: () {
-                          controller.onNextBtnPress();
-                        },
-                        semantics: 'next',
-                        pathImage: LocalImage.nextButton,
-                        height: 0.075 * size.width,
-                        width: 0.075 * size.width,
-                      ),
-                    ),
-                  ),
+                          bottom: 0.02 * size.height,
+                          left: 0.01 * size.width,
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: ImageButton(
+                              onTap: () {
+                                controller.onNextBtnPress();
+                              },
+                              semantics: 'next',
+                              pathImage: LocalImage.nextButton,
+                              height: 0.075 * size.width,
+                              width: 0.075 * size.width,
+                            ),
+                          ),
+                        ),
                 )
               else
                 Obx(
-                      () => !controller.isFullScreen
+                  () => !controller.isFullScreen
                       ? Positioned.fill(
-                    bottom: 0.02 * size.height,
-                    left: 0.01 * size.width,
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: ImageButton(
-                        onTap: () {
-                          controller.onNextBtnPress();
-                        },
-                        semantics: 'next',
-                        pathImage: LocalImage.nextButton,
-                        height: 0.075 * size.width,
-                        width: 0.075 * size.width,
-                      ),
-                    ),
-                  )
+                          bottom: 0.02 * size.height,
+                          left: 0.01 * size.width,
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: ImageButton(
+                              onTap: () {
+                                controller.onNextBtnPress();
+                              },
+                              semantics: 'next',
+                              pathImage: LocalImage.nextButton,
+                              height: 0.075 * size.width,
+                              width: 0.075 * size.width,
+                            ),
+                          ),
+                        )
                       : const SizedBox(),
                 ),
             ],

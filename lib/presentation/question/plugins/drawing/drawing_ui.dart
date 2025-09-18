@@ -18,8 +18,27 @@ class DrawingScreen extends StatelessWidget {
     drawing.controller = controller;
     return Obx(
       () => controller.isStarted
-          ? GameWidget(
-              game: drawing,
+          ? Stack(
+              children: [
+                GameWidget(
+                  game: drawing,
+                ),
+                // Back button positioned at top-left for game screen
+                Positioned(
+                  top: 0.05 * size.height,
+                  left: 0.02 * size.width,
+                  child: ImageText(
+                    text: 'back',
+                    pathImage: LocalImage.shapeButton,
+                    isUpperCase: true,
+                    onTap: () {
+                      controller.onPressBack();
+                    },
+                    width: 0.12 * size.width,
+                    height: 0.08 * size.height,
+                  ),
+                ),
+              ],
             )
           : Stack(
               children: [
@@ -31,6 +50,21 @@ class DrawingScreen extends StatelessWidget {
                       image: AssetImage(LocalImage.drawingBg),
                       fit: BoxFit.fill,
                     ),
+                  ),
+                ),
+                // Back button positioned at top-left
+                Positioned(
+                  top: 0.05 * size.height,
+                  left: 0.02 * size.width,
+                  child: ImageText(
+                    text: 'back',
+                    pathImage: LocalImage.shapeButton,
+                    isUpperCase: true,
+                    onTap: () {
+                      controller.onPressBack();
+                    },
+                    width: 0.12 * size.width,
+                    height: 0.08 * size.height,
                   ),
                 ),
                 Positioned.fill(

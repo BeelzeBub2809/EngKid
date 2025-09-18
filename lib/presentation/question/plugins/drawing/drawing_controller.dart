@@ -10,15 +10,8 @@ import 'package:EngKid/widgets/text/image_text.dart';
 
 class DrawingController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  final Question question;
-  final QuizUseCases quizUseCases;
-  final void Function() nextQuestion;
   late Function pickColorEvent;
-  DrawingController({
-    required this.nextQuestion,
-    required this.question,
-    required this.quizUseCases,
-  });
+  DrawingController();
 
   final RxBool _isStarted = false.obs;
 
@@ -46,15 +39,18 @@ class DrawingController extends GetxController
     _isStarted.value = true;
   }
 
+  void onPressBack() {
+    Get.back();
+  }
+
   void openColorPicker() {
     showDialog(
       context: contextDialog!,
       builder: (BuildContext context) => AlertDialog(
-        title:  Padding(
+        title: Padding(
           padding: const EdgeInsets.only(left: 25),
           child: Semantics(
-            label: 'select_color'.tr,
-              child: Text('select_color'.tr)),
+              label: 'select_color'.tr, child: Text('select_color'.tr)),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 50),
         // content: HueRingPicker(
@@ -90,7 +86,6 @@ class DrawingController extends GetxController
             },
             text: 'cancel',
           ),
-
           ImageText(
             pathImage: LocalImage.questionSuccessButton,
             width: Get.width * 0.13,

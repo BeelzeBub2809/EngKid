@@ -44,46 +44,131 @@ class MyLibraryScreen extends GetView<MyLibraryController> {
                       ),
                     ),
                     Obx(
-                      () => Padding(
-                        padding: EdgeInsets.only(top: 0.04 * size.height),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                              controller.learningPaths.length > 3
-                                  ? 3
-                                  : controller.learningPaths.length, (index) {
-                            return LearningPathIcon(
-                                image: controller.learningPaths[index]['image'],
-                                isOpen: controller.learningPaths[index]
-                                    ['isOpen'],
-                                name: controller.learningPaths[index]['name'],
-                                onPressLearningPath: () =>
-                                    controller.onPressLearningPath(
-                                        controller.learningPaths[index]));
-                          }),
-                        ),
+                      () => Column(
+                        children: [
+                          // Learning paths display with pagination
+                          Padding(
+                            padding: EdgeInsets.only(top: 0.04 * size.height),
+                            child: SizedBox(
+                              height:
+                                  0.6 * size.height, // Fixed height container
+                              child: Stack(
+                                children: [
+                                  // Learning Path Items - 2 rows layout
+                                  Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        // First row - 3 items
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: List.generate(
+                                            controller.currentPageItems
+                                                        .length >=
+                                                    3
+                                                ? 3
+                                                : controller
+                                                    .currentPageItems.length,
+                                            (index) {
+                                              final item = controller
+                                                  .currentPageItems[index];
+                                              return LearningPathIcon(
+                                                image: item['image'],
+                                                isOpen: true,
+                                                name: item['name'],
+                                                onPressLearningPath: () =>
+                                                    controller
+                                                        .onPressLearningPath(
+                                                            item),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        // Second row - 2 items (if available)
+                                        if (controller.currentPageItems.length >
+                                            3)
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: List.generate(
+                                              controller
+                                                      .currentPageItems.length -
+                                                  3,
+                                              (index) {
+                                                final item =
+                                                    controller.currentPageItems[
+                                                        index + 3];
+                                                return LearningPathIcon(
+                                                  image: item['image'],
+                                                  isOpen: true,
+                                                  name: item['name'],
+                                                  onPressLearningPath: () =>
+                                                      controller
+                                                          .onPressLearningPath(
+                                                              item),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  // Left arrow at center left
+                                  if (controller.totalPages > 1)
+                                    Positioned(
+                                      left: 0.02 * size.width,
+                                      top: 0,
+                                      bottom: 0,
+                                      child: Center(
+                                        child: GestureDetector(
+                                          onTap: controller.hasPreviousPage
+                                              ? controller.previousPage
+                                              : null,
+                                          child: Opacity(
+                                            opacity: controller.hasPreviousPage
+                                                ? 1.0
+                                                : 0.3,
+                                            child: Image.asset(
+                                              LocalImage.arrowLeft,
+                                              width: 0.08 * size.width,
+                                              height: 0.08 * size.width,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  // Right arrow at center right
+                                  if (controller.totalPages > 1)
+                                    Positioned(
+                                      right: 0.02 * size.width,
+                                      top: 0,
+                                      bottom: 0,
+                                      child: Center(
+                                        child: GestureDetector(
+                                          onTap: controller.hasNextPage
+                                              ? controller.nextPage
+                                              : null,
+                                          child: Opacity(
+                                            opacity: controller.hasNextPage
+                                                ? 1.0
+                                                : 0.3,
+                                            child: Image.asset(
+                                              LocalImage.arrowRight,
+                                              width: 0.08 * size.width,
+                                              height: 0.08 * size.width,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Obx(
-                      () => controller.learningPaths.length > 3
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: List.generate(
-                                  controller.learningPaths.length - 3, (index) {
-                                return LearningPathIcon(
-                                  image: controller.learningPaths[3 + index]
-                                      ['image'],
-                                  isOpen: controller.learningPaths[3 + index]
-                                      ['isOpen'],
-                                  name: controller.learningPaths[3 + index]
-                                      ['name'],
-                                  onPressLearningPath: () =>
-                                      controller.onPressLearningPath(
-                                          controller.learningPaths[3 + index]),
-                                );
-                              }),
-                            )
-                          : const SizedBox(),
                     ),
                   ],
                 )
@@ -120,7 +205,39 @@ class MyLibraryScreen extends GetView<MyLibraryController> {
                       ),
                     ],
                   )),
-            )
+            ),
+            // Page dots indicator at bottom of screen
+            Obx(
+              () => controller.totalPages > 1
+                  ? Positioned(
+                      bottom: 0.05 * size.height,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          controller.totalPages,
+                          (index) => GestureDetector(
+                            onTap: () => controller.goToPage(index),
+                            child: Container(
+                              margin: EdgeInsets.symmetric(
+                                horizontal: 0.008 * size.width,
+                              ),
+                              width: 0.015 * size.width, // Smaller size
+                              height: 0.015 * size.width, // Smaller size
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: controller.currentPage == index
+                                    ? AppColor.blue
+                                    : AppColor.gray.withOpacity(0.5),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+            ),
           ],
         ),
       ),
@@ -153,14 +270,14 @@ class LearningPathIcon extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.only(
-              top: 0.04 * size.height,
-              bottom: 0.04 * size.height,
-              left: 0.06 * size.height,
-              right: 0.06 * size.height,
+              top: 0.02 * size.height,
+              bottom: 0.02 * size.height,
+              left: 0.03 * size.height,
+              right: 0.03 * size.height,
             ),
             child: Container(
-              width: size.height * 0.28,
-              height: size.height * 0.28,
+              width: size.height * 0.20,
+              height: size.height * 0.20,
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(LocalImage.gradeShape),
@@ -170,12 +287,12 @@ class LearningPathIcon extends StatelessWidget {
               child: Center(
                 child: Image.asset(
                   image,
-                  width: size.height * 0.18,
-                  height: size.height * 0.18,
+                  width: size.height * 0.13,
+                  height: size.height * 0.13,
                   errorBuilder: (context, error, stackTrace) {
                     return Icon(
                       Icons.book,
-                      size: size.height * 0.18,
+                      size: size.height * 0.13,
                       color: Colors.blue,
                     );
                   },
@@ -188,8 +305,8 @@ class LearningPathIcon extends StatelessWidget {
               child: Align(
                 alignment: Alignment.center,
                 child: Container(
-                  width: size.height * 0.28,
-                  height: size.height * 0.28,
+                  width: size.height * 0.20,
+                  height: size.height * 0.20,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(LocalImage.gradeShapeDisable),
@@ -215,15 +332,15 @@ class LearningPathIcon extends StatelessWidget {
               alignment: Alignment.topRight,
               child: ImageText(
                 style: TextStyle(
-                    fontSize: Fontsize.small,
+                    fontSize: Fontsize.smaller,
                     color: Colors.white,
                     fontWeight: FontWeight.w700),
                 text: name,
                 maxLines: 1,
                 isUpperCase: true,
                 pathImage: LocalImage.gradeName,
-                width: size.width * 0.09,
-                height: size.width * 0.04,
+                width: size.width * 0.07,
+                height: size.width * 0.03,
               ),
             ),
           ),
@@ -233,13 +350,13 @@ class LearningPathIcon extends StatelessWidget {
                 alignment: Alignment.topRight,
                 child: ImageText(
                   style: TextStyle(
-                      fontSize: Fontsize.small,
+                      fontSize: Fontsize.smaller,
                       color: Colors.grey,
                       fontWeight: FontWeight.w700),
                   text: '',
                   pathImage: LocalImage.gradeNameDisable,
-                  width: size.width * 0.09,
-                  height: size.width * 0.04,
+                  width: size.width * 0.07,
+                  height: size.width * 0.03,
                 ),
               ),
             ),

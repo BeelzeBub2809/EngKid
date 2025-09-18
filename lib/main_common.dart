@@ -39,6 +39,10 @@ import 'package:EngKid/presentation/my_library/my_library_binding.dart';
 import 'package:EngKid/presentation/my_library/my_library_ui.dart';
 import 'package:EngKid/presentation/notification_system/notification_system_binding.dart';
 import 'package:EngKid/presentation/notification_system/notification_system_ui.dart';
+import 'package:EngKid/presentation/question/plugins/coloring/coloring_binding.dart';
+import 'package:EngKid/presentation/question/plugins/coloring/coloring_ui.dart';
+import 'package:EngKid/presentation/question/plugins/drawing/drawing_controller.dart';
+import 'package:EngKid/presentation/question/plugins/drawing/drawing_ui.dart';
 import 'package:EngKid/presentation/question/question_binding.dart';
 import 'package:EngKid/presentation/question/question_ui.dart';
 import 'package:EngKid/presentation/reading_space/reading_space_binding.dart';
@@ -274,6 +278,20 @@ class _MyAppState extends State<MyApp> {
               name: AppRoute.leaderBoard,
               page: () => const LeaderBoardScreen(),
               binding: LeaderBoardBinding(),
+            ),
+            GetPage(
+              name: AppRoute.coloring,
+              page: () => const ColoringScreen(),
+              binding: ColoringBinding(),
+            ),
+            GetPage(
+              name: AppRoute.drawing,
+              page: () => const DrawingScreen(),
+              binding: BindingsBuilder(
+                () => Get.create(
+                  () => DrawingController(),
+                ),
+              ),
             ),
           ],
         ),

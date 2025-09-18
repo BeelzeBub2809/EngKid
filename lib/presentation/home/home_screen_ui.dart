@@ -265,7 +265,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                                     SizedBox(
                                       height: size.height * 0.02,
                                     ),
-                                    // Second row with only game button taking full width
+                                    // Second row with drawing and coloring buttons
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -273,23 +273,26 @@ class HomeScreen extends GetView<HomeScreenController> {
                                           CrossAxisAlignment.center,
                                       children: [
                                         ImageText(
-                                          text: 'game',
-                                          pathImage: LocalImage.buttonPurple,
+                                          text: 'Vẽ tranh',
+                                          pathImage: LocalImage.shapeButton,
                                           isUpperCase: true,
-                                          width: size.width * 0.33,
+                                          width: size.width * 0.16,
                                           height: size.height * 0.13,
                                           onTap: () {
-                                            controller.onPressTo(
-                                              Menu(
-                                                name: 'game',
-                                                pathImage: LocalImage.gameIcon,
-                                                to: AppRoute.game,
-                                                needValidateParent: false,
-                                                requireValidate: false,
-                                                arguments: [true, false],
-                                                count: 0,
-                                              ),
-                                            );
+                                            controller.onPressDraw();
+                                          },
+                                        ),
+                                        SizedBox(
+                                          width: size.width * 0.01,
+                                        ),
+                                        ImageText(
+                                          text: 'Tô màu',
+                                          pathImage: LocalImage.buttonElibrary,
+                                          isUpperCase: true,
+                                          width: size.width * 0.16,
+                                          height: size.height * 0.13,
+                                          onTap: () {
+                                            controller.onPressColoring();
                                           },
                                         ),
                                       ],
