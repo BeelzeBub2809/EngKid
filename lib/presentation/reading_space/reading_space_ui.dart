@@ -172,6 +172,7 @@ class ShapeLesson extends StatelessWidget {
               // Learning Path Items Display - Following Reading Design Pattern
               final item = learningPathItems[index];
               final isReading = item['reading'] != null;
+              final isUnlocked = controller.isLearningPathItemUnlocked(index);
 
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -182,13 +183,29 @@ class ShapeLesson extends StatelessWidget {
                       Stack(
                         children: [
                           GestureDetector(
-                            onTap: () =>
-                                controller.onPressLearningPathItem(item, index),
+                            onTap: () => isUnlocked
+                                ? controller.onPressLearningPathItem(
+                                    item, index)
+                                : null, // Disable tap for locked items
                             child: ClipRRect(
                               borderRadius:
                                   BorderRadius.circular(0.025 * size.height),
-                              child:
-                                  isReading && item['reading']['image'] != null
+                              child: ColorFiltered(
+                                colorFilter: isUnlocked
+                                    ? const ColorFilter.mode(
+                                        Colors.transparent,
+                                        BlendMode.multiply,
+                                      )
+                                    : const ColorFilter.mode(
+                                        Colors.grey,
+                                        BlendMode.saturation,
+                                      ), // Gray out locked items
+                                child: Opacity(
+                                  opacity: isUnlocked
+                                      ? 1.0
+                                      : 0.5, // Dim locked items
+                                  child: isReading &&
+                                          item['reading']['image'] != null
                                       ? CacheImage(
                                           url: item['reading']['image'],
                                           width: size.width * 0.16,
@@ -215,8 +232,21 @@ class ShapeLesson extends StatelessWidget {
                                                   ),
                                           ),
                                         ),
+                                ),
+                              ),
                             ),
                           ),
+                          // Lock icon for locked items
+                          if (!isUnlocked)
+                            Positioned.fill(
+                              child: Center(
+                                child: Image.asset(
+                                  LocalImage.lock,
+                                  width: size.width * 0.08,
+                                  height: size.width * 0.08,
+                                ),
+                              ),
+                            ),
                           Positioned(
                             bottom: size.height * 0.08,
                             left: 0,
@@ -473,7 +503,7 @@ class ShapeTopic extends StatelessWidget {
               return Center(
                 child: SizedBox(
                   width: size.width * 0.29,
-                  height: size.height * 0.5,
+                  height: size.height * 0.47,
                   child: RawScrollbar(
                     controller: controller.scrollControllerTopic,
                     thumbColor: AppColor.blue,

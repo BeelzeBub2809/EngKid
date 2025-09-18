@@ -432,15 +432,15 @@ class Coloring extends FlameGame with HasDraggables, HasTappables {
     double btnMarginBottom = GameLibFunction.scaleForCurrentValue(
         size, GameLibFunction.designScreen, 100);
 
-    BaseButton(
-        gameTC: this,
-        svgImg: await loadSprite(LocalImage.coloringDone),
-        imgPos: Vector2(
-            btnMargin, size.y - btnMarginBottom - (btnDistance + btnSize.y)),
-        imgSize: btnSize,
-        onTapEvent: () async {
-          controller.nextQuestion();
-        });
+    // BaseButton(
+    //     gameTC: this,
+    //     svgImg: await loadSprite(LocalImage.coloringDone),
+    //     imgPos: Vector2(
+    //         btnMargin, size.y - btnMarginBottom - (btnDistance + btnSize.y)),
+    //     imgSize: btnSize,
+    //     onTapEvent: () async {
+    //       controller.nextQuestion();
+    //     });
     BaseButton(
         gameTC: this,
         svgImg: await loadSprite(LocalImage.coloringTakingPicture),

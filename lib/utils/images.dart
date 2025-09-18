@@ -264,6 +264,8 @@ class LocalImage {
   static const addred = "$_imageUrl/add_red.png";
   static const backNoShadow = "$_imageUrl/back_noshadow.png";
   static const arrowLeftRed = "$_imageUrl/arrow_left_red.png";
+  static const arrowLeft = "$_imageUrl/swiper_back.png";
+  static const arrowRight = "$_imageUrl/swiper_next.png";
   static const tickGvcn = "$_imageUrl/tick_gvcn.png";
   static const camera = "$_imageUrl/camera.png";
   static const images = "$_imageUrl/images.png";

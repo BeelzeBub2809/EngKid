@@ -765,15 +765,15 @@ class DrawingGame extends FlameGame with HasDraggables, HasTappables {
     double btnMarginBottom = GameLibFunction.scaleForCurrentValue(
         size, GameLibFunction.designScreen, 100);
 
-    BaseButton(
-        gameDraw: this,
-        svgImg: await loadSprite(LocalImage.coloringDone),
-        imgPos: Vector2(btnMarginLeft,
-            size.y - btnMarginBottom - (btnDistance + btnSize.y)),
-        imgSize: btnSize,
-        onTapEvent: () async {
-          controller.nextQuestion();
-        });
+    // BaseButton(
+    //     gameDraw: this,
+    //     svgImg: await loadSprite(LocalImage.coloringDone),
+    //     imgPos: Vector2(btnMarginLeft,
+    //         size.y - btnMarginBottom - (btnDistance + btnSize.y)),
+    //     imgSize: btnSize,
+    //     onTapEvent: () async {
+    //       controller.nextQuestion();
+    //     });
     BaseButton(
         gameDraw: this,
         svgImg: await loadSprite(LocalImage.coloringTakingPicture),
@@ -841,7 +841,7 @@ class DrawingGame extends FlameGame with HasDraggables, HasTappables {
         .toByteData(format: ImageByteFormat.png)
         .then((value) => value?.buffer.asUint8List()))!;
     // print(base64Encode(pngBytes));
-    if(kIsWeb){
+    if (kIsWeb) {
       // Convert the Uint8List to a Blob
       final blob = html.Blob([pngBytes]);
 
@@ -859,7 +859,7 @@ class DrawingGame extends FlameGame with HasDraggables, HasTappables {
       });
 
       LibFunction.toast("save_success");
-    }else{
+    } else {
       final result = await ImageGallerySaver.saveImage(pngBytes,
           quality: 60, name: "Drawing", isReturnImagePathOfIOS: false);
       if (result["isSuccess"]) {
@@ -868,6 +868,5 @@ class DrawingGame extends FlameGame with HasDraggables, HasTappables {
     }
     // final result = await ImageGallerySaver.saveFile(sprite.toString(),
     //     name: "${appDocDir.path}/img.png", isReturnPathOfIOS: false);
-
   }
 }

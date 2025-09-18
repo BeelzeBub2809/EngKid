@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
@@ -11,20 +13,53 @@ import '../../../../widgets/text/image_text.dart';
 
 class ColoringController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  final Question question;
-  final QuizUseCases quizUseCases;
-  final void Function() nextQuestion;
-  final int readingId;
-  final String coloringUrl;
+  String get coloringUrl {
+    final List<String> listColoringImage = [
+      LocalImage.coloring01,
+      LocalImage.coloring02,
+      LocalImage.coloring03,
+      LocalImage.coloring04,
+      LocalImage.coloring05,
+      LocalImage.coloring06,
+      LocalImage.coloring07,
+      LocalImage.coloring08,
+      LocalImage.coloring09,
+      LocalImage.coloring10,
+      LocalImage.coloring11,
+      LocalImage.coloring12,
+      LocalImage.coloring13,
+      LocalImage.coloring14,
+      LocalImage.coloring15,
+      LocalImage.coloring16,
+      LocalImage.coloring17,
+      LocalImage.coloring18,
+      LocalImage.coloring19,
+      LocalImage.coloring20,
+      LocalImage.coloring21,
+      LocalImage.coloring22,
+      LocalImage.coloring23,
+      LocalImage.coloring24,
+      LocalImage.coloring25,
+      LocalImage.coloring26,
+      LocalImage.coloring27,
+      LocalImage.coloring28,
+      LocalImage.coloring29,
+      LocalImage.coloring30,
+      LocalImage.coloring31,
+      LocalImage.coloring32,
+      LocalImage.coloring33,
+      LocalImage.coloring34,
+      LocalImage.coloring35,
+    ];
+
+    Random random = Random();
+
+    return listColoringImage[random.nextInt(listColoringImage.length)];
+  }
+
   late Function pickColorEvent;
 
-  ColoringController({
-    required this.nextQuestion,
-    required this.question,
-    required this.quizUseCases,
-    required this.readingId,
-    required this.coloringUrl,
-  });
+  ColoringController();
 
   final RxBool _isStarted = false.obs;
 
@@ -52,15 +87,18 @@ class ColoringController extends GetxController
     _isStarted.value = true;
   }
 
+  void onPressBack() {
+    Get.back();
+  }
+
   void openColorPicker() {
     showDialog(
       context: contextDialog!,
       builder: (BuildContext context) => AlertDialog(
-        title:  Padding(
+        title: Padding(
           padding: const EdgeInsets.only(left: 25),
           child: Semantics(
-            label: 'select_color'.tr,
-              child: Text('select_color'.tr)),
+              label: 'select_color'.tr, child: Text('select_color'.tr)),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 50),
         content: SizedBox(
@@ -90,7 +128,6 @@ class ColoringController extends GetxController
             },
             text: 'cancel',
           ),
-
           ImageText(
             pathImage: LocalImage.questionSuccessButton,
             width: Get.width * 0.13,

@@ -400,6 +400,12 @@ class ReadingSpaceController extends GetxController
   }
 
   void onPressLearningPathItem(Map<String, dynamic> item, int index) {
+    // Check if item is unlocked
+    if (!isLearningPathItemUnlocked(index)) {
+      LibFunction.playAudioLocal(LocalAudio.lock);
+      return;
+    }
+
     // Handle learning path item press (reading or game)
     final isReading = item['reading'] != null;
 
@@ -528,6 +534,33 @@ class ReadingSpaceController extends GetxController
       return LocalImage.lessonCompleted;
     }
     return LocalImage.lessonProgress;
+  }
+
+  // Check if learning path item is unlocked based on completion logic
+  bool isLearningPathItemUnlocked(int index) {
+    if (learningPathItems.isEmpty) return false;
+
+    // First item is always unlocked if not completed
+    if (index == 0) {
+      return true;
+    }
+
+    // For other items, check if all previous items are completed
+    for (int i = 0; i < index; i++) {
+      final previousItem = learningPathItems[i];
+      final progress = previousItem['student_progress'];
+      if (progress['is_completed'] != 1) {
+        return false; // Previous item not completed, so this item is locked
+      }
+    }
+
+    // Current item should be unlocked if all previous are completed
+    final currentItem = learningPathItems[index];
+    final progress = currentItem['student_progress'];
+    return progress['is_completed'] == 1 || // Already completed
+        (index > 0 &&
+            learningPathItems[index - 1]['student_progress']['is_completed'] ==
+                1); // Previous completed, this unlocked
   }
 
   Future<void> saveReadingToCache(QuizReading quizReading) async {
