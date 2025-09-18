@@ -413,37 +413,37 @@ class AddChildAccountScreen extends GetView<AddChildAccountController> {
             ),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  right: !IMUtils.isMobile()
-                      ? 0.04 * Get.height
-                      : 0.05 * Get.height),
-              child: Obx(
-                () => ItemDropdownAddress(
-                  title: "grade_add",
-                  validateValue: controller.validateGrade,
-                  isAddChild: true,
-                  items: controller.gradeList
-                      .map((org) => {
-                            'id': org.id,
-                            'name': org.group,
-                          })
-                      .toList(),
-                  selectedItem: controller.selectedGrade,
-                  onChanged: (value) {
-                    if (value != null) {
-                      controller.updateSelectedGrade(value);
-                    }
-                  },
-                  width: Get.height / 2.3,
-                ),
-              ),
-            ),
-          ],
-        ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   children: [
+        //     Padding(
+        //       padding: EdgeInsets.only(
+        //           right: !IMUtils.isMobile()
+        //               ? 0.04 * Get.height
+        //               : 0.05 * Get.height),
+        //       child: Obx(
+        //         () => ItemDropdownAddress(
+        //           title: "grade_add",
+        //           validateValue: controller.validateGrade,
+        //           isAddChild: true,
+        //           items: controller.gradeList
+        //               .map((org) => {
+        //                     'id': org.id,
+        //                     'name': org.group,
+        //                   })
+        //               .toList(),
+        //           selectedItem: controller.selectedGrade,
+        //           onChanged: (value) {
+        //             if (value != null) {
+        //               controller.updateSelectedGrade(value);
+        //             }
+        //           },
+        //           width: Get.height / 2.3,
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }

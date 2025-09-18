@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:EngKid/domain/core/entities/child_profile/entities/child/child.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -45,14 +46,14 @@ class ReportController extends GetxController {
     const DayOf(text: "t6", value: 0),
     const DayOf(text: "t7", value: 0),
     const DayOf(text: "cn", value: 0),
-  ];
+  ].obs;
 
   final List<DayOf> weeksOfMonth = [
     const DayOf(text: "week", subText: '01-07', left: 0.02, value: 0),
     const DayOf(text: "week", subText: '08-14', left: 0.1, value: 0),
     const DayOf(text: "week", subText: '15-21', left: 0.18, value: 0),
     const DayOf(text: "week", subText: '22-28', left: 0.26, value: 0),
-  ];
+  ].obs;
 
   final List<DayOf> monthsOfYear = [
     const DayOf(text: "th1", left: 0.003, value: 0),
@@ -67,18 +68,26 @@ class ReportController extends GetxController {
     const DayOf(text: "th10", left: (9 * 0.0485) + 0.003, value: 0),
     const DayOf(text: "th11", left: (10 * 0.0485) + 0.003, value: 0),
     const DayOf(text: "th12", left: (11 * 0.0485) + 0.003, value: 0),
-  ];
+  ].obs;
 
   List<Rx<NavItem>> get navBar => _navBar;
   int get indexActive => _indexActive.value;
+
+  final Rx<Key> barChartKey = UniqueKey().obs;
 
   @override
   Future<void> onInit() async {
     super.onInit();
     debugPrint("Init Report Controller");
     currentDate = DateTime.now();
-    getReadingHistoryByYear(isSave: true);
-    getReadingHistory(isSave: true);
+    getReadingHistoryByYear(isSave: true, userId: _userService.currentUser.id);
+    getReadingHistory(isSave: true, userId: _userService.currentUser.id);
+    ever(_userService.userUpdateTrigger, (_) {
+      final newUser = _userService.currentUser;
+      barChartKey.value = UniqueKey();
+      getReadingHistoryByYear(isSave: true, userId: newUser.id);
+      getReadingHistory(isSave: true, userId: newUser.id);
+    });
   }
 
   Future<void> onChooseFeature(int index) async {
@@ -96,7 +105,7 @@ class ReportController extends GetxController {
     currentDate = DateTime.now();
 
     resetData();
-    getReadingHistory(isSave: true);
+    getReadingHistory(isSave: true, userId: _userService.currentUser.id);
   }
 
   void resetData() {
@@ -169,10 +178,10 @@ class ReportController extends GetxController {
         break;
     }
 
-    getReadingHistory(isSave: false);
+    getReadingHistory(isSave: false, userId: _userService.currentUser.id);
   }
 
-  Future<void> getReadingHistory({required bool isSave}) async {
+  Future<void> getReadingHistory({required bool isSave, required int userId}) async {
     try {
       isLoading.value = true;
       isShowThis.value = false;
@@ -180,13 +189,13 @@ class ReportController extends GetxController {
           navBar.indexWhere((element) => element.value.isActive == true);
       switch (activeIndex) {
         case 0:
-          await getReadingHistoryByWeek(isSave: isSave);
+          await getReadingHistoryByWeek(isSave: isSave, userId: userId);
           break;
         case 1:
-          await getReadingHistoryByMonth(isSave: isSave);
+          await getReadingHistoryByMonth(isSave: isSave, userId: userId);
           break;
         case 2:
-          await getReadingHistoryByYear(isSave: isSave);
+          await getReadingHistoryByYear(isSave: isSave, userId: userId);
           break;
       }
     } catch (e) {
@@ -195,7 +204,7 @@ class ReportController extends GetxController {
     isLoading.value = false;
   }
 
-  Future<void> getReadingHistoryByWeek({required bool isSave}) async {
+  Future<void> getReadingHistoryByWeek({required bool isSave, required int userId}) async {
     isLoading.value = true;
     try {
       // this week
@@ -212,9 +221,20 @@ class ReportController extends GetxController {
           "-${DateFormat('dd/MM/yyyy').format(lastDayOfCurrentWeek).toString()}";
       try {
         late List<History> dataWeek = [];
+
+        final List<DayOf> initialDaysOfWeek = [
+          const DayOf(text: "t2", value: 0),
+          const DayOf(text: "t3", value: 0),
+          const DayOf(text: "t4", value: 0),
+          const DayOf(text: "t5", value: 0),
+          const DayOf(text: "t6", value: 0),
+          const DayOf(text: "t7", value: 0),
+          const DayOf(text: "cn", value: 0),
+        ];
+        daysOfWeek.assignAll(initialDaysOfWeek);
         if (_networkService.networkConnection.value) {
           dataWeek = await _userService.getReadingHistory(
-            _userService.currentUser.id,
+            userId,
             DateFormat('yyyy-MM-dd').format(firstDayOfCurrentWeek).toString(),
             DateFormat('yyyy-MM-dd').format(lastDayOfCurrentWeek).toString(),
           );
@@ -262,7 +282,7 @@ class ReportController extends GetxController {
     isLoading.value = false;
   }
 
-  Future<void> getReadingHistoryByMonth({required bool isSave}) async {
+  Future<void> getReadingHistoryByMonth({required bool isSave, required int userId}) async {
     try {
       isLoading.value = true;
       final DateTime now = DateTime.now();
@@ -281,7 +301,7 @@ class ReportController extends GetxController {
         late List<History> dataMonth = [];
         if (_networkService.networkConnection.value) {
           dataMonth = await _userService.getReadingHistory(
-            _userService.currentUser.id,
+            userId,
             DateFormat('yyyy-MM-dd').format(firstDayOfMonth).toString(),
             DateFormat('yyyy-MM-dd').format(lastDayOfMonth).toString(),
           );
@@ -356,7 +376,7 @@ class ReportController extends GetxController {
     isLoading.value = false;
   }
 
-  Future<void> getReadingHistoryByYear({required bool isSave}) async {
+  Future<void> getReadingHistoryByYear({required bool isSave, required int userId}) async {
     try {
       isLoading.value = true;
       final DateTime now = DateTime.now();
@@ -370,7 +390,7 @@ class ReportController extends GetxController {
         late List<History> dataYear = [];
         if (_networkService.networkConnection.value) {
           dataYear = await _userService.getReadingHistory(
-            _userService.currentUser.id,
+            userId,
             DateFormat('yyyy-MM-dd').format(startOfYear).toString(),
             DateFormat('yyyy-MM-dd').format(endOfYear).toString(),
           );

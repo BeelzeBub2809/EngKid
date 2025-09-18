@@ -55,10 +55,10 @@ class ManagementSpaceScreen extends GetView<ManagementSpaceController> {
               ],
             ),
           ),
-          const Positioned.fill(
+          Positioned.fill(
             child: Align(
               alignment: Alignment.topRight,
-              child: Header(),
+              child: Header(controller: controller,),
             ),
           ),
         ],
@@ -212,7 +212,9 @@ class Tabs extends StatelessWidget {
 class Header extends StatelessWidget {
   const Header({
     super.key,
+    required this.controller,
   });
+  final ManagementSpaceController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -267,7 +269,7 @@ class Header extends StatelessWidget {
                 onTap: () async {
                   await LibFunction.effectConfirmPop();
                   // userService.logout();
-                  // userService.onPressProfile();
+                  userService.onPressProfile();
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -277,8 +279,7 @@ class Header extends StatelessWidget {
                   padding: EdgeInsets.all(0.002 * size.height),
                   width: 0.2 * size.width,
                   height: 0.06 * size.width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Obx(() => Row(
                     children: [
                       Container(
                         decoration: const BoxDecoration(
@@ -291,8 +292,9 @@ class Header extends StatelessWidget {
                         height: 0.055 * size.width,
                         child: Center(
                           child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.circular(0.04 * size.width),
+                            borderRadius: BorderRadius.circular(0.04 * size.width),
+                            // THAY ĐỔI Ở ĐÂY:
+                            // Truy cập avatar thông qua biến reactive của controller
                             child: CacheImage(
                               url: userService.currentUser.avatar,
                               width: 0.04 * size.width,
@@ -317,18 +319,11 @@ class Header extends StatelessWidget {
                                 fontSize: Fontsize.small + 1,
                               ),
                             ),
-                            RegularText(
-                              'Lớp: ${userService.currentUser.gradeId}' ?? '',
-                              style: TextStyle(
-                                color: AppColor.gray,
-                                fontWeight: FontWeight.w800,
-                                fontSize: Fontsize.small + 1,
-                              ),
-                            )
                           ],
                         ),
                       ),
                     ],
+                  ),
                   ),
                 ),
               ),

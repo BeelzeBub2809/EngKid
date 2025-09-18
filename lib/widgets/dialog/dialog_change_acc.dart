@@ -1,3 +1,4 @@
+import 'package:EngKid/presentation/management_space/management_space_controller.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -37,6 +38,7 @@ class _DialogChangeAccState extends State<DialogChangeAcc> {
         isChangeChild = true;
       });
       _userService.currentUser = child;
+      _userService.userUpdateTrigger.value++;
       try {
         // await _topicService.getLibrary();
         // await _userService.removeDeviceToken();

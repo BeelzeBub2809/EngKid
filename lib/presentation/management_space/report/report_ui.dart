@@ -210,12 +210,6 @@ class RightContent extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                RegularText(
-                                  'back'.tr,
-                                  style: TextStyle(
-                                      fontSize: Fontsize.smaller,
-                                      color: AppColor.blue),
-                                ),
                                 SizedBox(
                                   width: size.height * 0.01,
                                 ),
@@ -255,10 +249,10 @@ class RightContent extends StatelessWidget {
                                     text: TextSpan(
                                       text: controller.indexActive == 0 &&
                                               controller.isShowThis.value
-                                          ? "this_week".tr
+                                          ? ''
                                           : controller.indexActive == 1 &&
                                                   controller.isShowThis.value
-                                              ? "this_month".tr
+                                              ? ''
                                               : controller.indexActive == 2
                                                   ? "num_of_year".trParams({
                                                       "year": controller
@@ -310,12 +304,6 @@ class RightContent extends StatelessWidget {
                                   width: 0.05 * size.width,
                                   height: 0.05 * size.width,
                                 ),
-                                RegularText(
-                                  'next'.tr,
-                                  style: TextStyle(
-                                      fontSize: Fontsize.smaller,
-                                      color: AppColor.blue),
-                                ),
                                 SizedBox(
                                   width: size.height * 0.01,
                                 ),
@@ -339,7 +327,9 @@ class RightContent extends StatelessWidget {
                                 ))
                             : SizedBox(
                                 height: 0.38 * size.height,
-                                child: BarChartTime(controller: controller),
+                                child: BarChartTime(
+                                    key: controller.barChartKey.value,
+                                    controller: controller),
                               ),
                       ),
                     ],
