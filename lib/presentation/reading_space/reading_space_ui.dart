@@ -979,14 +979,6 @@ class Header extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              RegularText(
-                                'Lớp: ${userService.currentUser.gradeId}',
-                                style: TextStyle(
-                                  color: AppColor.gray,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: Fontsize.small + 1,
-                                ),
-                              )
                             ],
                           ),
                         ),

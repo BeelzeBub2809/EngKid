@@ -398,43 +398,43 @@ class ProfileChildScreen extends GetView<ProfileChildController> {
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Obx(
-                            () => ItemDropdownHaveTitle(
-                              title: 'grade_add',
-                              isEdit: controller.isEdit,
-                              items: controller.gradeList
-                                  .map((org) => {
-                                        'id': org.id,
-                                        'name': org.name,
-                                      })
-                                  .toList(),
-                              selectedItem: controller.selectedGrade,
-                              onChanged: (value) {
-                                if (value != null) {
-                                  controller.updateSelectedGrade(value);
-                                }
-                              },
-                              width: Get.width / 2.25,
-                            ),
-                          ),
-                          Obx(() => controller.validateGrade.isNotEmpty
-                              ? Padding(
-                                  padding: const EdgeInsets.only(top: 5),
-                                  child: RegularText(controller.validateGrade,
-                                      style: const TextStyle(
-                                          fontSize: 12, color: AppColor.red)),
-                                )
-                              : const SizedBox())
-                        ],
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Column(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       children: [
+                  //         Obx(
+                  //           () => ItemDropdownHaveTitle(
+                  //             title: 'grade_add',
+                  //             isEdit: controller.isEdit,
+                  //             items: controller.gradeList
+                  //                 .map((org) => {
+                  //                       'id': org.id,
+                  //                       'name': org.name,
+                  //                     })
+                  //                 .toList(),
+                  //             selectedItem: controller.selectedGrade,
+                  //             onChanged: (value) {
+                  //               if (value != null) {
+                  //                 controller.updateSelectedGrade(value);
+                  //               }
+                  //             },
+                  //             width: Get.width / 2.25,
+                  //           ),
+                  //         ),
+                  //         Obx(() => controller.validateGrade.isNotEmpty
+                  //             ? Padding(
+                  //                 padding: const EdgeInsets.only(top: 5),
+                  //                 child: RegularText(controller.validateGrade,
+                  //                     style: const TextStyle(
+                  //                         fontSize: 12, color: AppColor.red)),
+                  //               )
+                  //             : const SizedBox())
+                  //       ],
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),

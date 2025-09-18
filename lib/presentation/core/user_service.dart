@@ -80,6 +80,7 @@ class UserService extends GetxService {
   final Rx<ChildProfiles> _childProfiles = const ChildProfiles().obs;
   // Current user là child hiện tại đang đăng nhập
   final Rx<Child> _currentUser = const Child().obs;
+  final RxInt userUpdateTrigger = 0.obs;
   late StarSetting _starSetting = const StarSetting();
   final ReadingSequenceSetting _readingSequenceSetting =
       const ReadingSequenceSetting();

@@ -131,6 +131,8 @@ class HomeScreen extends GetView<HomeScreenController> {
                                         child: Swiper(
                                           itemBuilder: (BuildContext context,
                                               int index) {
+                                            index = controller
+                                                .indexCurrentUserInChildProfiles();
                                             return Stack(
                                               children: [
                                                 Center(

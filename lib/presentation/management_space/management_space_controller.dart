@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:EngKid/domain/core/entities/child_profile/entities/child/child.dart';
+import 'package:EngKid/presentation/core/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/domain/core/entities/entities.dart';
@@ -10,6 +12,9 @@ class ManagementSpaceController extends GetxController {
   // final UserService _userService = Get.find<UserService>();
   final ScrollController scrollControllerNav = ScrollController();
   final ScrollController scrollControllerBoard = ScrollController();
+  final UserService _userService = Get.find<UserService>();
+
+  late final Rx<Child> currentUser;
 
   final Rx<String> _initiaChildPageRoute = AppRoute.report.obs;
   String get initialChildPageRoute => _initiaChildPageRoute.value;
@@ -25,6 +30,7 @@ class ManagementSpaceController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    currentUser = _userService.currentUser.obs;
     final defaultRoute = Get.arguments;
 
     if (defaultRoute == null) return;
@@ -56,5 +62,9 @@ class ManagementSpaceController extends GetxController {
       '/${navBar[index].value.title}',
       id: AppRoute.managementSpaceNestedRouteKey,
     );
+  }
+
+  void updateUserDisplay() {
+    currentUser.value = _userService.currentUser;
   }
 }
