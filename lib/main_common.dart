@@ -9,6 +9,8 @@ import 'package:EngKid/presentation/e_library/e_library_video_binding.dart';
 import 'package:EngKid/presentation/e_library/e_library_video_ui.dart';
 import 'package:EngKid/presentation/forgot_pass/forgot_pass_binding.dart';
 import 'package:EngKid/presentation/forgot_pass/forgot_pass_ui.dart';
+import 'package:EngKid/presentation/game/four_pics_one_word/four_pics_one_word_binding.dart';
+import 'package:EngKid/presentation/game/four_pics_one_word/four_pics_one_word_ui.dart';
 import 'package:EngKid/presentation/game/image_puzzle/image_puzzle_ui.dart';
 import 'package:EngKid/presentation/game/wordle_game/wordle_game_binding.dart';
 import 'package:EngKid/presentation/game/wordle_game/wordle_game_ui.dart';
@@ -268,6 +270,11 @@ class _MyAppState extends State<MyApp> {
               name: AppRoute.userGuide,
               page: () => UserGuideUI(),
               binding: UserGuideBinding(),
+            ),
+            GetPage(
+              name: AppRoute.fourPicsOneWordGame,
+              page: () => const FourPicsOneWordUI(),
+              binding: FourPicsOneWordBinding(),
             ),
             GetPage(
               name: AppRoute.feedback,
