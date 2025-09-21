@@ -242,6 +242,25 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     super.onClose();
   }
+
+  // Test method to navigate to learning path with API integration
+  void onPressLearningPath() async {
+    if (_userService.userLogin.roleId == "2") return;
+    if (_userService.childProfiles.childProfiles.isEmpty) {
+      Get.toNamed(AppRoute.addChildrenCode);
+      return;
+    }
+
+    // Create a demo learning path to test API integration
+    final demoLearningPath = {
+      'id': 1, // This will be the pathId sent to API
+      'name': 'Basic Math',
+      'title': 'Basic Math Learning Path',
+      'description': 'Lộ trình học toán cơ bản cho trẻ em',
+    };
+
+    Get.toNamed(AppRoute.readingSpace, arguments: demoLearningPath);
+  }
 }
 
 class Menu {

@@ -16,6 +16,7 @@ import 'package:EngKid/domain/quiz/entities/entites.dart';
 import 'package:EngKid/domain/topic/entities/entites.dart';
 import 'package:EngKid/presentation/core/topic_service.dart';
 import 'package:EngKid/presentation/core/user_service.dart';
+import 'package:EngKid/presentation/core/learning_path_service.dart';
 import 'package:EngKid/utils/app_route.dart';
 import 'package:EngKid/utils/audios.dart';
 import 'package:EngKid/utils/images.dart';
@@ -40,6 +41,8 @@ class ReadingSpaceController extends GetxController
 
   final UserService _userService = Get.find<UserService>();
   final TopicService _topicService = Get.find<TopicService>();
+  final LearningPathService _learningPathService =
+      Get.find<LearningPathService>();
   final _preferencesManager = getIt.get<SharedPreferencesManager>();
 
   late VideoPlayerController? _videoController;
@@ -328,8 +331,8 @@ class ReadingSpaceController extends GetxController
       _isLoading.value = true;
       _readings.clear();
       _topics.clear();
-      final res = await _topicService.getTopicByGrade();
-      _topics.value = res;
+      // final res = await _topicService.getTopicByGrade();
+      // _topics.value = res;
       _topicIndex.value = 0;
 
       if (_topics.isNotEmpty) {
@@ -355,13 +358,20 @@ class ReadingSpaceController extends GetxController
       learningPathItems.clear();
 
       if (selectedLearningPath.value != null) {
-        final categories = mockLearningPathWithCategories['categories'] as List;
-        learningPathCategories.value =
-            List<Map<String, dynamic>>.from(categories);
+        final pathId = selectedLearningPath.value!['id'] as int;
+        await _learningPathService.fetchLearningPathCategories(pathId);
 
+        // Get categories from service
+        learningPathCategories.value = _learningPathService.categories.toList();
+
+        // Set default categoryId to first category and fetch its items
         if (learningPathCategories.isNotEmpty) {
           selectedCategoryIndex.value = 0;
-          await fetchLearningPathItems();
+          final firstCategoryId = learningPathCategories[0]['id'] as int;
+          await _learningPathService.fetchLearningPathItems(
+              pathId, firstCategoryId);
+          learningPathItems.value =
+              _learningPathService.currentCategoryItems.toList();
         }
       }
     } catch (e) {
@@ -379,12 +389,16 @@ class ReadingSpaceController extends GetxController
     try {
       learningPathItems.clear();
 
-      if (learningPathCategories.isNotEmpty &&
+      if (selectedLearningPath.value != null &&
+          learningPathCategories.isNotEmpty &&
           selectedCategoryIndex.value < learningPathCategories.length) {
-        final selectedCategory =
-            learningPathCategories[selectedCategoryIndex.value];
-        final items = selectedCategory['items'] as List;
-        learningPathItems.value = List<Map<String, dynamic>>.from(items);
+        final pathId = selectedLearningPath.value!['id'] as int;
+        final categoryId =
+            learningPathCategories[selectedCategoryIndex.value]['id'] as int;
+
+        await _learningPathService.fetchLearningPathItems(pathId, categoryId);
+        learningPathItems.value =
+            _learningPathService.currentCategoryItems.toList();
       }
     } catch (e) {
       learningPathItems.clear();
@@ -394,9 +408,33 @@ class ReadingSpaceController extends GetxController
     }
   }
 
-  void onChangeLearningPathCategory(int index) {
-    selectedCategoryIndex.value = index;
-    fetchLearningPathItems();
+  void onChangeLearningPathCategory(int index) async {
+    if (selectedLearningPath.value != null) {
+      final pathId = selectedLearningPath.value!['id'] as int;
+      selectedCategoryIndex.value = index;
+      await _learningPathService.changeCategory(pathId, index);
+      learningPathItems.value =
+          _learningPathService.currentCategoryItems.toList();
+    }
+  }
+
+  // Helper method to get item type for debugging
+  String getLearningPathItemType(Map<String, dynamic> item) {
+    if (item['reading_id'] != null) {
+      return 'Reading';
+    } else if (item['game_id'] != null) {
+      return 'Game';
+    }
+    return 'Unknown';
+  }
+
+  // Helper method to get prerequisite info for debugging
+  String getLearningPathItemPrerequisiteInfo(Map<String, dynamic> item) {
+    final prerequisiteReadingId = item['prerequisite_reading_id'];
+    if (prerequisiteReadingId != null) {
+      return 'Prerequisite Reading ID: $prerequisiteReadingId';
+    }
+    return 'No prerequisite';
   }
 
   void onPressLearningPathItem(Map<String, dynamic> item, int index) {
@@ -407,20 +445,25 @@ class ReadingSpaceController extends GetxController
     }
 
     // Handle learning path item press (reading or game)
-    final isReading = item['reading'] != null;
+    final isReading = item['reading_id'] != null;
+    final isGame = item['game_id'] != null;
 
     if (isReading) {
       // Handle reading item
+      final readingId = item['reading_id'];
       if (kDebugMode) {
-        print("Pressed reading item: ${item['reading']['title']}");
+        print("Pressed reading item: ${item['name']} (ID: $readingId)");
       }
-      // Add navigation to reading screen here
-    } else {
+      // TODO: Add navigation to reading screen with readingId
+      // You can add navigation logic here similar to onPressLesson method
+    } else if (isGame) {
       // Handle game item
+      final gameId = item['game_id'];
       if (kDebugMode) {
-        print("Pressed game item: ${item['game']['name']}");
+        print("Pressed game item: ${item['name']} (ID: $gameId)");
       }
-      // Add navigation to game screen here
+      // TODO: Add navigation to game screen with gameId
+      // You can add navigation logic here for specific games
     }
   }
 
@@ -448,59 +491,6 @@ class ReadingSpaceController extends GetxController
       questions: questions,
     );
     await startLearning(currentQuiz, index);
-    // setHasVideoMong();
-    // if (!getQuizsFromStorage()) {
-    //   await handleShowDownload(reading.readingVideo);
-    //   debugPrint("check download : $reading.readingVideo");
-    // } else {
-    //   // check lock
-    //   if (getPathLessonStatus(index) == LocalImage.lessonLocked &&
-    //       _topicService.isCaculator) {
-    //     LibFunction.toast("lock_lesson");
-    //     return;
-    //   }
-    //   // kiểm tra ngôn ngữ
-    //   late String language = "vi";
-    //   final Rx<Setting>? tmp = _userService.settings
-    //       .firstWhereOrNull((element) => element.value.key == 'language');
-    //   if (tmp != null) {
-    //     language = tmp.value.value;
-    //   }
-    //   if (_topicService.currentQuiz.language != language) {
-    //     await handleShowDownload(reading.readingVideo);
-    //     return;
-    //   }
-    //   // handle count down
-    //   final int timeLimit = getTimeLimitFromStorage();
-    //   if (timeLimit > 0) {
-    //     countdownTimerUseApp(timeLimit);
-    //     // start learn
-    //     if (_topicService.isCaculator) {
-    //       await updateAttempt(_topicService.currentQuiz);
-    //     }
-    //     startLearning(_topicService.currentQuiz, index);
-    //   } else {
-    //     try {
-    //       _timerUseApp.cancel();
-    //     } catch (e) {
-    //       //
-    //     }
-    //
-    //     Get.dialog(
-    //       DialogWarningTime(
-    //           timer: _topicService.currentGrade.timeLimit,
-    //           onTapContinue: () async {
-    //             // start learn
-    //             if (_topicService.isCaculator) {
-    //               await updateAttempt(_topicService.currentQuiz);
-    //             }
-    //             startLearning(_topicService.currentQuiz, index);
-    //           }),
-    //       barrierDismissible: false,
-    //       barrierColor: null,
-    //     );
-    //   }
-    // }
   }
 
   Future<void> startLearning(Quiz quiz, int index) async {
@@ -530,37 +520,62 @@ class ReadingSpaceController extends GetxController
 
   String getLearningPathItemStatus(Map<String, dynamic> item) {
     final progress = item['student_progress'];
-    if (progress['is_completed'] == 1) {
+    if (progress['is_passed'] == true) {
       return LocalImage.lessonCompleted;
     }
     return LocalImage.lessonProgress;
   }
 
-  // Check if learning path item is unlocked based on completion logic
+  // Check if learning path item is unlocked based on new logic
   bool isLearningPathItemUnlocked(int index) {
-    if (learningPathItems.isEmpty) return false;
+    if (learningPathItems.isEmpty || index >= learningPathItems.length)
+      return false;
 
-    // First item is always unlocked if not completed
-    if (index == 0) {
-      return true;
-    }
-
-    // For other items, check if all previous items are completed
-    for (int i = 0; i < index; i++) {
-      final previousItem = learningPathItems[i];
-      final progress = previousItem['student_progress'];
-      if (progress['is_completed'] != 1) {
-        return false; // Previous item not completed, so this item is locked
-      }
-    }
-
-    // Current item should be unlocked if all previous are completed
     final currentItem = learningPathItems[index];
-    final progress = currentItem['student_progress'];
-    return progress['is_completed'] == 1 || // Already completed
-        (index > 0 &&
-            learningPathItems[index - 1]['student_progress']['is_completed'] ==
-                1); // Previous completed, this unlocked
+
+    // Check if item is a reading or game
+    final isReading = currentItem['reading_id'] != null;
+    final isGame = currentItem['game_id'] != null;
+
+    if (isReading) {
+      // For reading items: follow old logic - depends on previous reading completion
+      if (index == 0) {
+        return true; // First reading is always unlocked
+      }
+
+      // Find the previous reading item (skip games)
+      for (int i = index - 1; i >= 0; i--) {
+        final previousItem = learningPathItems[i];
+        if (previousItem['reading_id'] != null) {
+          final progress = previousItem['student_progress'];
+          return progress['is_passed'] == true;
+        }
+      }
+      return true; // If no previous reading found, unlock
+    } else if (isGame) {
+      // For game items: depends on prerequisite_reading_id
+      final prerequisiteReadingId = currentItem['prerequisite_reading_id'];
+
+      if (prerequisiteReadingId == null) {
+        return true; // No prerequisite, unlock the game
+      }
+
+      // Find the reading with prerequisite_reading_id and check if it's unlocked
+      for (int i = 0; i < learningPathItems.length; i++) {
+        final item = learningPathItems[i];
+        if (item['reading_id'] == prerequisiteReadingId) {
+          // Check if this reading is unlocked first
+          if (isLearningPathItemUnlocked(i)) {
+            final progress = item['student_progress'];
+            return progress['is_passed'] == true;
+          }
+          return false;
+        }
+      }
+      return false; // Prerequisite reading not found, lock the game
+    }
+
+    return false; // Default to locked
   }
 
   Future<void> saveReadingToCache(QuizReading quizReading) async {

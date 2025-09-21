@@ -1,5 +1,6 @@
 import 'package:EngKid/data/core/remote/api/ebook_category_api/ebook_category_api.dart';
 import 'package:EngKid/data/core/remote/api/feedback_api/feedback_api.dart';
+import 'package:EngKid/data/core/remote/api/learning_path_api/learning_path_api.dart';
 import 'package:EngKid/data/core/remote/api/notification_api/notification_api.dart';
 import 'package:EngKid/data/core/remote/api/question_api/question_api.dart';
 import 'package:EngKid/data/core/remote/api/reading_api/reading_api.dart';
@@ -9,6 +10,7 @@ import 'package:EngKid/data/core/remote/api/student_reading_api/student_reading_
 import 'package:EngKid/data/core/remote/api/topic_api/topic_api.dart';
 import 'package:EngKid/data/ebook_category/ebook_category_repo.dart';
 import 'package:EngKid/data/feedback/feedback_repo.dart';
+import 'package:EngKid/data/learning_path/learning_path_repo.dart';
 import 'package:EngKid/data/notificaiton/notification_repo.dart';
 import 'package:EngKid/data/question/question_repo.dart';
 import 'package:EngKid/data/reading/reading_repo.dart';
@@ -16,6 +18,7 @@ import 'package:EngKid/data/star_board/star_board_repo.dart';
 import 'package:EngKid/data/topic_reading/topic_reading_repo.dart';
 import 'package:EngKid/domain/ebook_category/ebook_category_usecase.dart';
 import 'package:EngKid/domain/feedback/feedback_usecases.dart';
+import 'package:EngKid/domain/learning_path/learning_path_usecases.dart';
 import 'package:EngKid/domain/notificaiton/notification_usecase.dart';
 import 'package:EngKid/domain/question/question_usecases.dart';
 import 'package:EngKid/domain/reading/reading_usecases.dart';
@@ -125,6 +128,14 @@ class UseCaseModule {
       () => FeedbackUsecases(
         FeedbackRepositoryImp(
           feedbackApi: getIt.get<FeedbackApi>(),
+        ),
+      ),
+      fenix: true,
+    );
+    Get.lazyPut<LearningPathUseCases>(
+      () => LearningPathUseCases(
+        LearningPathRepositoryImp(
+          learningPathApi: getIt.get<LearningPathApi>(),
         ),
       ),
       fenix: true,

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:EngKid/data/core/remote/api/child_api/child_api.dart';
 import 'package:EngKid/data/core/remote/api/ebook_category_api/ebook_category_api.dart';
 import 'package:EngKid/data/core/remote/api/feedback_api/feedback_api.dart';
+import 'package:EngKid/data/core/remote/api/learning_path_api/learning_path_api.dart';
 import 'package:EngKid/data/core/remote/api/notification_api/notification_api.dart';
 import 'package:EngKid/data/core/remote/api/question_api/question_api.dart';
 import 'package:EngKid/data/core/remote/api/reading_api/reading_api.dart';
@@ -41,6 +42,7 @@ class ApiModule {
         StudentReadingApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(NotificationApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(FeedbackApi(dio, baseUrl: dio.options.baseUrl));
+    getIt.registerSingleton(LearningPathApi(dio, baseUrl: dio.options.baseUrl));
   }
 
   static FutureOr<Dio> setup(String baseUrl) async {

@@ -171,7 +171,7 @@ class ShapeLesson extends StatelessWidget {
             itemBuilder: (context, index) {
               // Learning Path Items Display - Following Reading Design Pattern
               final item = learningPathItems[index];
-              final isReading = item['reading'] != null;
+              final isReading = item['reading_id'] != null;
               final isUnlocked = controller.isLearningPathItemUnlocked(index);
 
               return Column(
@@ -204,10 +204,9 @@ class ShapeLesson extends StatelessWidget {
                                   opacity: isUnlocked
                                       ? 1.0
                                       : 0.5, // Dim locked items
-                                  child: isReading &&
-                                          item['reading']['image'] != null
+                                  child: item['image'] != null
                                       ? CacheImage(
-                                          url: item['reading']['image'],
+                                          url: item['image'],
                                           width: size.width * 0.16,
                                           height: size.width * 0.16,
                                           boxFit: BoxFit.cover,
@@ -254,12 +253,9 @@ class ShapeLesson extends StatelessWidget {
                             child: Center(
                               child: Semantics(
                                 label:
-                                    'Tiêu đề bài học : ${(isReading ? item['reading']['title'] : item['game']['name']).toUpperCase()}',
+                                    'Tiêu đề bài học : ${(item['name'] ?? 'Unknown').toUpperCase()}',
                                 child: Text(
-                                  (isReading
-                                          ? item['reading']['title']
-                                          : item['game']['name'])
-                                      .toUpperCase(),
+                                  (item['name'] ?? 'Unknown').toUpperCase(),
                                   style: TextStyle(
                                     color: Colors.transparent,
                                     fontWeight: FontWeight.bold,
@@ -280,7 +276,7 @@ class ShapeLesson extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.topRight,
                           child: Image.asset(
-                            item['student_progress']['is_completed'] == 1
+                            item['student_progress']['is_passed'] == true
                                 ? LocalImage.lessonCompleted
                                 : LocalImage.lessonProgress,
                             width: 0.05 * size.width,
@@ -289,7 +285,7 @@ class ShapeLesson extends StatelessWidget {
                         ),
                       ),
                       // Star rating display (following reading pattern)
-                      if (item['student_progress']['star'] != null)
+                      if (item['student_progress']['stars'] != null)
                         Positioned.fill(
                           bottom: 0.005 * size.height,
                           left: 0.01 * size.width,
@@ -315,8 +311,9 @@ class ShapeLesson extends StatelessWidget {
                                               horizontal: 0.003 * size.width),
                                           child: Image.asset(
                                             idx <
-                                                    item['student_progress']
-                                                            ['star']
+                                                    (item['student_progress']
+                                                                ['stars'] ??
+                                                            0)
                                                         .ceil()
                                                 ? LocalImage.star
                                                 : LocalImage.starGrey,
@@ -358,7 +355,7 @@ class ShapeLesson extends StatelessWidget {
                                   padding: EdgeInsets.only(
                                       right: 0.005 * size.width),
                                   child: Text(
-                                    "${(item['student_progress']['is_completed'] == 1 ? 100 : (item['student_progress']['progress'] ?? 0)).ceil()}%",
+                                    "${(item['student_progress']['is_passed'] == true ? 100 : 0).ceil()}%",
                                     style: TextStyle(
                                       fontWeight: FontWeight.w800,
                                       color: const Color.fromARGB(
@@ -394,14 +391,10 @@ class ShapeLesson extends StatelessWidget {
                                 child: SizedBox(
                                   width: 0.075 *
                                       size.width *
-                                      (item['student_progress']
-                                                  ['is_completed'] ==
-                                              1
+                                      (item['student_progress']['is_passed'] ==
+                                              true
                                           ? 1.0
-                                          : (item['student_progress']
-                                                      ['progress'] ??
-                                                  0) /
-                                              100),
+                                          : 0.0),
                                   height: 0.017 * size.height,
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(
@@ -564,9 +557,9 @@ class ShapeTopic extends StatelessWidget {
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(
                                               0.05 * size.width),
-                                          child: category['icon'] != null
+                                          child: category['image'] != null
                                               ? CacheImage(
-                                                  url: category['icon'],
+                                                  url: category['image'],
                                                   width: 0.05 * size.width,
                                                   height: 0.05 * size.width,
                                                 )
@@ -603,7 +596,7 @@ class ShapeTopic extends StatelessWidget {
                                           Align(
                                             alignment: Alignment.centerLeft,
                                             child: RegularText(
-                                              category['title'],
+                                              category['name'] ?? '',
                                               maxLines: 1,
                                               textAlign: TextAlign.left,
                                               style: const TextStyle(
