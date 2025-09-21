@@ -7,7 +7,6 @@ import 'package:EngKid/utils/font_size.dart';
 import 'package:EngKid/utils/images.dart';
 import 'package:EngKid/widgets/button/image_button.dart';
 import 'package:EngKid/widgets/image/cache_image.dart';
-import 'package:EngKid/widgets/text/image_text.dart';
 import 'package:EngKid/widgets/text/regular_text.dart';
 
 class MyLibraryScreen extends GetView<MyLibraryController> {
@@ -47,124 +46,91 @@ class MyLibraryScreen extends GetView<MyLibraryController> {
                       () => Column(
                         children: [
                           // Learning paths display with pagination
-                          Padding(
-                            padding: EdgeInsets.only(top: 0.04 * size.height),
-                            child: SizedBox(
-                              height:
-                                  0.6 * size.height, // Fixed height container
-                              child: Stack(
-                                children: [
-                                  // Learning Path Items - 2 rows layout
-                                  Center(
-                                    child: Column(
+                          SizedBox(
+                            height: 0.6 * size.height, // Fixed height container
+                            child: Stack(
+                              children: [
+                                // Learning Path Cards - Horizontal Layout 1x4
+                                Center(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
-                                      children: [
-                                        // First row - 3 items
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: List.generate(
-                                            controller.currentPageItems
-                                                        .length >=
-                                                    3
-                                                ? 3
-                                                : controller
-                                                    .currentPageItems.length,
-                                            (index) {
-                                              final item = controller
-                                                  .currentPageItems[index];
-                                              return LearningPathIcon(
-                                                image: item['image'],
-                                                isOpen: true,
-                                                name: item['name'],
-                                                onPressLearningPath: () =>
-                                                    controller
-                                                        .onPressLearningPath(
-                                                            item),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        // Second row - 2 items (if available)
-                                        if (controller.currentPageItems.length >
-                                            3)
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: List.generate(
-                                              controller
-                                                      .currentPageItems.length -
-                                                  3,
-                                              (index) {
-                                                final item =
-                                                    controller.currentPageItems[
-                                                        index + 3];
-                                                return LearningPathIcon(
-                                                  image: item['image'],
-                                                  isOpen: true,
-                                                  name: item['name'],
-                                                  onPressLearningPath: () =>
-                                                      controller
-                                                          .onPressLearningPath(
-                                                              item),
-                                                );
-                                              },
+                                      children: List.generate(
+                                        controller.currentPageItems.length,
+                                        (index) {
+                                          final item = controller
+                                              .currentPageItems[index];
+                                          return Container(
+                                            width: size.width *
+                                                0.18, // 15% of screen width per card
+                                            height: size.height *
+                                                0.6, // Fixed height for cards
+                                            margin: EdgeInsets.symmetric(
+                                              horizontal: size.width *
+                                                  0.01, // Space between cards
                                             ),
-                                          ),
-                                      ],
+                                            child: LearningPathCard(
+                                              item: item,
+                                              onTap: () => controller
+                                                  .onPressLearningPath(item),
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
-                                  // Left arrow at center left
-                                  if (controller.totalPages > 1)
-                                    Positioned(
-                                      left: 0.02 * size.width,
-                                      top: 0,
-                                      bottom: 0,
-                                      child: Center(
-                                        child: GestureDetector(
-                                          onTap: controller.hasPreviousPage
-                                              ? controller.previousPage
-                                              : null,
-                                          child: Opacity(
-                                            opacity: controller.hasPreviousPage
-                                                ? 1.0
-                                                : 0.3,
-                                            child: Image.asset(
-                                              LocalImage.arrowLeft,
-                                              width: 0.08 * size.width,
-                                              height: 0.08 * size.width,
-                                            ),
+                                ),
+                                // Left arrow at center left
+                                if (controller.totalPages > 1)
+                                  Positioned(
+                                    left: 0.02 * size.width,
+                                    top: 0,
+                                    bottom: 0,
+                                    child: Center(
+                                      child: GestureDetector(
+                                        onTap: controller.hasPreviousPage
+                                            ? controller.previousPage
+                                            : null,
+                                        child: Opacity(
+                                          opacity: controller.hasPreviousPage
+                                              ? 1.0
+                                              : 0.3,
+                                          child: Image.asset(
+                                            LocalImage.arrowLeft,
+                                            width: 0.08 * size.width,
+                                            height: 0.08 * size.width,
                                           ),
                                         ),
                                       ),
                                     ),
-                                  // Right arrow at center right
-                                  if (controller.totalPages > 1)
-                                    Positioned(
-                                      right: 0.02 * size.width,
-                                      top: 0,
-                                      bottom: 0,
-                                      child: Center(
-                                        child: GestureDetector(
-                                          onTap: controller.hasNextPage
-                                              ? controller.nextPage
-                                              : null,
-                                          child: Opacity(
-                                            opacity: controller.hasNextPage
-                                                ? 1.0
-                                                : 0.3,
-                                            child: Image.asset(
-                                              LocalImage.arrowRight,
-                                              width: 0.08 * size.width,
-                                              height: 0.08 * size.width,
-                                            ),
+                                  ),
+                                // Right arrow at center right
+                                if (controller.totalPages > 1)
+                                  Positioned(
+                                    right: 0.02 * size.width,
+                                    top: 0,
+                                    bottom: 0,
+                                    child: Center(
+                                      child: GestureDetector(
+                                        onTap: controller.hasNextPage
+                                            ? controller.nextPage
+                                            : null,
+                                        child: Opacity(
+                                          opacity: controller.hasNextPage
+                                              ? 1.0
+                                              : 0.3,
+                                          child: Image.asset(
+                                            LocalImage.arrowRight,
+                                            width: 0.08 * size.width,
+                                            height: 0.08 * size.width,
                                           ),
                                         ),
                                       ),
                                     ),
-                                ],
-                              ),
+                                  ),
+                              ],
                             ),
                           ),
                         ],
@@ -175,7 +141,7 @@ class MyLibraryScreen extends GetView<MyLibraryController> {
               ]),
             ),
             Positioned.fill(
-                right: 0.1 * size.width,
+                right: 0.03 * size.width,
                 child: Align(
                   alignment: Alignment.bottomRight,
                   child: Column(
@@ -245,122 +211,111 @@ class MyLibraryScreen extends GetView<MyLibraryController> {
   }
 }
 
-class LearningPathIcon extends StatelessWidget {
-  const LearningPathIcon({
+class LearningPathCard extends StatelessWidget {
+  const LearningPathCard({
     super.key,
-    required this.image,
-    required this.isOpen,
-    required this.name,
-    required this.onPressLearningPath,
+    required this.item,
+    required this.onTap,
   });
 
-  final String image;
-  final bool isOpen;
-  final String name;
-  final Function onPressLearningPath;
+  final Map<String, dynamic> item;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+
     return GestureDetector(
-      onTap: () {
-        onPressLearningPath();
-      },
-      child: Stack(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-              top: 0.02 * size.height,
-              bottom: 0.02 * size.height,
-              left: 0.03 * size.height,
-              right: 0.03 * size.height,
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
-            child: Container(
-              width: size.height * 0.20,
-              height: size.height * 0.20,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(LocalImage.gradeShape),
-                  fit: BoxFit.fill,
-                ),
-              ),
-              child: Center(
-                child: Image.asset(
-                  image,
-                  width: size.height * 0.13,
-                  height: size.height * 0.13,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Icon(
-                      Icons.book,
-                      size: size.height * 0.13,
-                      color: Colors.blue,
-                    );
-                  },
-                ),
-              ),
-            ),
+          ],
+          border: Border.all(
+            color: AppColor.blue.withOpacity(0.3),
+            width: 2,
           ),
-          if (!isOpen)
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  width: size.height * 0.20,
-                  height: size.height * 0.20,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(LocalImage.gradeShapeDisable),
-                      fit: BoxFit.fill,
-                    ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Thumbnail
+            Expanded(
+              flex: 2, // Reduced flex for horizontal layout
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                  ),
+                  color: AppColor.blue.withOpacity(0.1),
+                ),
+                child: Center(
+                  child: Image.asset(
+                    item['image'] ?? 'assets/images/elibrary_book_icon.png',
+                    width:
+                        size.width * 0.08, // Smaller icon for horizontal layout
+                    height: size.width * 0.08,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(
+                        Icons.book,
+                        size: size.width * 0.08,
+                        color: AppColor.blue,
+                      );
+                    },
                   ),
                 ),
               ),
             ),
-          if (!isOpen)
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.center,
-                child: Image.asset(
-                  LocalImage.lock,
-                  width: size.width * 0.05,
-                  height: size.width * 0.05,
+            // Content
+            Expanded(
+              flex: 3, // More space for text content
+              child: Padding(
+                padding: EdgeInsets.all(size.width * 0.015), // Smaller padding
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Title
+                    RegularText(
+                      item['name'] ?? 'Learning Path',
+                      maxLines: 2,
+                      style: TextStyle(
+                        fontSize: Fontsize
+                            .smaller, // Smaller font for horizontal layout
+                        fontWeight: FontWeight.bold,
+                        color: AppColor.darkBlue,
+                      ),
+                    ),
+                    SizedBox(height: size.height * 0.008),
+                    // Description
+                    Expanded(
+                      child: RegularText(
+                        item['description'] ??
+                            'Khám phá và học tiếng Anh một cách thú vị',
+                        maxLines: 7, // More lines for better text display
+                        style: TextStyle(
+                          fontSize: Fontsize.smaller *
+                              0.8, // Smaller font for description
+                          color: AppColor.gray,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.topRight,
-              child: ImageText(
-                style: TextStyle(
-                    fontSize: Fontsize.smaller,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700),
-                text: name,
-                maxLines: 1,
-                isUpperCase: true,
-                pathImage: LocalImage.gradeName,
-                width: size.width * 0.07,
-                height: size.width * 0.03,
-              ),
-            ),
-          ),
-          if (!isOpen)
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.topRight,
-                child: ImageText(
-                  style: TextStyle(
-                      fontSize: Fontsize.smaller,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w700),
-                  text: '',
-                  pathImage: LocalImage.gradeNameDisable,
-                  width: size.width * 0.07,
-                  height: size.width * 0.03,
-                ),
-              ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
