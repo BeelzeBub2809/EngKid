@@ -58,3 +58,6 @@ assets/.env
 android/app/google-services.json
 .github/instructions/EngKidInstructor.instructions.md
 .github/copilot-instructions.md
+LEARNING_PATH_API_INTEGRATION.md
+LEARNING_PATH_UPDATES_SUMMARY.md
+UI_BUG_FIXES_SUMMARY.md
