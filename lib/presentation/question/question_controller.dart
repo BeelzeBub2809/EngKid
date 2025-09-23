@@ -119,24 +119,8 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
 
     _unCompleteQuestions
         .add(Question(video: quiz.reading.video, typeCode: 'V'));
-    late String contentReadGame = "";
-    try {
-      final int dataGameIndex = (Get.arguments[2] as Reading).positionId % 100;
-      if (dataGameIndex == 0) {
-        contentReadGame =
-            dataGame[_topicService.currentGrade.id - 1][99].values.toList()[2];
-      } else {
-        contentReadGame = dataGame[_topicService.currentGrade.id - 1]
-                [dataGameIndex - 1]
-            .values
-            .toList()[2];
-      }
-      handleGetColoringUrl(dataGameIndex);
+    coloringUrl = getRandomColoringImage();
 
-      coloringUrl = getRandomColoringImage();
-    } catch (e) {
-//
-    }
     // _unCompleteQuestions.add(const Question(
     //     typeCode: 'read',
     //     question: "But today Mr Brown isn't in the kitchen."
@@ -157,8 +141,6 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     _unCompleteQuestions.addAll(quiz.questions.sublist(0));
 
     _unCompleteQuestions.add(const Question(typeCode: 'achieve_star'));
-    _unCompleteQuestions.add(const Question(typeCode: 'drawing'));
-    _unCompleteQuestions.add(const Question(typeCode: 'coloring'));
     _unCompleteQuestions.add(const Question(typeCode: 'final_screen'));
 
     if (_unCompleteQuestions.isNotEmpty) {
@@ -447,10 +429,10 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
 
       if (videoDuration > 0) {
         if (_doQuizDuration.toInt() == videoDuration.toInt()) {
-          int loginRecordId = _preferencesManager.getInt(
-            KeySharedPreferences.loginRecord +
-                _userService.currentUser.id.toString(),
-          )!;
+          // int loginRecordId = _preferencesManager.getInt(
+          //   KeySharedPreferences.loginRecord +
+          //       _userService.currentUser.id.toString(),
+          // )!;
           // _userService.updateLoginRecord(loginRecordId, true, false, true);
         }
       }
@@ -484,9 +466,9 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
 
   Future<void> submitCompletedQuestion() async {
     //call api submit time doing question
-    int loginRecordId = _preferencesManager.getInt(
-      KeySharedPreferences.loginRecord + _userService.currentUser.id.toString(),
-    )!;
+    // int loginRecordId = _preferencesManager.getInt(
+    //   KeySharedPreferences.loginRecord + _userService.currentUser.id.toString(),
+    // )!;
     // _userService.updateLoginRecord(loginRecordId, true, true, true);
   }
 

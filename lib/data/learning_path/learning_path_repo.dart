@@ -8,14 +8,15 @@ class LearningPathRepositoryImp implements LearningPathRepository {
   LearningPathRepositoryImp({required this.learningPathApi});
 
   @override
-  Future<Map<String, dynamic>> getLearningPathCategories(int pathId) async {
+  Future<List<Map<String, dynamic>>> getListLearningPaths() async {
     try {
       final ApiResponseObject response =
-          await learningPathApi.getLearningPathCategories(pathId);
+          await learningPathApi.getListLearningPaths();
       if (response.result) {
-        return response.data as Map<String, dynamic>;
+        final data = response.data as Map<String, dynamic>;
+        return List<Map<String, dynamic>>.from(data['record'] ?? []);
       } else {
-        throw Exception('Failed to get learning path categories');
+        throw Exception('Failed to get learning paths list');
       }
     } catch (error) {
       return Future.error(error);
@@ -23,14 +24,13 @@ class LearningPathRepositoryImp implements LearningPathRepository {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getLearningPathItems(
-      int pathId, int categoryId, int studentId) async {
+  Future<Map<String, dynamic>> getLearningPathItems(
+      int pathId, int studentId) async {
     try {
-      final ApiResponseObject response = await learningPathApi
-          .getLearningPathItems(pathId, categoryId, studentId);
+      final ApiResponseObject response =
+          await learningPathApi.getLearningPathItems(pathId, studentId);
       if (response.result) {
-        final data = response.data as Map<String, dynamic>;
-        return List<Map<String, dynamic>>.from(data['items'] ?? []);
+        return response.data as Map<String, dynamic>;
       } else {
         throw Exception('Failed to get learning path items');
       }

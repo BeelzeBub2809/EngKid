@@ -71,9 +71,6 @@ class MemoryGameUI extends StatelessWidget {
               child: Obx(() {
                 // Handle different game states
                 switch (controller.gameState) {
-                  case GameState.setup:
-                    return _buildGameSetup(context, controller);
-
                   case GameState.loading:
                     return _buildLoadingScreen(context, controller);
 
@@ -84,7 +81,7 @@ class MemoryGameUI extends StatelessWidget {
                     return _buildGameComplete(context, controller);
 
                   default:
-                    return _buildGameSetup(context, controller);
+                    return _buildLoadingScreen(context, controller);
                 }
               }),
             ),
@@ -137,78 +134,92 @@ class MemoryGameUI extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          padding: EdgeInsets.all(
-                              _getResponsivePadding(context, 16)),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Colors.blue.shade100,
-                                Colors.indigo.shade100,
-                              ],
-                            ),
-                            shape: BoxShape.circle,
-                          ),
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.blue.shade600,
-                            ),
-                            strokeWidth: 3,
-                          ),
-                        ),
-                        SizedBox(height: _getResponsiveSize(context, 24)),
-                        Text(
-                          'Preparing Your Game',
-                          style: TextStyle(
-                            fontSize: _getResponsiveFontSize(context, 20),
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue.shade700,
-                          ),
-                        ),
-                        SizedBox(height: _getResponsiveSize(context, 12)),
-                        Text(
-                          controller.isLoadingWords
-                              ? 'Loading words and pronunciations...'
-                              : 'Setting up your memory challenge...',
-                          style: TextStyle(
-                            fontSize: _getResponsiveFontSize(context, 16),
-                            color: Colors.grey.shade600,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: _getResponsiveSize(context, 16)),
-                        Container(
-                          padding: EdgeInsets.all(
-                              _getResponsivePadding(context, 12)),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.shade50,
-                            borderRadius: BorderRadius.circular(
-                                _getResponsiveSize(context, 12)),
-                            border: Border.all(color: Colors.blue.shade200),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.info_outline_rounded,
-                                color: Colors.blue.shade600,
-                                size: _getResponsiveIconSize(context, 18),
+                        if (controller.errorMessage.isEmpty) ...[
+                          // Loading state
+                          Container(
+                            padding: EdgeInsets.all(
+                                _getResponsivePadding(context, 16)),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.blue.shade100,
+                                  Colors.indigo.shade100,
+                                ],
                               ),
-                              SizedBox(width: _getResponsiveSize(context, 8)),
-                              Text(
-                                'Difficulty: ${controller.selectedDifficultyString}',
-                                style: TextStyle(
-                                  fontSize: _getResponsiveFontSize(context, 14),
-                                  color: Colors.blue.shade700,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.blue.shade600,
                               ),
-                            ],
+                              strokeWidth: 3,
+                            ),
                           ),
-                        ),
+                          SizedBox(height: _getResponsiveSize(context, 24)),
+                          Text(
+                            'Loading Memory Game',
+                            style: TextStyle(
+                              fontSize: _getResponsiveFontSize(context, 20),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue.shade700,
+                            ),
+                          ),
+                          SizedBox(height: _getResponsiveSize(context, 12)),
+                          Text(
+                            'Fetching words from server...',
+                            style: TextStyle(
+                              fontSize: _getResponsiveFontSize(context, 16),
+                              color: Colors.grey.shade600,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ] else ...[
+                          // Error state
+                          Container(
+                            padding: EdgeInsets.all(
+                                _getResponsivePadding(context, 16)),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.red.shade100,
+                                  Colors.red.shade50,
+                                ],
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.error_outline_rounded,
+                              color: Colors.red.shade600,
+                              size: _getResponsiveIconSize(context, 32),
+                            ),
+                          ),
+                          SizedBox(height: _getResponsiveSize(context, 24)),
+                          Text(
+                            'Failed to Load Game',
+                            style: TextStyle(
+                              fontSize: _getResponsiveFontSize(context, 20),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red.shade700,
+                            ),
+                          ),
+                          SizedBox(height: _getResponsiveSize(context, 12)),
+                          Text(
+                            controller.errorMessage,
+                            style: TextStyle(
+                              fontSize: _getResponsiveFontSize(context, 14),
+                              color: Colors.grey.shade600,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: _getResponsiveSize(context, 20)),
+                          _buildRetryButton(context, controller),
+                        ],
                       ],
                     ),
                   ),
@@ -221,120 +232,57 @@ class MemoryGameUI extends StatelessWidget {
     );
   }
 
-  Widget _buildGameSetup(
+  Widget _buildRetryButton(
       BuildContext context, MemoryGameController controller) {
-    return SingleChildScrollView(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height -
-              MediaQuery.of(context).padding.top -
-              MediaQuery.of(context).padding.bottom,
+    return Container(
+      width: double.infinity,
+      height: _getResponsiveSize(context, 50),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.blue.shade400,
+            Colors.blue.shade500,
+            Colors.blue.shade600,
+          ],
         ),
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(_getResponsivePadding(context, 24.0)),
-          child: Column(
-            children: [
-              _buildHeader(context, controller),
-              SizedBox(height: _getResponsiveSize(context, 40)),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.white.withOpacity(0.95),
-                      Colors.blue.shade50.withOpacity(0.9),
-                      Colors.indigo.shade50.withOpacity(0.9),
-                      Colors.white.withOpacity(0.95),
-                    ],
-                  ),
-                  borderRadius:
-                      BorderRadius.circular(_getResponsiveSize(context, 25)),
-                  border: Border.all(
-                    color: Colors.blue.shade200,
-                    width: 2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.withOpacity(0.2),
-                      blurRadius: _getResponsiveSize(context, 15),
-                      offset: Offset(0, _getResponsiveSize(context, 8)),
-                      spreadRadius: 2,
-                    ),
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.8),
-                      blurRadius: _getResponsiveSize(context, 6),
-                      offset: const Offset(-3, -3),
-                    ),
-                  ],
+        borderRadius: BorderRadius.circular(_getResponsiveSize(context, 16)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(_getResponsiveSize(context, 16)),
+          onTap: controller.resetGame,
+          splashColor: Colors.white.withOpacity(0.3),
+          child: Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.refresh_rounded,
+                  color: Colors.white,
+                  size: _getResponsiveIconSize(context, 20),
                 ),
-                padding: EdgeInsets.all(_getResponsivePadding(context, 28)),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: _getResponsivePadding(context, 12),
-                        horizontal: _getResponsivePadding(context, 24),
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                          colors: [
-                            Colors.blue.shade100,
-                            Colors.indigo.shade100,
-                            Colors.purple.shade100,
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(
-                            _getResponsiveSize(context, 20)),
-                        border:
-                            Border.all(color: Colors.blue.shade300, width: 2),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.blue.withOpacity(0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.psychology_rounded,
-                            color: Colors.indigo.shade700,
-                            size: _getResponsiveIconSize(context, 32),
-                          ),
-                          SizedBox(width: _getResponsiveSize(context, 12)),
-                          Text(
-                            'Memory Card Game',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.indigo.shade800,
-                              fontSize: _getResponsiveFontSize(context, 16),
-                              shadows: [
-                                Shadow(
-                                  offset: const Offset(1, 1),
-                                  blurRadius: 2,
-                                  color: Colors.white.withOpacity(0.8),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: _getResponsiveSize(context, 30)),
-                    _buildDifficultySelector(context, controller),
-                    SizedBox(height: _getResponsiveSize(context, 40)),
-                    _buildStartButton(context, controller),
-                  ],
+                SizedBox(width: _getResponsiveSize(context, 8)),
+                Text(
+                  'Retry',
+                  style: TextStyle(
+                    fontSize: _getResponsiveFontSize(context, 16),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -532,7 +480,7 @@ class MemoryGameUI extends StatelessWidget {
                     SizedBox(height: _getResponsiveSize(context, 16)),
                     _buildFinalStats(context, controller),
                     SizedBox(height: _getResponsiveSize(context, 20)),
-                    _buildPlayAgainButton(context, controller),
+                    _buildGoNextButton(context, controller),
                   ],
                 ),
               ),
@@ -698,76 +646,6 @@ class MemoryGameUI extends StatelessWidget {
     );
   }
 
-  Widget _buildGameInfo(BuildContext context, MemoryGameController controller) {
-    return Container(
-      padding: EdgeInsets.all(_getResponsivePadding(context, 20)),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
-        borderRadius: BorderRadius.circular(_getResponsiveSize(context, 15)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: _getResponsiveSize(context, 8),
-            offset: Offset(0, _getResponsiveSize(context, 3)),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildInfoItem(context, 'Round', '${controller.round}'),
-              _buildInfoItem(context, 'Score', '${controller.score}'),
-              _buildInfoItem(context, 'Pairs', '${controller.matchedPairs}'),
-            ],
-          ),
-          SizedBox(height: _getResponsiveSize(context, 16)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildInfoItem(
-                  context, 'Level', controller.selectedDifficultyString),
-              _buildInfoItem(context, 'Time', '${controller.gameTime}s'),
-            ],
-          ),
-          SizedBox(height: _getResponsiveSize(context, 16)),
-          LinearProgressIndicator(
-            value: controller.cards.isEmpty
-                ? 0.0
-                : controller.matchedPairs / (controller.cards.length / 2),
-            backgroundColor: Colors.grey.shade300,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade600),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoItem(BuildContext context, String label, String value) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: _getResponsiveFontSize(context, 18),
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-        SizedBox(height: _getResponsiveSize(context, 4)),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: _getResponsiveFontSize(context, 12),
-            color: Colors.grey.shade600,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildCompactGameInfo(
       BuildContext context, MemoryGameController controller) {
     return Container(
@@ -818,11 +696,8 @@ class MemoryGameUI extends StatelessWidget {
                   Icons.extension_rounded),
               _buildCompactInfoItem(context, 'Time', '${controller.gameTime}s',
                   Icons.timer_rounded),
-              _buildCompactInfoItem(
-                  context,
-                  'Level',
-                  controller.selectedDifficultyString,
-                  Icons.trending_up_rounded),
+              _buildCompactInfoItem(context, 'Words',
+                  '${controller.words.length}', Icons.image_rounded),
             ],
           ),
           SizedBox(height: _getResponsiveSize(context, 12)),
@@ -925,275 +800,6 @@ class MemoryGameUI extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDifficultySelector(
-      BuildContext context, MemoryGameController controller) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: _getResponsivePadding(context, 16),
-            vertical: _getResponsivePadding(context, 8),
-          ),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [
-                Colors.indigo.shade50,
-                Colors.blue.shade50,
-              ],
-            ),
-            borderRadius:
-                BorderRadius.circular(_getResponsiveSize(context, 12)),
-            border: Border.all(color: Colors.blue.shade200),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.tune_rounded,
-                color: Colors.indigo.shade600,
-                size: _getResponsiveIconSize(context, 20),
-              ),
-              SizedBox(width: _getResponsiveSize(context, 8)),
-              Text(
-                'Difficulty Level',
-                style: TextStyle(
-                  fontSize: _getResponsiveFontSize(context, 18),
-                  fontWeight: FontWeight.bold,
-                  color: Colors.indigo.shade700,
-                  shadows: [
-                    Shadow(
-                      offset: const Offset(0.5, 0.5),
-                      blurRadius: 1,
-                      color: Colors.white.withOpacity(0.8),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: _getResponsiveSize(context, 20)),
-        Row(
-          children: MemoryDifficulty.values.map((difficulty) {
-            final isSelected = controller.selectedDifficulty == difficulty;
-            return Expanded(
-              child: GestureDetector(
-                onTap: () => controller.setDifficulty(difficulty),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOutCubic,
-                  margin: EdgeInsets.symmetric(
-                      horizontal: _getResponsiveSize(context, 8)),
-                  padding: EdgeInsets.symmetric(
-                      vertical: _getResponsivePadding(context, 12)),
-                  decoration: BoxDecoration(
-                    gradient: isSelected
-                        ? LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.blue.shade600,
-                              Colors.blue.shade500,
-                              Colors.indigo.shade600,
-                            ],
-                          )
-                        : LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.grey.shade100,
-                              Colors.grey.shade50,
-                              Colors.white,
-                            ],
-                          ),
-                    borderRadius:
-                        BorderRadius.circular(_getResponsiveSize(context, 16)),
-                    border: Border.all(
-                      color: isSelected
-                          ? Colors.blue.shade700
-                          : Colors.grey.shade300,
-                      width: isSelected ? 3 : 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: isSelected
-                            ? Colors.blue.withOpacity(0.4)
-                            : Colors.grey.withOpacity(0.2),
-                        blurRadius: isSelected ? 8 : 4,
-                        offset: Offset(0, isSelected ? 4 : 2),
-                        spreadRadius: isSelected ? 1 : 0,
-                      ),
-                      if (isSelected)
-                        BoxShadow(
-                          color: Colors.white.withOpacity(0.3),
-                          blurRadius: 2,
-                          offset: const Offset(-1, -1),
-                        ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Icon(
-                        _getDifficultyIcon(difficulty),
-                        color: isSelected ? Colors.white : Colors.grey.shade600,
-                        size: _getResponsiveIconSize(context, 24),
-                      ),
-                      SizedBox(height: _getResponsiveSize(context, 8)),
-                      Text(
-                        difficulty.name.capitalize!,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color:
-                              isSelected ? Colors.white : Colors.grey.shade700,
-                          fontWeight: FontWeight.bold,
-                          fontSize: _getResponsiveFontSize(context, 16),
-                          shadows: isSelected
-                              ? [
-                                  Shadow(
-                                    offset: const Offset(1, 1),
-                                    blurRadius: 2,
-                                    color: Colors.black.withOpacity(0.3),
-                                  ),
-                                ]
-                              : null,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-        SizedBox(height: _getResponsiveSize(context, 16)),
-        Container(
-          padding: EdgeInsets.all(_getResponsivePadding(context, 12)),
-          decoration: BoxDecoration(
-            color: Colors.blue.shade50,
-            borderRadius:
-                BorderRadius.circular(_getResponsiveSize(context, 12)),
-            border: Border.all(color: Colors.blue.shade200),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.info_outline_rounded,
-                color: Colors.blue.shade600,
-                size: _getResponsiveIconSize(context, 18),
-              ),
-              SizedBox(width: _getResponsiveSize(context, 8)),
-              Expanded(
-                child: Text(
-                  _getDifficultyDescription(controller),
-                  style: TextStyle(
-                    fontSize: _getResponsiveFontSize(context, 14),
-                    color: Colors.blue.shade700,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  IconData _getDifficultyIcon(MemoryDifficulty difficulty) {
-    switch (difficulty) {
-      case MemoryDifficulty.easy:
-        return Icons.sentiment_satisfied_rounded;
-      case MemoryDifficulty.medium:
-        return Icons.sentiment_neutral_rounded;
-      case MemoryDifficulty.hard:
-        return Icons.sentiment_very_dissatisfied_rounded;
-    }
-  }
-
-  String _getDifficultyDescription(MemoryGameController controller) {
-    switch (controller.selectedDifficulty) {
-      case MemoryDifficulty.easy:
-        return '12 cards (6 pairs) • 3 minutes';
-      case MemoryDifficulty.medium:
-        return '16 cards (8 pairs) • 2.5 minutes';
-      case MemoryDifficulty.hard:
-        return '24 cards (12 pairs) • 2 minutes';
-    }
-  }
-
-  Widget _buildStartButton(
-      BuildContext context, MemoryGameController controller) {
-    return Container(
-      width: double.infinity,
-      height: _getResponsiveSize(context, 60),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.green.shade400,
-            Colors.green.shade500,
-            Colors.green.shade600,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(_getResponsiveSize(context, 20)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.green.withOpacity(0.4),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-            spreadRadius: 2,
-          ),
-          BoxShadow(
-            color: Colors.white.withOpacity(0.3),
-            blurRadius: 4,
-            offset: const Offset(-2, -2),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(_getResponsiveSize(context, 20)),
-          onTap: controller.startGame,
-          splashColor: Colors.white.withOpacity(0.3),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-                vertical: _getResponsivePadding(context, 16)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.play_arrow_rounded,
-                  color: Colors.white,
-                  size: _getResponsiveIconSize(context, 28),
-                ),
-                SizedBox(width: _getResponsiveSize(context, 8)),
-                Text(
-                  'Start Game',
-                  style: TextStyle(
-                    fontSize: _getResponsiveFontSize(context, 20),
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    shadows: [
-                      Shadow(
-                        offset: const Offset(1, 1),
-                        blurRadius: 3,
-                        color: Colors.black.withOpacity(0.3),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );
@@ -1342,61 +948,8 @@ class MemoryGameUI extends StatelessWidget {
                     );
                   },
                   child: card.isFlipped || card.isMatched
-                      ? Column(
-                          key: ValueKey('content_$index'),
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Show only the content (word or phonetic)
-                            Text(
-                              card.content,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: fontSize * 0.45,
-                                fontWeight: FontWeight.bold,
-                                fontStyle: card.type == CardType.phonetic
-                                    ? FontStyle.italic
-                                    : FontStyle.normal,
-                                color: card.isMatched
-                                    ? Colors.green.shade800
-                                    : (card.type == CardType.word
-                                        ? Colors.indigo.shade700
-                                        : Colors.purple.shade700),
-                                shadows: [
-                                  Shadow(
-                                    offset: const Offset(1, 1),
-                                    blurRadius: 2,
-                                    color: Colors.black.withOpacity(0.2),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            GestureDetector(
-                              onTap: () =>
-                                  controller.playPronunciation(card.word),
-                              child: Container(
-                                padding: EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  color: card.isMatched
-                                      ? Colors.green.shade100
-                                      : (card.type == CardType.word
-                                          ? Colors.blue.shade100
-                                          : Colors.purple.shade100),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Icon(
-                                  Icons.volume_up_rounded,
-                                  size: iconSize * 0.5,
-                                  color: card.isMatched
-                                      ? Colors.green.shade700
-                                      : (card.type == CardType.word
-                                          ? Colors.blue.shade700
-                                          : Colors.purple.shade700),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
+                      ? _buildCardContent(
+                          card, index, controller, context, fontSize, iconSize)
                       : Container(
                           key: ValueKey('back_$index'),
                           decoration: BoxDecoration(
@@ -1438,109 +991,28 @@ class MemoryGameUI extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isPortrait = screenHeight > screenWidth;
 
+    // Determine based on number of cards and screen size
+    final cardCount = controller.cards.length;
+
     if (isPortrait) {
-      // Portrait orientation - optimize for vertical screens
-      if (screenHeight < 600) {
-        // Small portrait screens
-        switch (controller.selectedDifficulty) {
-          case MemoryDifficulty.easy:
-            return 3; // 3x4 grid for 12 cards
-          case MemoryDifficulty.medium:
-            return 4; // 4x4 grid for 16 cards
-          case MemoryDifficulty.hard:
-            return 4; // 4x6 grid for 24 cards
-        }
-      } else if (screenHeight < 800) {
-        // Medium portrait screens
-        switch (controller.selectedDifficulty) {
-          case MemoryDifficulty.easy:
-            return 3; // 3x4 grid for 12 cards
-          case MemoryDifficulty.medium:
-            return 4; // 4x4 grid for 16 cards
-          case MemoryDifficulty.hard:
-            return 4; // 4x6 grid for 24 cards
-        }
+      // Portrait orientation
+      if (cardCount <= 12) {
+        return 3; // 3x4 grid for small games
+      } else if (cardCount <= 16) {
+        return 4; // 4x4 grid for medium games
       } else {
-        // Large portrait screens (tall phones, tablets)
-        switch (controller.selectedDifficulty) {
-          case MemoryDifficulty.easy:
-            return 4; // 4x3 grid for 12 cards
-          case MemoryDifficulty.medium:
-            return 4; // 4x4 grid for 16 cards
-          case MemoryDifficulty.hard:
-            return 4; // 4x6 grid for 24 cards
-        }
+        return 4; // 4x6 grid for large games
       }
     } else {
-      // Landscape orientation - fallback for horizontal screens
-      if (screenWidth < 600) {
-        switch (controller.selectedDifficulty) {
-          case MemoryDifficulty.easy:
-            return 4; // 4x3 grid for 12 cards
-          case MemoryDifficulty.medium:
-            return 4; // 4x4 grid for 16 cards
-          case MemoryDifficulty.hard:
-            return 6; // 6x4 grid for 24 cards
-        }
+      // Landscape orientation - fallback
+      if (cardCount <= 12) {
+        return 4; // 4x3 grid
+      } else if (cardCount <= 16) {
+        return 4; // 4x4 grid
       } else {
-        // Large landscape screens
-        switch (controller.selectedDifficulty) {
-          case MemoryDifficulty.easy:
-            return 4; // 4x3 grid for 12 cards
-          case MemoryDifficulty.medium:
-            return 6; // 6x3 or 8x2 grid for 16 cards
-          case MemoryDifficulty.hard:
-            return 6; // 6x4 grid for 24 cards
-        }
+        return 6; // 6x4 grid
       }
     }
-  }
-
-  Widget _buildMemoryCard(MemoryCard card, int index,
-      MemoryGameController controller, BuildContext context) {
-    return GestureDetector(
-      onTap: () => controller.flipCard(index),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(_getResponsiveSize(context, 12)),
-          color: card.isMatched
-              ? Colors.green.shade100
-              : card.isFlipped
-                  ? Colors.white
-                  : Colors.blue.shade300,
-          border: Border.all(
-            color: card.isMatched
-                ? Colors.green.shade400
-                : card.isFlipped
-                    ? Colors.blue.shade400
-                    : Colors.blue.shade500,
-            width: _getResponsiveSize(context, 2),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: _getResponsiveSize(context, 4),
-              offset: Offset(0, _getResponsiveSize(context, 2)),
-            ),
-          ],
-        ),
-        child: Center(
-          child: card.isFlipped || card.isMatched
-              ? Text(
-                  card.content,
-                  style: TextStyle(
-                    fontSize: _getResponsiveFontSize(context, 24),
-                  ),
-                )
-              : Icon(
-                  Icons.help_outline,
-                  size: _getResponsiveIconSize(context, 32),
-                  color: Colors.white,
-                ),
-        ),
-      ),
-    );
   }
 
   Widget _buildFinalStats(
@@ -1627,8 +1099,8 @@ class MemoryGameUI extends StatelessWidget {
           _buildStatRow(context, 'Matched Pairs', '${controller.matchedPairs}',
               Icons.extension_rounded),
           SizedBox(height: _getResponsiveSize(context, 8)),
-          _buildStatRow(context, 'Difficulty',
-              controller.selectedDifficultyString, Icons.trending_up_rounded),
+          _buildStatRow(context, 'Words Used', '${controller.words.length}',
+              Icons.abc_rounded),
         ],
       ),
     );
@@ -1717,7 +1189,7 @@ class MemoryGameUI extends StatelessWidget {
     );
   }
 
-  Widget _buildPlayAgainButton(
+  Widget _buildGoNextButton(
       BuildContext context, MemoryGameController controller) {
     return Container(
       width: double.infinity,
@@ -1727,15 +1199,15 @@ class MemoryGameUI extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.purple.shade400,
-            Colors.purple.shade500,
-            Colors.indigo.shade600,
+            Colors.green.shade400,
+            Colors.green.shade500,
+            Colors.green.shade600,
           ],
         ),
         borderRadius: BorderRadius.circular(_getResponsiveSize(context, 20)),
         boxShadow: [
           BoxShadow(
-            color: Colors.purple.withOpacity(0.4),
+            color: Colors.green.withOpacity(0.4),
             blurRadius: 12,
             offset: const Offset(0, 6),
             spreadRadius: 2,
@@ -1751,7 +1223,10 @@ class MemoryGameUI extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(_getResponsiveSize(context, 20)),
-          onTap: controller.resetGame,
+          onTap: () {
+            // Navigate back to reading space
+            Get.back();
+          },
           splashColor: Colors.white.withOpacity(0.3),
           child: Container(
             padding: EdgeInsets.symmetric(
@@ -1760,13 +1235,13 @@ class MemoryGameUI extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.refresh_rounded,
+                  Icons.arrow_forward_rounded,
                   color: Colors.white,
                   size: _getResponsiveIconSize(context, 28),
                 ),
                 SizedBox(width: _getResponsiveSize(context, 8)),
                 Text(
-                  'Play Again',
+                  'Continue',
                   style: TextStyle(
                     fontSize: _getResponsiveFontSize(context, 20),
                     fontWeight: FontWeight.bold,
@@ -1786,5 +1261,190 @@ class MemoryGameUI extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildCardContent(
+      MemoryCard card,
+      int index,
+      MemoryGameController controller,
+      BuildContext context,
+      double fontSize,
+      double iconSize) {
+    if (card.type == CardType.word) {
+      // Word card: Show word text + pronunciation button
+      return Column(
+        key: ValueKey('word_content_$index'),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Word text
+          Text(
+            card.content,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: fontSize * 0.45,
+              fontWeight: FontWeight.bold,
+              color: card.isMatched
+                  ? Colors.green.shade800
+                  : Colors.indigo.shade700,
+              shadows: [
+                Shadow(
+                  offset: const Offset(1, 1),
+                  blurRadius: 2,
+                  color: Colors.black.withOpacity(0.2),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          // Pronunciation button
+          GestureDetector(
+            onTap: () => controller.playPronunciation(card.word),
+            child: Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: card.isMatched
+                    ? Colors.green.shade100
+                    : Colors.blue.shade100,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: card.isMatched
+                        ? Colors.green.withOpacity(0.3)
+                        : Colors.blue.withOpacity(0.3),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Icon(
+                Icons.volume_up_rounded,
+                size: iconSize * 0.6,
+                color: card.isMatched
+                    ? Colors.green.shade700
+                    : Colors.blue.shade700,
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      // Image card: Show word image covering the entire box
+      return Container(
+        key: ValueKey('image_content_$index'),
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: card.isMatched
+                  ? Colors.green.withOpacity(0.2)
+                  : Colors.purple.withOpacity(0.2),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: card.image.isNotEmpty
+              ? Image.network(
+                  card.image,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: card.isMatched
+                            ? Colors.green.shade50
+                            : Colors.purple.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                          color: card.isMatched
+                              ? Colors.green.shade600
+                              : Colors.purple.shade600,
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: card.isMatched
+                            ? Colors.green.shade50
+                            : Colors.purple.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.broken_image_outlined,
+                            size: iconSize * 0.8,
+                            color: card.isMatched
+                                ? Colors.green.shade400
+                                : Colors.purple.shade400,
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Image\nUnavailable',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: fontSize * 0.25,
+                              color: card.isMatched
+                                  ? Colors.green.shade600
+                                  : Colors.purple.shade600,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                    color: card.isMatched
+                        ? Colors.green.shade50
+                        : Colors.purple.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.image_outlined,
+                        size: iconSize * 0.8,
+                        color: card.isMatched
+                            ? Colors.green.shade400
+                            : Colors.purple.shade400,
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'No Image',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: fontSize * 0.25,
+                          color: card.isMatched
+                              ? Colors.green.shade600
+                              : Colors.purple.shade600,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+        ),
+      );
+    }
   }
 }

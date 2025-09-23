@@ -13,4 +13,7 @@ class ReadingUsecases {
       _readingRepository.getListReading(keyword);
   Future<dynamic> getLeaderboard(Map<String, dynamic> body) async =>
       _readingRepository.getLeaderboard(body);
+  Future<Map<String, dynamic>?> getReadingDetail(
+          Map<String, dynamic> body) async =>
+      _readingRepository.getReadingDetail(body);
 }

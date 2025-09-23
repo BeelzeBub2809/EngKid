@@ -1,5 +1,6 @@
 import 'package:EngKid/data/core/remote/api/ebook_category_api/ebook_category_api.dart';
 import 'package:EngKid/data/core/remote/api/feedback_api/feedback_api.dart';
+import 'package:EngKid/data/core/remote/api/game_api/game_api.dart';
 import 'package:EngKid/data/core/remote/api/learning_path_api/learning_path_api.dart';
 import 'package:EngKid/data/core/remote/api/notification_api/notification_api.dart';
 import 'package:EngKid/data/core/remote/api/question_api/question_api.dart';
@@ -10,13 +11,19 @@ import 'package:EngKid/data/core/remote/api/student_reading_api/student_reading_
 import 'package:EngKid/data/core/remote/api/topic_api/topic_api.dart';
 import 'package:EngKid/data/ebook_category/ebook_category_repo.dart';
 import 'package:EngKid/data/feedback/feedback_repo.dart';
+import 'package:EngKid/data/game/game_repo.dart';
 import 'package:EngKid/data/learning_path/learning_path_repo.dart';
 import 'package:EngKid/data/notificaiton/notification_repo.dart';
 import 'package:EngKid/data/question/question_repo.dart';
 import 'package:EngKid/data/reading/reading_repo.dart';
 import 'package:EngKid/data/star_board/star_board_repo.dart';
 import 'package:EngKid/data/topic_reading/topic_reading_repo.dart';
+import 'package:EngKid/data/word/word_api_client.dart';
+import 'package:EngKid/data/word/word_repository_impl.dart';
 import 'package:EngKid/domain/ebook_category/ebook_category_usecase.dart';
+import 'package:EngKid/domain/game/game_usecases.dart';
+import 'package:EngKid/domain/repositories/word_repository.dart';
+import 'package:EngKid/domain/word/get_words_by_game_id_usecase.dart';
 import 'package:EngKid/domain/feedback/feedback_usecases.dart';
 import 'package:EngKid/domain/learning_path/learning_path_usecases.dart';
 import 'package:EngKid/domain/notificaiton/notification_usecase.dart';
@@ -92,6 +99,14 @@ class UseCaseModule {
       ),
       fenix: true,
     );
+    Get.lazyPut<GameUsecases>(
+      () => GameUsecases(
+        GameRepositoryImp(
+          gameApi: getIt.get<GameApi>(),
+        ),
+      ),
+      fenix: true,
+    );
     Get.lazyPut<QuestionUsecases>(
       () => QuestionUsecases(
         QuestionRepositoryImp(
@@ -140,5 +155,11 @@ class UseCaseModule {
       ),
       fenix: true,
     );
+
+    // Word repository and use case for Memory Game
+    getIt.registerSingleton<WordRepository>(
+        WordRepositoryImpl(getIt.get<WordApiClient>()));
+    getIt.registerSingleton<GetWordsByGameIdUseCase>(
+        GetWordsByGameIdUseCase(getIt.get<WordRepository>()));
   }
 }

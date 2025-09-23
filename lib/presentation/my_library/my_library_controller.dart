@@ -5,102 +5,29 @@ import 'package:EngKid/utils/audios.dart';
 import 'package:EngKid/utils/lib_function.dart';
 
 import '../core/network_service.dart';
+import '../core/learning_path_service.dart';
 
 class MyLibraryController extends GetxController {
   MyLibraryController();
 
   final NetworkService _networkService = Get.find<NetworkService>();
+  final LearningPathService _learningPathService =
+      Get.find<LearningPathService>();
 
   // Pagination variables
   final int itemsPerPage = 4; // Changed to 4 for 2x2 grid layout
   final RxInt _currentPage = 0.obs;
+  final RxBool _isLoading = false.obs;
 
   int get currentPage => _currentPage.value;
   int get totalPages => (learningPaths.length / itemsPerPage).ceil();
   bool get hasNextPage => currentPage < totalPages - 1;
   bool get hasPreviousPage => currentPage > 0;
+  bool get isLoading => _isLoading.value;
 
-  final RxList<Map<String, dynamic>> learningPaths = <Map<String, dynamic>>[
-    {
-      'id': 1,
-      'name': 'Basic English',
-      'description':
-          'Học tiếng Anh cơ bản từ đầu với các từ vựng và cấu trúc câu đơn giản',
-      'image': 'assets/images/elibrary_book_icon.png',
-    },
-    {
-      'id': 2,
-      'name': 'Vocabulary',
-      'description':
-          'Mở rộng vốn từ vựng với các chủ đề hấp dẫn và bài tập thực hành',
-      'image': 'assets/images/elibrary_book_icon.png',
-    },
-    {
-      'id': 3,
-      'name': 'Grammar',
-      'description':
-          'Nắm vững ngữ pháp tiếng Anh qua các bài học và ví dụ sinh động',
-      'image': 'assets/images/elibrary_book_icon.png',
-    },
-    {
-      'id': 4,
-      'name': 'Speaking',
-      'description':
-          'Luyện tập kỹ năng nói với các tình huống giao tiếp thực tế',
-      'image': 'assets/images/elibrary_book_icon.png',
-    },
-    {
-      'id': 5,
-      'name': 'Reading',
-      'description':
-          'Phát triển kỹ năng đọc hiểu qua các câu chuyện và bài đọc thú vị',
-      'image': 'assets/images/elibrary_book_icon.png',
-    },
-    {
-      'id': 6,
-      'name': 'Writing',
-      'description':
-          'Học cách viết tiếng Anh từ câu đơn giản đến đoạn văn hoàn chỉnh',
-      'image': 'assets/images/elibrary_book_icon.png',
-    },
-    {
-      'id': 7,
-      'name': 'Listening',
-      'description': 'Rèn luyện khả năng nghe hiểu qua âm thanh và video',
-      'image': 'assets/images/elibrary_book_icon.png',
-    },
-    {
-      'id': 8,
-      'name': 'Pronunciation',
-      'description': 'Học cách phát âm chuẩn với hệ thống nhận diện giọng nói',
-      'image': 'assets/images/elibrary_book_icon.png',
-    },
-    {
-      'id': 9,
-      'name': 'Conversation',
-      'description':
-          'Thực hành đối thoại và giao tiếp trong các tình huống khác nhau',
-      'image': 'assets/images/elibrary_book_icon.png',
-    },
-    {
-      'id': 10,
-      'name': 'Advanced',
-      'description': 'Nâng cao trình độ tiếng Anh với nội dung chuyên sâu',
-      'image': 'assets/images/elibrary_book_icon.png',
-    },
-    {
-      'id': 11,
-      'name': 'Practice',
-      'description': 'Luyện tập tổng hợp tất cả kỹ năng đã học',
-      'image': 'assets/images/elibrary_book_icon.png',
-    },
-    {
-      'id': 12,
-      'name': 'Learning',
-      'description': 'Khám phá các phương pháp học tiếng Anh hiệu quả',
-      'image': 'assets/images/elibrary_book_icon.png',
-    },
-  ].obs;
+  // Use learning paths from service
+  List<Map<String, dynamic>> get learningPaths =>
+      _learningPathService.learningPaths;
 
   // Get current page items
   List<Map<String, dynamic>> get currentPageItems {
@@ -131,9 +58,26 @@ class MyLibraryController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    await _fetchLearningPaths();
     Future.delayed(const Duration(milliseconds: 1000), () {
       LibFunction.playAudioLocal(LocalAudio.chooseGrade);
     });
+  }
+
+  Future<void> _fetchLearningPaths() async {
+    try {
+      _isLoading.value = true;
+      await _learningPathService.fetchLearningPaths();
+    } catch (e) {
+      print('Error fetching learning paths: $e');
+      LibFunction.toast('Failed to load learning paths');
+    } finally {
+      _isLoading.value = false;
+    }
+  }
+
+  Future<void> refreshLearningPaths() async {
+    await _fetchLearningPaths();
   }
 
   void onBackPress() async {

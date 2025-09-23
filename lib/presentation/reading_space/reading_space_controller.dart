@@ -31,7 +31,6 @@ import 'package:EngKid/widgets/loading/loading_dialog.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
-import 'package:http/http.dart' as http;
 
 import '../../widgets/dialog/toast_dialog.dart';
 
@@ -361,18 +360,16 @@ class ReadingSpaceController extends GetxController
         final pathId = selectedLearningPath.value!['id'] as int;
         await _learningPathService.fetchLearningPathCategories(pathId);
 
-        // Get categories from service
+        // Get categories from service (now includes locked/unlocked info)
         learningPathCategories.value = _learningPathService.categories.toList();
 
-        // Set default categoryId to first category and fetch its items
-        if (learningPathCategories.isNotEmpty) {
-          selectedCategoryIndex.value = 0;
-          final firstCategoryId = learningPathCategories[0]['id'] as int;
-          await _learningPathService.fetchLearningPathItems(
-              pathId, firstCategoryId);
-          learningPathItems.value =
-              _learningPathService.currentCategoryItems.toList();
-        }
+        // Set selected category index from service (first unlocked category)
+        selectedCategoryIndex.value =
+            _learningPathService.selectedCategoryIndex.value;
+
+        // Get items for selected category
+        learningPathItems.value =
+            _learningPathService.currentCategoryItems.toList();
       }
     } catch (e) {
       learningPathCategories.clear();
@@ -396,6 +393,7 @@ class ReadingSpaceController extends GetxController
         final categoryId =
             learningPathCategories[selectedCategoryIndex.value]['id'] as int;
 
+        // Use the new merged API approach - items are already loaded
         await _learningPathService.fetchLearningPathItems(pathId, categoryId);
         learningPathItems.value =
             _learningPathService.currentCategoryItems.toList();
@@ -411,6 +409,17 @@ class ReadingSpaceController extends GetxController
   void onChangeLearningPathCategory(int index) async {
     if (selectedLearningPath.value != null) {
       final pathId = selectedLearningPath.value!['id'] as int;
+
+      // Check if category is unlocked before changing
+      if (!isCategoryUnlocked(index)) {
+        if (kDebugMode) {
+          print("Cannot select locked category at index: $index");
+        }
+        // Play lock sound effect
+        LibFunction.playAudioLocal(LocalAudio.lock);
+        return; // Don't change to locked category
+      }
+
       selectedCategoryIndex.value = index;
       await _learningPathService.changeCategory(pathId, index);
       learningPathItems.value =
@@ -449,48 +458,307 @@ class ReadingSpaceController extends GetxController
     final isGame = item['game_id'] != null;
 
     if (isReading) {
-      // Handle reading item
+      // Handle reading item - similar to onPressLesson but using readingId
       final readingId = item['reading_id'];
       if (kDebugMode) {
-        print("Pressed reading item: ${item['name']} (ID: $readingId)");
+        print(
+            "Pressed reading item: ${item['reading']?['title'] ?? 'Unknown'} (ID: $readingId)");
       }
-      // TODO: Add navigation to reading screen with readingId
-      // You can add navigation logic here similar to onPressLesson method
+      // Navigate to reading lesson with readingId
+      onPressLearningPathReading(readingId: readingId, itemIndex: index);
     } else if (isGame) {
-      // Handle game item
+      // Handle game item - Navigate to Game Controller for pre-processing
       final gameId = item['game_id'];
       if (kDebugMode) {
         print("Pressed game item: ${item['name']} (ID: $gameId)");
       }
-      // TODO: Add navigation to game screen with gameId
-      // You can add navigation logic here for specific games
+
+      // Navigate to game controller with gameId to handle pre-data processing
+      _navigateToGameController(gameId, item);
+    }
+  }
+
+  // Navigate directly to specific game based on gameId
+  Future<void> _navigateToGameController(
+      int gameId, Map<String, dynamic> gameItem) async {
+    try {
+      await LibFunction.effectConfirmPop();
+
+      // Fetch game detail from API
+      final gameDetailData = await fetchGameDetail(gameId);
+
+      if (gameDetailData == null) {
+        Get.snackbar('Lỗi', 'Không tìm thấy thông tin game');
+        return;
+      }
+
+      final gameType = gameDetailData['type'] as String;
+
+      // Create comprehensive game data from API response
+      final gameData = {
+        'game_id': gameDetailData['id'],
+        'game_title': gameDetailData['name'] ?? 'Unknown Game',
+        'game_type': gameType,
+        'game_description': gameDetailData['description'] ?? '',
+        'difficulty_level': 1, // Default difficulty
+        'estimated_time': 300, // Default estimated time
+        'max_score': 100, // Default max score
+        'thumbnail': gameDetailData['image'] ?? '',
+        'instructions': gameDetailData['description'] ?? '',
+        'prerequisite_reading_id': gameDetailData['prerequisite_reading_id'],
+        'is_active': gameDetailData['is_active'] == 1,
+        'sequence_order': gameDetailData['sequence_order'] ?? 1,
+      };
+
+      if (kDebugMode) {
+        print('Game detail loaded successfully:');
+        print('ID: ${gameData['game_id']}');
+        print('Type: ${gameData['game_type']}');
+        print('Title: ${gameData['game_title']}');
+        print('Description: ${gameData['game_description']}');
+      }
+
+      // Navigate directly to specific game based on game_type
+      final result = await _navigateToSpecificGame(gameType, gameData);
+
+      // Handle result if game completed and returned data
+      if (result == true) {
+        // Refresh learning path items nếu cần
+        if (selectedLearningPath.value != null) {
+          await fetchLearningPathItems();
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Lỗi khi navigate to game: $e");
+      }
+      Get.snackbar('Lỗi', 'Không thể mở game. Vui lòng thử lại.');
+    }
+  }
+
+  // Navigate to specific game based on game_type
+  Future<dynamic> _navigateToSpecificGame(
+      String gameType, Map<String, dynamic> gameData) async {
+    switch (gameType) {
+      case 'wordle':
+        return await Get.toNamed(AppRoute.wordleGame, arguments: gameData);
+      case 'puzzle':
+        return await Get.toNamed(AppRoute.puzzleGame, arguments: gameData);
+      case 'memory':
+        return await Get.toNamed(AppRoute.memoryGame, arguments: gameData);
+      case 'missing_word':
+        return await Get.toNamed(AppRoute.missingWordGame, arguments: gameData);
+      case 'image_puzzle':
+        return await Get.toNamed(AppRoute.imagePuzzleGame, arguments: gameData);
+      case 'four_pics_one_word':
+        return await Get.toNamed(AppRoute.fourPicsOneWordGame,
+            arguments: gameData);
+      default:
+        Get.snackbar('Lỗi', 'Loại game không được hỗ trợ: $gameType');
+        return null;
+    }
+  }
+
+  // Fetch reading detail from API using TopicService
+  Future<Map<String, dynamic>?> fetchReadingDetail(int readingId) async {
+    try {
+      final result = await _topicService.getReadingDetail(readingId);
+      if (result != null) {
+        if (kDebugMode) {
+          print('Reading detail fetched successfully via TopicService');
+          print('Data: ${jsonEncode(result)}');
+        }
+        return result;
+      }
+      return null;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error fetching reading detail via TopicService: $e');
+      }
+      return null;
+    }
+  }
+
+  // Fetch game detail from API using TopicService
+  Future<Map<String, dynamic>?> fetchGameDetail(int gameId) async {
+    try {
+      final result = await _topicService.getGameDetail(gameId);
+      if (result != null) {
+        if (kDebugMode) {
+          print('Game detail fetched successfully via TopicService');
+          print('Data: ${jsonEncode(result)}');
+        }
+        return result;
+      }
+      return null;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error fetching game detail via TopicService: $e');
+      }
+      return null;
     }
   }
 
   Future<void> onPressLesson(
       {required Reading reading, required int index}) async {
     await LibFunction.effectConfirmPop();
-    readingData = reading;
+
+    // Fetch detailed reading data from API
+    final readingDetailData = await fetchReadingDetail(reading.id);
+
+    if (readingDetailData != null) {
+      // Update readingData with API response - only use available fields from Reading entity
+      readingData = Reading(
+        id: readingDetailData['id'],
+        name: readingDetailData['title'] ?? reading.name,
+        thumImg: readingDetailData['image'] ?? reading.thumImg,
+        background: reading.background, // Keep existing background
+        readingVideo: readingDetailData['file'] ?? reading.readingVideo,
+        totalQuiz: reading.totalQuiz,
+        totalCompleteQuiz: reading.totalCompleteQuiz,
+        stars: reading.stars,
+        maxAchievedStars: reading.maxAchievedStars,
+        // Keep other existing fields from original reading
+        achievedStars: reading.achievedStars,
+        isActionGame: reading.isActionGame,
+        isLocked: reading.isLocked,
+        positionId: reading.positionId,
+        readingVideoMong: reading.readingVideoMong,
+        isCompleted: reading.isCompleted,
+        isPassed: reading.isPassed,
+        percentage: reading.percentage,
+      );
+
+      if (kDebugMode) {
+        print('Reading detail loaded successfully:');
+        print('Title: ${readingData.name}');
+        print('Video URL: ${readingData.readingVideo}');
+        print('Image URL: ${readingData.thumImg}');
+        if (readingDetailData['description'] != null) {
+          print('Description: ${readingDetailData['description']}');
+        }
+      }
+    } else {
+      // Fallback to existing reading data if API call fails
+      readingData = reading;
+      if (kDebugMode) {
+        print('Using fallback reading data due to API failure');
+      }
+    }
+
     indexReading = index;
+
+    // Fetch questions as usual
     var questions = await _topicService.getQuestionOfReading(readingData.id);
+
+    // Create quiz with updated reading data
     var currentQuiz = Quiz(
       reading: QuizReading(
-        name: reading.name,
-        id: reading.id,
-        thumImg: reading.thumImg,
-        background: reading.background,
-        video: reading.readingVideo,
+        name: readingData.name,
+        id: readingData.id,
+        thumImg: readingData.thumImg,
+        background: readingData.background,
+        video: readingData.readingVideo,
         videoMong: '',
-        questionCount: reading.totalQuiz == 0
+        questionCount: readingData.totalQuiz == 0
             ? const Count()
             : Count(
-                total: reading.totalQuiz,
-                complete: reading.totalCompleteQuiz,
+                total: readingData.totalQuiz,
+                complete: readingData.totalCompleteQuiz,
               ),
       ),
       questions: questions,
     );
     await startLearning(currentQuiz, index);
+  }
+
+  // Method for Learning Path Reading items - similar to onPressLesson but uses readingId
+  Future<void> onPressLearningPathReading(
+      {required int readingId, required int itemIndex}) async {
+    await LibFunction.effectConfirmPop();
+
+    // Fetch detailed reading data from API using readingId
+    final readingDetailData = await fetchReadingDetail(readingId);
+
+    if (readingDetailData != null) {
+      // Create readingData from API response only
+      readingData = Reading(
+        id: readingDetailData['id'],
+        name: readingDetailData['title'] ?? 'Unknown Reading',
+        thumImg: readingDetailData['image'] ?? '',
+        background: LocalImage.backgroundBlue, // Use default background
+        readingVideo: readingDetailData['file'] ?? '',
+        totalQuiz: 0, // Will be updated based on questions fetched
+        totalCompleteQuiz: 0, // Will be updated based on progress
+        stars: 5, // Default stars
+        maxAchievedStars: 0.0, // Default achieved stars
+        // Set default values for other required fields
+        achievedStars: 0.0,
+        isActionGame: false,
+        isLocked: false,
+        positionId: -1,
+        readingVideoMong: '',
+        isCompleted: 0,
+        isPassed: 0,
+        percentage: -1,
+      );
+
+      if (kDebugMode) {
+        print('Learning Path Reading detail loaded successfully:');
+        print('Title: ${readingData.name}');
+        print('Video URL: ${readingData.readingVideo}');
+        print('Image URL: ${readingData.thumImg}');
+        if (readingDetailData['description'] != null) {
+          print('Description: ${readingDetailData['description']}');
+        }
+      }
+    } else {
+      // Create minimal reading data if API call fails
+      readingData = Reading(
+        id: readingId,
+        name: 'Reading $readingId',
+        thumImg: '',
+        background: LocalImage.backgroundBlue,
+        readingVideo: '',
+        totalQuiz: 0,
+        totalCompleteQuiz: 0,
+        stars: 5,
+        maxAchievedStars: 0.0,
+      );
+
+      if (kDebugMode) {
+        print(
+            'Using fallback reading data for Learning Path item due to API failure');
+      }
+    }
+
+    indexReading = itemIndex;
+
+    // Fetch questions as usual
+    var questions = await _topicService.getQuestionOfReading(readingData.id);
+
+    // Update totalQuiz based on questions fetched
+    readingData = readingData.copyWith(totalQuiz: questions.length);
+
+    // Create quiz with reading data
+    var currentQuiz = Quiz(
+      reading: QuizReading(
+        name: readingData.name,
+        id: readingData.id,
+        thumImg: readingData.thumImg,
+        background: readingData.background,
+        video: readingData.readingVideo,
+        videoMong: '',
+        questionCount: readingData.totalQuiz == 0
+            ? const Count()
+            : Count(
+                total: readingData.totalQuiz,
+                complete: readingData.totalCompleteQuiz,
+              ),
+      ),
+      questions: questions,
+    );
+    await startLearningPathLearning(currentQuiz, itemIndex);
   }
 
   Future<void> startLearning(Quiz quiz, int index) async {
@@ -507,6 +775,23 @@ class ReadingSpaceController extends GetxController
     }
   }
 
+  Future<void> startLearningPathLearning(Quiz quiz, int itemIndex) async {
+    final result = await Get.toNamed(
+      AppRoute.lesson,
+      arguments: [
+        quiz, // current reading
+        false, // is end - for learning path items, we don't use this logic
+        readingData // Pass the reading data we created
+      ],
+    );
+    if (result == true) {
+      // Refresh learning path items instead of regular readings
+      if (selectedLearningPath.value != null) {
+        await fetchLearningPathItems();
+      }
+    }
+  }
+
   String getPathLessonStatus(int index) {
     if (_readings[index].maxAchievedStars == _readings[index].stars) {
       return LocalImage.lessonCompleted;
@@ -520,10 +805,27 @@ class ReadingSpaceController extends GetxController
 
   String getLearningPathItemStatus(Map<String, dynamic> item) {
     final progress = item['student_progress'];
-    if (progress['is_passed'] == true) {
+    if (progress['is_completed'] == true) {
       return LocalImage.lessonCompleted;
     }
     return LocalImage.lessonProgress;
+  }
+
+  // Check if category is unlocked
+  bool isCategoryUnlocked(int categoryIndex) {
+    if (learningPathCategories.isEmpty ||
+        categoryIndex >= learningPathCategories.length) {
+      return false;
+    }
+
+    // Category đầu tiên luôn luôn unlocked
+    if (categoryIndex == 0) {
+      return true;
+    }
+
+    // Kiểm tra field 'unlocked' từ API
+    final category = learningPathCategories[categoryIndex];
+    return category['unlocked'] == true;
   }
 
   // Check if learning path item is unlocked based on new logic
@@ -548,7 +850,7 @@ class ReadingSpaceController extends GetxController
         final previousItem = learningPathItems[i];
         if (previousItem['reading_id'] != null) {
           final progress = previousItem['student_progress'];
-          return progress['is_passed'] == true;
+          return progress['is_completed'] == true;
         }
       }
       return true; // If no previous reading found, unlock
@@ -567,7 +869,7 @@ class ReadingSpaceController extends GetxController
           // Check if this reading is unlocked first
           if (isLearningPathItemUnlocked(i)) {
             final progress = item['student_progress'];
-            return progress['is_passed'] == true;
+            return progress['is_completed'] == true;
           }
           return false;
         }
@@ -675,10 +977,10 @@ class ReadingSpaceController extends GetxController
           }
 
           if (_remainingTime == 25 * 60) {
-            int loginRecordId = _preferencesManager.getInt(
-              KeySharedPreferences.loginRecord +
-                  _userService.currentUser.id.toString(),
-            )!;
+            // int loginRecordId = _preferencesManager.getInt(
+            //   KeySharedPreferences.loginRecord +
+            //       _userService.currentUser.id.toString(),
+            // )!;
             // _userService.updateLoginRecord(loginRecordId, false, false, true);
           }
         } else {

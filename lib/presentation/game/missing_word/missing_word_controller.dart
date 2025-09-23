@@ -6,6 +6,8 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:http/http.dart' as http;
 import '../../../utils/lib_function.dart';
 import '../../../utils/translation_service.dart';
+import '../../../domain/entities/word/word_entity.dart';
+import '../../../domain/word/get_words_by_game_id_usecase.dart';
 
 enum MissingWordGameState { loading, playing, finished }
 
@@ -62,6 +64,10 @@ class MissingLetterData {
 }
 
 class MissingWordController extends GetxController {
+  final GetWordsByGameIdUseCase _getWordsByGameIdUseCase;
+
+  MissingWordController(this._getWordsByGameIdUseCase);
+
   final _gameState = MissingWordGameState.loading.obs;
   final _isLoading = false.obs;
   final _score = 0.obs;
@@ -73,6 +79,12 @@ class MissingWordController extends GetxController {
   final _showResult = false.obs;
   final _bonusMultiplier = 1.0.obs;
   final _isKeyboardVisible = false.obs;
+
+  // API integration properties
+  List<WordEntity> _gameWords = [];
+  int _currentWordIndex = 0;
+  Map<String, dynamic>? _gameData;
+  int get gameId => _gameData?['game_id'] ?? 2;
 
   final _currentWord = Rx<MissingLetterData?>(null);
   final _userInput = ''.obs;
@@ -261,6 +273,7 @@ class MissingWordController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _gameData = Get.arguments as Map<String, dynamic>?;
     _initTts();
     startGame();
   }
@@ -513,7 +526,40 @@ class MissingWordController extends GetxController {
 
     _resetGameData();
 
-    // Pre-populate cache with different word types for better performance
+    // Fetch words from API
+    await _loadWordsFromAPI();
+
+    if (_gameWords.isNotEmpty) {
+      await _generateNextWord();
+      _gameState.value = MissingWordGameState.playing;
+      _gameInProgress.value = true;
+      _isLoading.value = false;
+      _startGameTimer();
+    } else {
+      // Fallback to original random API if game API fails
+      await _fallbackToRandomAPI();
+    }
+  }
+
+  Future<void> _loadWordsFromAPI() async {
+    try {
+      // Fetch words from API using game ID from arguments
+      final fetchedWords = await _getWordsByGameIdUseCase.call(gameId);
+      _gameWords = fetchedWords;
+      print(
+          'Loaded ${_gameWords.length} words from API for Missing Word game (ID: $gameId)');
+
+      if (_gameWords.isEmpty) {
+        throw Exception('No words found for Missing Word game (ID: $gameId)');
+      }
+    } catch (e) {
+      print('Error loading words from API: $e');
+      _gameWords = [];
+    }
+  }
+
+  Future<void> _fallbackToRandomAPI() async {
+    // Use original random word logic as fallback
     _populateCache('noun'); // Get some nouns
     _populateCache('verb'); // Get some verbs
     _populateCache('adjective'); // Get some adjectives
@@ -537,6 +583,7 @@ class MissingWordController extends GetxController {
     _canInputLetter.value = true;
     _timeRemaining.value = _gameTime.value;
     _isKeyboardVisible.value = false;
+    _currentWordIndex = 0; // Reset word progression
   }
 
   void _startGameTimer() {
@@ -552,40 +599,56 @@ class MissingWordController extends GetxController {
 
   Future<void> _generateNextWord() async {
     try {
-      // Try to get word from API first
-      final randomWord = await _getRandomWordFromAPI();
+      String selectedWord;
+      String wordImageUrl = '';
+
+      if (_gameWords.isNotEmpty &&
+          _currentWordIndex >= 0 &&
+          _currentWordIndex < _gameWords.length) {
+        // Use word from API
+        final wordEntity = _gameWords[_currentWordIndex];
+        selectedWord = wordEntity.word;
+        wordImageUrl = wordEntity.image;
+        print(
+            'Using word from API: $selectedWord (${_currentWordIndex + 1}/${_gameWords.length})');
+      } else {
+        // Fallback to random word API if no more game words
+        selectedWord = await _getRandomWordFromAPI();
+        print('Using fallback random word: $selectedWord');
+      }
 
       // Fetch pronunciation and definition from dictionary API concurrently
       final futures = [
-        _fetchWordPronunciation(randomWord),
-        _fetchWordDefinition(randomWord),
+        _fetchWordPronunciation(selectedWord),
+        _fetchWordDefinition(selectedWord),
       ];
       final results = await Future.wait(futures);
       final pronunciation = results[0];
       final definition = results[1];
 
       final missingCount = _getMissingLetterCount(_currentLevel.value);
-      final missingIndices = _generateMissingIndices(randomWord, missingCount);
+      final missingIndices =
+          _generateMissingIndices(selectedWord, missingCount);
       final missingLetters = missingIndices
-          .map((index) => randomWord[index].toLowerCase())
+          .map((index) => selectedWord[index].toLowerCase())
           .toList();
 
       _currentWord.value = MissingLetterData(
-        word: randomWord,
-        imageUrl: '',
+        word: selectedWord,
+        imageUrl: wordImageUrl,
         pronunciation: pronunciation ??
-            randomWord, // Use API pronunciation or fallback to word
+            selectedWord, // Use API pronunciation or fallback to word
         definition: definition ?? '', // Use API definition or empty string
         missingIndices: missingIndices,
         missingLetters: missingLetters,
       );
 
       _userInput.value = '';
-      print('Generated word: $randomWord');
-      await _speakWord(randomWord);
+      print('Generated word: $selectedWord');
+      await _speakWord(selectedWord);
     } catch (e) {
       print('Error generating word: $e');
-      // Fallback to static words if API completely fails
+      // Complete fallback to static words
       final selectedWords = _getWordsForLevel(_currentLevel.value);
       final randomWord = selectedWords[_random.nextInt(selectedWords.length)];
 
@@ -768,6 +831,15 @@ class MissingWordController extends GetxController {
   }
 
   void _nextLevel() async {
+    _currentWordIndex++; // Move to next word from API
+
+    // Check if we've completed all words from API
+    if (_gameWords.isNotEmpty && _currentWordIndex >= _gameWords.length) {
+      // All words completed - end the game
+      _endGame();
+      return;
+    }
+
     _currentLevel.value++;
     _userInput.value = '';
     _showFeedback.value = false;
@@ -802,6 +874,10 @@ class MissingWordController extends GetxController {
     _showResult.value = false;
     _gameInProgress.value = false;
     _gameTimer?.cancel();
+
+    // Reset word progression
+    _currentWordIndex = 0;
+    _gameWords.clear();
 
     // Clear cached words, pronunciations and definitions for fresh experience
     _cachedNouns.clear();
@@ -910,5 +986,31 @@ class MissingWordController extends GetxController {
         ? ' [$currentWordPronunciation]'
         : '';
     return 'Level $currentLevel - ${currentWordType.toUpperCase()} ($currentMinLength-$currentMaxLength letters, ${_getMissingLetterCount(currentLevel)} missing)$pronunciationInfo';
+  }
+
+  // Progress tracking methods
+  String getProgressText() {
+    if (_gameWords.isEmpty) return '';
+    final current = _gameWords.isEmpty
+        ? 0
+        : (_currentWordIndex + 1).clamp(1, _gameWords.length);
+    return 'Word $current/${_gameWords.length}';
+  }
+
+  double getProgressValue() {
+    if (_gameWords.isEmpty) return 0.0;
+    return (_currentWordIndex + 1) / _gameWords.length;
+  }
+
+  int getTotalWords() => _gameWords.length;
+
+  int getCurrentWordNumber() {
+    if (_gameWords.isEmpty) return 0;
+    return (_currentWordIndex + 1).clamp(1, _gameWords.length);
+  }
+
+  String getCurrentWordImageUrl() {
+    if (currentWord == null) return '';
+    return currentWord!.imageUrl;
   }
 }

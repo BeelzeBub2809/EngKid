@@ -138,16 +138,6 @@ class WordleGameUI extends GetView<WordleGameController> {
                   ],
                 ),
               ),
-              const PopupMenuItem(
-                value: 'reset',
-                child: Row(
-                  children: [
-                    Icon(Icons.refresh, color: Colors.blue),
-                    SizedBox(width: 8),
-                    Text('New Game'),
-                  ],
-                ),
-              ),
             ],
           ),
         ],

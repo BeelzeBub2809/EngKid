@@ -5,11 +5,10 @@ class LearningPathUseCases {
 
   LearningPathUseCases(this._learningPathRepository);
 
-  Future<Map<String, dynamic>> getLearningPathCategories(int pathId) =>
-      _learningPathRepository.getLearningPathCategories(pathId);
+  Future<List<Map<String, dynamic>>> getListLearningPaths() =>
+      _learningPathRepository.getListLearningPaths();
 
-  Future<List<Map<String, dynamic>>> getLearningPathItems(
-          int pathId, int categoryId, int studentId) =>
-      _learningPathRepository.getLearningPathItems(
-          pathId, categoryId, studentId);
+  Future<Map<String, dynamic>> getLearningPathItems(
+          int pathId, int studentId) =>
+      _learningPathRepository.getLearningPathItems(pathId, studentId);
 }
