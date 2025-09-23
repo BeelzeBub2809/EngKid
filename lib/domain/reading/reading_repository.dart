@@ -5,4 +5,5 @@ abstract class ReadingRepository {
   Future<void> submitReadingResult(Map<String, dynamic> body);
   Future<List<dynamic>> getListReading(String searchTerm);
   Future<dynamic> getLeaderboard(Map<String, dynamic> body);
+  Future<Map<String, dynamic>?> getReadingDetail(Map<String, dynamic> body);
 }

@@ -276,7 +276,7 @@ class ShapeLesson extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.topRight,
                           child: Image.asset(
-                            item['student_progress']['is_passed'] == true
+                            item['student_progress']['is_completed'] == true
                                 ? LocalImage.lessonCompleted
                                 : LocalImage.lessonProgress,
                             width: 0.05 * size.width,
@@ -355,7 +355,7 @@ class ShapeLesson extends StatelessWidget {
                                   padding: EdgeInsets.only(
                                       right: 0.005 * size.width),
                                   child: Text(
-                                    "${(item['student_progress']['is_passed'] == true ? 100 : 0).ceil()}%",
+                                    "${(item['student_progress']['is_completed'] == true ? 100 : 0).ceil()}%",
                                     style: TextStyle(
                                       fontWeight: FontWeight.w800,
                                       color: const Color.fromARGB(
@@ -391,7 +391,8 @@ class ShapeLesson extends StatelessWidget {
                                 child: SizedBox(
                                   width: 0.075 *
                                       size.width *
-                                      (item['student_progress']['is_passed'] ==
+                                      (item['student_progress']
+                                                  ['is_completed'] ==
                                               true
                                           ? 1.0
                                           : 0.0),
@@ -518,11 +519,14 @@ class ShapeTopic extends StatelessWidget {
                           (index) {
                             final category = categories[index];
                             final isSelected = index == selectedCategoryIndex;
+                            final isUnlocked =
+                                controller.isCategoryUnlocked(index);
 
                             return GestureDetector(
-                              onTap: () {
-                                controller.onChangeLearningPathCategory(index);
-                              },
+                              onTap: () => isUnlocked
+                                  ? controller
+                                      .onChangeLearningPathCategory(index)
+                                  : null, // Disable tap for locked categories
                               child: Padding(
                                 padding:
                                     EdgeInsets.only(bottom: 0.01 * size.height),
@@ -530,46 +534,84 @@ class ShapeTopic extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        image: isSelected
-                                            ? const DecorationImage(
-                                                image: AssetImage(LocalImage
-                                                    .topicImageChoosed),
-                                                fit: BoxFit.fill,
-                                              )
-                                            : const DecorationImage(
-                                                image: AssetImage(
-                                                    LocalImage.topicImage),
-                                                fit: BoxFit.fill,
-                                              ),
-                                        border: isSelected
-                                            ? Border.all(
-                                                color: AppColor.blue,
-                                                width: 1.5)
-                                            : null,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(0.06 * size.width)),
-                                      ),
-                                      width: 0.06 * size.width,
-                                      height: 0.06 * size.width,
-                                      child: Center(
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                              0.05 * size.width),
-                                          child: category['image'] != null
-                                              ? CacheImage(
-                                                  url: category['image'],
-                                                  width: 0.05 * size.width,
-                                                  height: 0.05 * size.width,
-                                                )
-                                              : Icon(
-                                                  Icons.category,
-                                                  size: 0.05 * size.width,
-                                                  color: AppColor.blue,
+                                    Stack(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            image: isSelected
+                                                ? const DecorationImage(
+                                                    image: AssetImage(LocalImage
+                                                        .topicImageChoosed),
+                                                    fit: BoxFit.fill,
+                                                  )
+                                                : const DecorationImage(
+                                                    image: AssetImage(
+                                                        LocalImage.topicImage),
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                            border: isSelected
+                                                ? Border.all(
+                                                    color: AppColor.blue,
+                                                    width: 1.5)
+                                                : null,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(
+                                                    0.06 * size.width)),
+                                          ),
+                                          width: 0.06 * size.width,
+                                          height: 0.06 * size.width,
+                                          child: Center(
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      0.05 * size.width),
+                                              child: ColorFiltered(
+                                                colorFilter: isUnlocked
+                                                    ? const ColorFilter.mode(
+                                                        Colors.transparent,
+                                                        BlendMode.multiply,
+                                                      )
+                                                    : const ColorFilter.mode(
+                                                        Colors.grey,
+                                                        BlendMode.saturation,
+                                                      ), // Gray out locked categories
+                                                child: Opacity(
+                                                  opacity: isUnlocked
+                                                      ? 1.0
+                                                      : 0.5, // Dim locked categories
+                                                  child: category['image'] !=
+                                                          null
+                                                      ? CacheImage(
+                                                          url:
+                                                              category['image'],
+                                                          width:
+                                                              0.05 * size.width,
+                                                          height:
+                                                              0.05 * size.width,
+                                                        )
+                                                      : Icon(
+                                                          Icons.category,
+                                                          size:
+                                                              0.05 * size.width,
+                                                          color: AppColor.blue,
+                                                        ),
                                                 ),
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                        // Lock icon for locked categories
+                                        if (!isUnlocked)
+                                          Positioned.fill(
+                                            child: Center(
+                                              child: Image.asset(
+                                                LocalImage.lock,
+                                                width: size.width * 0.03,
+                                                height: size.width * 0.03,
+                                              ),
+                                            ),
+                                          ),
+                                      ],
                                     ),
                                     SizedBox(width: 0.01 * size.width),
                                     Container(
@@ -589,29 +631,36 @@ class ShapeTopic extends StatelessWidget {
                                       height: 0.1 * size.height,
                                       padding: EdgeInsets.only(
                                           left: 0.01 * size.width),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: RegularText(
-                                              category['name'] ?? '',
-                                              maxLines: 1,
-                                              textAlign: TextAlign.left,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w700),
+                                      child: Opacity(
+                                        opacity: isUnlocked ? 1.0 : 0.6,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: RegularText(
+                                                category['title'] ?? '',
+                                                maxLines: 1,
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w700,
+                                                    color: isUnlocked
+                                                        ? null
+                                                        : Colors
+                                                            .grey), // Gray text for locked categories
+                                              ),
                                             ),
-                                          ),
-                                          if (isSelected)
-                                            Image.asset(
-                                              LocalImage.menuSelected,
-                                              width: size.height * 0.1,
-                                              height: size.width * 0.025,
-                                            )
-                                        ],
+                                            if (isSelected)
+                                              Image.asset(
+                                                LocalImage.menuSelected,
+                                                width: size.height * 0.1,
+                                                height: size.width * 0.025,
+                                              )
+                                          ],
+                                        ),
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),

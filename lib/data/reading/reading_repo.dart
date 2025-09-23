@@ -117,4 +117,33 @@ class ReadingRepositoryImp implements ReadingRepository {
       return [];
     }
   }
+
+  @override
+  Future<Map<String, dynamic>?> getReadingDetail(
+      Map<String, dynamic> body) async {
+    try {
+      final readingId = body['readingId'];
+      final ApiResponseObject response =
+          await readingApi.getReadingDetail(readingId);
+      final data = response.data;
+      if (response.result && data != null) {
+        return data as Map<String, dynamic>;
+      } else {
+        return null;
+      }
+    } catch (e, stackTrace) {
+      if (e is DioException) {
+        print('[Repository] DioException occurred:');
+        print('  → Type: ${e.type}');
+        print('  → Message: ${e.message}');
+        print('  → Response: ${e.response?.data}');
+        print('  → StatusCode: ${e.response?.statusCode}');
+        print('  → StackTrace: $stackTrace');
+      } else {
+        print('[Repository] Unknown exception: $e');
+        print('[Repository] StackTrace: $stackTrace');
+      }
+      return null;
+    }
+  }
 }

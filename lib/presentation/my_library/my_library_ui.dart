@@ -48,90 +48,152 @@ class MyLibraryScreen extends GetView<MyLibraryController> {
                           // Learning paths display with pagination
                           SizedBox(
                             height: 0.6 * size.height, // Fixed height container
-                            child: Stack(
-                              children: [
-                                // Learning Path Cards - Horizontal Layout 1x4
-                                Center(
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: List.generate(
-                                        controller.currentPageItems.length,
-                                        (index) {
-                                          final item = controller
-                                              .currentPageItems[index];
-                                          return Container(
-                                            width: size.width *
-                                                0.18, // 15% of screen width per card
-                                            height: size.height *
-                                                0.6, // Fixed height for cards
-                                            margin: EdgeInsets.symmetric(
-                                              horizontal: size.width *
-                                                  0.01, // Space between cards
+                            child: controller.isLoading
+                                ? const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : controller.learningPaths.isEmpty
+                                    ? Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.library_books,
+                                              size: 64,
+                                              color:
+                                                  Colors.white.withOpacity(0.7),
                                             ),
-                                            child: LearningPathCard(
-                                              item: item,
-                                              onTap: () => controller
-                                                  .onPressLearningPath(item),
+                                            const SizedBox(height: 16),
+                                            RegularText(
+                                              "No learning paths available",
+                                              style: TextStyle(
+                                                color: Colors.white
+                                                    .withOpacity(0.7),
+                                                fontSize: Fontsize.normal,
+                                              ),
                                             ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                // Left arrow at center left
-                                if (controller.totalPages > 1)
-                                  Positioned(
-                                    left: 0.02 * size.width,
-                                    top: 0,
-                                    bottom: 0,
-                                    child: Center(
-                                      child: GestureDetector(
-                                        onTap: controller.hasPreviousPage
-                                            ? controller.previousPage
-                                            : null,
-                                        child: Opacity(
-                                          opacity: controller.hasPreviousPage
-                                              ? 1.0
-                                              : 0.3,
-                                          child: Image.asset(
-                                            LocalImage.arrowLeft,
-                                            width: 0.08 * size.width,
-                                            height: 0.08 * size.width,
-                                          ),
+                                            const SizedBox(height: 8),
+                                            GestureDetector(
+                                              onTap: controller
+                                                  .refreshLearningPaths,
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 16,
+                                                  vertical: 8,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: AppColor.red,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: RegularText(
+                                                  "Retry",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: Fontsize.small,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                // Right arrow at center right
-                                if (controller.totalPages > 1)
-                                  Positioned(
-                                    right: 0.02 * size.width,
-                                    top: 0,
-                                    bottom: 0,
-                                    child: Center(
-                                      child: GestureDetector(
-                                        onTap: controller.hasNextPage
-                                            ? controller.nextPage
-                                            : null,
-                                        child: Opacity(
-                                          opacity: controller.hasNextPage
-                                              ? 1.0
-                                              : 0.3,
-                                          child: Image.asset(
-                                            LocalImage.arrowRight,
-                                            width: 0.08 * size.width,
-                                            height: 0.08 * size.width,
+                                      )
+                                    : Stack(
+                                        children: [
+                                          // Learning Path Cards - Horizontal Layout 1x4
+                                          Center(
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: List.generate(
+                                                  controller
+                                                      .currentPageItems.length,
+                                                  (index) {
+                                                    final item = controller
+                                                            .currentPageItems[
+                                                        index];
+                                                    return Container(
+                                                      width: size.width *
+                                                          0.18, // 15% of screen width per card
+                                                      height: size.height *
+                                                          0.6, // Fixed height for cards
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                        horizontal: size.width *
+                                                            0.01, // Space between cards
+                                                      ),
+                                                      child: LearningPathCard(
+                                                        item: item,
+                                                        onTap: () => controller
+                                                            .onPressLearningPath(
+                                                                item),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          // Left arrow at center left
+                                          if (controller.totalPages > 1)
+                                            Positioned(
+                                              left: 0.02 * size.width,
+                                              top: 0,
+                                              bottom: 0,
+                                              child: Center(
+                                                child: GestureDetector(
+                                                  onTap: controller
+                                                          .hasPreviousPage
+                                                      ? controller.previousPage
+                                                      : null,
+                                                  child: Opacity(
+                                                    opacity: controller
+                                                            .hasPreviousPage
+                                                        ? 1.0
+                                                        : 0.3,
+                                                    child: Image.asset(
+                                                      LocalImage.arrowLeft,
+                                                      width: 0.08 * size.width,
+                                                      height: 0.08 * size.width,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          // Right arrow at center right
+                                          if (controller.totalPages > 1)
+                                            Positioned(
+                                              right: 0.02 * size.width,
+                                              top: 0,
+                                              bottom: 0,
+                                              child: Center(
+                                                child: GestureDetector(
+                                                  onTap: controller.hasNextPage
+                                                      ? controller.nextPage
+                                                      : null,
+                                                  child: Opacity(
+                                                    opacity:
+                                                        controller.hasNextPage
+                                                            ? 1.0
+                                                            : 0.3,
+                                                    child: Image.asset(
+                                                      LocalImage.arrowRight,
+                                                      width: 0.08 * size.width,
+                                                      height: 0.08 * size.width,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
                                       ),
-                                    ),
-                                  ),
-                              ],
-                            ),
                           ),
                         ],
                       ),
@@ -259,19 +321,19 @@ class LearningPathCard extends StatelessWidget {
                   color: AppColor.blue.withOpacity(0.1),
                 ),
                 child: Center(
-                  child: Image.asset(
-                    item['image'] ?? 'assets/images/elibrary_book_icon.png',
-                    width:
-                        size.width * 0.08, // Smaller icon for horizontal layout
-                    height: size.width * 0.08,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Icon(
-                        Icons.book,
-                        size: size.width * 0.08,
-                        color: AppColor.blue,
-                      );
-                    },
-                  ),
+                  child: item['image'] != null &&
+                          item['image'].toString().isNotEmpty
+                      ? CacheImage(
+                          url: item['image'],
+                          width: size.width * 0.08,
+                          height: size.width * 0.08,
+                          boxFit: BoxFit.cover,
+                        )
+                      : Icon(
+                          Icons.book,
+                          size: size.width * 0.08,
+                          color: AppColor.blue,
+                        ),
                 ),
               ),
             ),

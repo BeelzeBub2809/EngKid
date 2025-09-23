@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:EngKid/data/reading/reading_request/reading_by_topic_request.dart';
 import 'package:EngKid/data/topic_reading/topic_reading_request/topic_reading_request.dart';
+import 'package:EngKid/domain/game/game_usecases.dart';
 import 'package:EngKid/domain/question/question_usecases.dart';
 import 'package:EngKid/domain/reading/reading_usecases.dart';
 import 'package:EngKid/domain/topic/topic_reading_usecases.dart';
@@ -27,9 +28,11 @@ class TopicService extends GetxService {
   TopicService({required this.appUseCases});
 
   final UserService _userService = Get.find<UserService>();
-  final TopicReadingUsecases _topicReadingUsecases = Get.find<TopicReadingUsecases>();
+  final TopicReadingUsecases _topicReadingUsecases =
+      Get.find<TopicReadingUsecases>();
   final ReadingUsecases _readingUsecases = Get.find<ReadingUsecases>();
   final QuestionUsecases _questionUsecases = Get.find<QuestionUsecases>();
+  final GameUsecases _gameUsecases = Get.find<GameUsecases>();
   final _preferencesManager = getIt.get<SharedPreferencesManager>();
   final NetworkService _networkService = Get.find<NetworkService>();
 
@@ -98,9 +101,7 @@ class TopicService extends GetxService {
 
   Future<List<Question>> getQuestionOfReading(int readingId) async {
     try {
-      final Map<String, dynamic> request = {
-        "readingId": readingId
-      };
+      final Map<String, dynamic> request = {"readingId": readingId};
       final result = await _questionUsecases.getQuestionByReadingId(request);
       print('📦 Result: ${jsonEncode(result)}');
       _questionList.assignAll(result);
@@ -110,7 +111,31 @@ class TopicService extends GetxService {
     }
   }
 
-  Future<void> submitReadingResult(int kid_student_id, int kid_reading_id, int score, int is_completed, double duration) async {
+  Future<Map<String, dynamic>?> getReadingDetail(int readingId) async {
+    try {
+      final Map<String, dynamic> request = {"readingId": readingId};
+      final result = await _readingUsecases.getReadingDetail(request);
+      print('📦 Reading Detail Result: ${jsonEncode(result)}');
+      return result;
+    } catch (e) {
+      print('❌ Error getting reading detail: $e');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getGameDetail(int gameId) async {
+    try {
+      final result = await _gameUsecases.getGameDetail(gameId);
+      print('📦 Game Detail Result: ${jsonEncode(result)}');
+      return result;
+    } catch (e) {
+      print('❌ Error getting game detail: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> submitReadingResult(int kid_student_id, int kid_reading_id,
+      int score, int is_completed, double duration) async {
     try {
       final Map<String, dynamic> request = {
         "kid_student_id": kid_student_id,
@@ -120,7 +145,7 @@ class TopicService extends GetxService {
         "duration": duration
       };
       await _readingUsecases.submitReadingResult(request);
-    } catch (e){
+    } catch (e) {
       rethrow;
     }
   }
@@ -132,7 +157,8 @@ class TopicService extends GetxService {
         studentId: _userService.currentUser.id,
       );
 
-      final result = await _readingUsecases.getByCateAndStudent(request.toJson());
+      final result =
+          await _readingUsecases.getByCateAndStudent(request.toJson());
       if (result.isEmpty) {
         _readings.clear();
         _totalReading.value = 0;
@@ -170,7 +196,6 @@ class TopicService extends GetxService {
       print('   - Achieved Stars: ${_completedStar.value}');
 
       return _readings;
-
     } catch (e, stackTrace) {
       _readings.clear();
       _totalReading.value = 0;
@@ -183,6 +208,7 @@ class TopicService extends GetxService {
       rethrow;
     }
   }
+
   // Grades ==============================================
   Future<List<Topic>> getTopicByGrade() async {
     try {
@@ -193,6 +219,7 @@ class TopicService extends GetxService {
       rethrow;
     }
   }
+
   Future<void> getLibrary() async {
     try {
       const imageUrl = "assets/images";
@@ -201,7 +228,7 @@ class TopicService extends GetxService {
       //init 5 grades
       List<Grade> grades = [];
 
-      for(int index = 0; index < 5; index++) {
+      for (int index = 0; index < 5; index++) {
         grades.add(
           Grade(
             id: index + 1,
@@ -256,7 +283,7 @@ class TopicService extends GetxService {
         } else {
           getLibrary();
         }
-      }else{
+      } else {
         LibFunction.toast('require_network_to_get_grades');
       }
       return false;

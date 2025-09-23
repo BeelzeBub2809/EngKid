@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:EngKid/data/core/remote/api/child_api/child_api.dart';
 import 'package:EngKid/data/core/remote/api/ebook_category_api/ebook_category_api.dart';
 import 'package:EngKid/data/core/remote/api/feedback_api/feedback_api.dart';
+import 'package:EngKid/data/core/remote/api/game_api/game_api.dart';
 import 'package:EngKid/data/core/remote/api/learning_path_api/learning_path_api.dart';
 import 'package:EngKid/data/core/remote/api/notification_api/notification_api.dart';
 import 'package:EngKid/data/core/remote/api/question_api/question_api.dart';
@@ -9,6 +10,7 @@ import 'package:EngKid/data/core/remote/api/reading_api/reading_api.dart';
 import 'package:EngKid/data/core/remote/api/student_reading_api/student_reading_api.dart';
 import 'package:EngKid/data/core/remote/api/topic_api/topic_api.dart';
 import 'package:EngKid/data/core/remote/api/ebook_api/ebook_api.dart';
+import 'package:EngKid/data/word/word_api_client.dart';
 import 'package:EngKid/domain/ebook_category/entities/ebook_category.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +45,8 @@ class ApiModule {
     getIt.registerSingleton(NotificationApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(FeedbackApi(dio, baseUrl: dio.options.baseUrl));
     getIt.registerSingleton(LearningPathApi(dio, baseUrl: dio.options.baseUrl));
+    getIt.registerSingleton(GameApi(dio, baseUrl: dio.options.baseUrl));
+    getIt.registerSingleton(WordApiClient(dio));
   }
 
   static FutureOr<Dio> setup(String baseUrl) async {

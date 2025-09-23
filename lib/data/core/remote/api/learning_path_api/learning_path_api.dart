@@ -8,16 +8,12 @@ part 'learning_path_api.g.dart';
 abstract class LearningPathApi {
   factory LearningPathApi(Dio dio, {String baseUrl}) = _LearningPathApi;
 
-  @GET('/learning-path/mobile/{pathId}/categories')
-  Future<ApiResponseObject> getLearningPathCategories(
-    @Path("pathId") int pathId,
-  );
+  @GET('/learning-path/mobile/list-learning-paths')
+  Future<ApiResponseObject> getListLearningPaths();
 
-  @GET(
-      '/learning-path/mobile/{pathId}/categories/{categoryId}/{studentId}/items')
+  @GET('/learning-path/mobile/{pathId}/{studentId}/items')
   Future<ApiResponseObject> getLearningPathItems(
     @Path("pathId") int pathId,
-    @Path("categoryId") int categoryId,
     @Path("studentId") int studentId,
   );
 }

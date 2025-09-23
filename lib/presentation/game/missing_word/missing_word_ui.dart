@@ -74,6 +74,7 @@ class MissingWordUI extends StatelessWidget {
               ),
               child: SafeArea(
                 child: Obx(() {
+                  final controller = Get.find<MissingWordController>();
                   // Listen for feedback changes and show toast
                   if (controller.showFeedback &&
                       !_isToastShowing &&
@@ -229,20 +230,24 @@ class MissingWordUI extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        Text(
-          'Missing Word Game',
-          style: TextStyle(
-            fontSize: _getResponsiveFontSize(context, 20),
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            shadows: [
-              Shadow(
-                offset: const Offset(1, 1),
-                blurRadius: 2,
-                color: Colors.black.withOpacity(0.5),
+        Column(
+          children: [
+            Text(
+              'Missing Word Game',
+              style: TextStyle(
+                fontSize: _getResponsiveFontSize(context, 20),
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                shadows: [
+                  Shadow(
+                    offset: const Offset(1, 1),
+                    blurRadius: 2,
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         const Spacer(),
         Container(
@@ -264,7 +269,7 @@ class MissingWordUI extends StatelessWidget {
               ),
               SizedBox(width: _getResponsiveSize(context, 4)),
               Obx(() => Text(
-                    controller.getTimeFormatted(),
+                    Get.find<MissingWordController>().getTimeFormatted(),
                     style: TextStyle(
                       fontSize: _getResponsiveFontSize(context, 14),
                       fontWeight: FontWeight.bold,
@@ -280,90 +285,105 @@ class MissingWordUI extends StatelessWidget {
 
   Widget _buildGameStats(
       BuildContext context, MissingWordController controller) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildStatCard(
-            context,
-            'Level',
-            controller.currentLevel.toString(),
-            Icons.flag,
-            Colors.blue,
-          ),
-        ),
-        SizedBox(width: _getResponsiveSize(context, 10)),
-        Expanded(
-          child: _buildStatCard(
-            context,
-            'Score',
-            controller.score.toString(),
-            Icons.star,
-            Colors.amber,
-          ),
-        ),
-        SizedBox(width: _getResponsiveSize(context, 10)),
-        Expanded(
-          child: _buildStatCard(
-            context,
-            'Streak',
-            controller.consecutiveCorrect.toString(),
-            Icons.trending_up,
-            Colors.orange,
-          ),
-        ),
-        if (controller.bonusMultiplier > 1.0) ...[
-          SizedBox(width: _getResponsiveSize(context, 10)),
-          Expanded(
-            child: _buildStatCard(
-              context,
-              'Bonus',
-              'x${controller.bonusMultiplier.toStringAsFixed(1)}',
-              Icons.flash_on,
-              Colors.purple,
-            ),
-          ),
-        ],
-      ],
-    );
-  }
+    return Column(children: [
+      // XP Progress Bar
+      GetBuilder<MissingWordController>(
+        builder: (controller) {
+          final progressValue = controller.getProgressValue();
+          final currentWord = controller.getCurrentWordNumber();
+          final totalWords = controller.getTotalWords();
 
-  Widget _buildStatCard(BuildContext context, String label, String value,
-      IconData icon, Color color) {
-    return Container(
-      padding: EdgeInsets.all(_getResponsivePadding(context, 12)),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
-        borderRadius: BorderRadius.circular(_getResponsiveSize(context, 10)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: _getResponsiveSize(context, 4),
-            offset: Offset(0, _getResponsiveSize(context, 2)),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: _getResponsiveIconSize(context, 20)),
-          SizedBox(height: _getResponsiveSize(context, 4)),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: _getResponsiveFontSize(context, 16),
-              fontWeight: FontWeight.bold,
-              color: Colors.blue[700],
+          if (totalWords == 0) return const SizedBox.shrink();
+
+          return Container(
+            width: double.infinity,
+            margin: EdgeInsets.only(bottom: _getResponsiveSize(context, 12)),
+            padding: EdgeInsets.all(_getResponsivePadding(context, 12)),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.9),
+              borderRadius:
+                  BorderRadius.circular(_getResponsiveSize(context, 10)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: _getResponsiveSize(context, 4),
+                  offset: Offset(0, _getResponsiveSize(context, 2)),
+                ),
+              ],
             ),
-          ),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: _getResponsiveFontSize(context, 10),
-              color: Colors.grey[600],
+            child: Column(
+              children: [
+                // Progress text
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Game Progress',
+                      style: TextStyle(
+                        fontSize: _getResponsiveFontSize(context, 12),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue[700],
+                      ),
+                    ),
+                    Text(
+                      '$currentWord/$totalWords words (${(progressValue * 100).round()}%)',
+                      style: TextStyle(
+                        fontSize: _getResponsiveFontSize(context, 11),
+                        fontWeight: FontWeight.w600,
+                        color: Colors.green[600],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: _getResponsiveSize(context, 8)),
+                // Progress bar
+                Stack(
+                  children: [
+                    Container(
+                      height: _getResponsiveSize(context, 10),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(
+                            _getResponsiveSize(context, 5)),
+                      ),
+                    ),
+                    Container(
+                      height: _getResponsiveSize(context, 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                            _getResponsiveSize(context, 5)),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            _getResponsiveSize(context, 5)),
+                        child: LinearProgressIndicator(
+                          value: progressValue,
+                          backgroundColor: Colors.transparent,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            _getProgressColor(progressValue),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // XP effect - sparkling animation
+                    if (progressValue > 0)
+                      Positioned(
+                        right: _getResponsiveSize(context, 4),
+                        top: _getResponsiveSize(context, 2),
+                        child: Icon(
+                          Icons.auto_awesome,
+                          size: _getResponsiveIconSize(context, 8),
+                          color: Colors.white,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
             ),
-          ),
-        ],
+          );
+        },
       ),
-    );
+    ]);
   }
 
   Widget _buildWordDisplay(
@@ -417,11 +437,30 @@ class MissingWordUI extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(width: _getResponsiveSize(context, 8)),
+              GestureDetector(
+                onTap: () => _showWordImagePopup(context, controller),
+                child: Container(
+                  padding: EdgeInsets.all(
+                      _getResponsivePadding(context, 6)), // Reduced padding
+                  decoration: BoxDecoration(
+                    color: Colors.purple[100],
+                    borderRadius: BorderRadius.circular(
+                        _getResponsiveSize(context, 15)), // Reduced radius
+                  ),
+                  child: Icon(
+                    Icons.image,
+                    color: Colors.purple[700],
+                    size: _getResponsiveIconSize(
+                        context, 18), // Reduced icon size
+                  ),
+                ),
+              ),
             ],
           ),
           SizedBox(height: _getResponsiveSize(context, 5)), // Reduced spacing
           Obx(() => Text(
-                controller.getDisplayWord(),
+                Get.find<MissingWordController>().getDisplayWord(),
                 style: TextStyle(
                   fontSize:
                       _getResponsiveFontSize(context, 36), // Reduced word font
@@ -436,6 +475,7 @@ class MissingWordUI extends StatelessWidget {
           SizedBox(height: _getResponsiveSize(context, 8)), // Small spacing
           // Pronunciation display
           Obx(() {
+            final controller = Get.find<MissingWordController>();
             final pronunciation = controller.currentWordPronunciation;
             if (pronunciation.isNotEmpty) {
               return Text(
@@ -452,108 +492,110 @@ class MissingWordUI extends StatelessWidget {
           }),
           SizedBox(height: _getResponsiveSize(context, 8)), // Small spacing
           // Definition display with translation option
-          Obx(() {
-            final definition = controller.currentWordDefinition;
-            if (definition.isNotEmpty) {
-              return FutureBuilder<String>(
-                future: controller.getTranslatedDefinitionText(),
-                builder: (context, snapshot) {
-                  final displayText = snapshot.data ?? definition;
-                  return Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: _getResponsivePadding(context, 16),
-                      vertical: _getResponsivePadding(context, 8),
-                    ),
-                    margin: EdgeInsets.symmetric(
-                      horizontal: _getResponsivePadding(context, 20),
-                    ),
-                    decoration: BoxDecoration(
-                      color: controller.isTranslationEnabled
-                          ? Colors.green[50]
-                          : Colors.blue[50],
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: controller.isTranslationEnabled
-                            ? Colors.green[200]!
-                            : Colors.blue[200]!,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        // Translation toggle button
-                        GestureDetector(
-                          onTap: () => controller.toggleTranslation(),
-                          child: Container(
-                            padding: EdgeInsets.all(
-                              _getResponsivePadding(context, 4),
-                            ),
-                            decoration: BoxDecoration(
-                              color: controller.isTranslationEnabled
-                                  ? Colors.green[100]
-                                  : Colors.blue[100],
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Icon(
-                              Icons.translate,
-                              size: _getResponsiveIconSize(context, 14),
-                              color: controller.isTranslationEnabled
-                                  ? Colors.green[700]
-                                  : Colors.blue[700],
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: _getResponsiveSize(context, 8)),
-                        // Definition text
-                        Expanded(
-                          child: snapshot.connectionState ==
-                                  ConnectionState.waiting
-                              ? Row(
-                                  children: [
-                                    SizedBox(
-                                      width: _getResponsiveSize(context, 12),
-                                      height: _getResponsiveSize(context, 12),
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          Colors.grey[600]!,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        width: _getResponsiveSize(context, 8)),
-                                    Text(
-                                      'Translating...',
-                                      style: TextStyle(
-                                        fontSize:
-                                            _getResponsiveFontSize(context, 12),
-                                        color: Colors.grey[600],
-                                        fontStyle: FontStyle.italic,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : Text(
-                                  displayText,
-                                  style: TextStyle(
-                                    fontSize:
-                                        _getResponsiveFontSize(context, 20),
-                                    color: Colors.grey[700],
-                                    height: 1.3,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            }
-            return const SizedBox.shrink();
-          }),
+          // Obx(() {
+          //   final controller = Get.find<MissingWordController>();
+          //   final definition = controller.currentWordDefinition;
+          //   if (definition.isNotEmpty) {
+          //     return FutureBuilder<String>(
+          //       future: controller.getTranslatedDefinitionText(),
+          //       builder: (context, snapshot) {
+          //         final displayText = snapshot.data ?? definition;
+          //         return Container(
+          //           padding: EdgeInsets.symmetric(
+          //             horizontal: _getResponsivePadding(context, 16),
+          //             vertical: _getResponsivePadding(context, 8),
+          //           ),
+          //           margin: EdgeInsets.symmetric(
+          //             horizontal: _getResponsivePadding(context, 20),
+          //           ),
+          //           decoration: BoxDecoration(
+          //             color: controller.isTranslationEnabled
+          //                 ? Colors.green[50]
+          //                 : Colors.blue[50],
+          //             borderRadius: BorderRadius.circular(8),
+          //             border: Border.all(
+          //               color: controller.isTranslationEnabled
+          //                   ? Colors.green[200]!
+          //                   : Colors.blue[200]!,
+          //             ),
+          //           ),
+          //           child: Row(
+          //             children: [
+          //               // Translation toggle button
+          //               GestureDetector(
+          //                 onTap: () => controller.toggleTranslation(),
+          //                 child: Container(
+          //                   padding: EdgeInsets.all(
+          //                     _getResponsivePadding(context, 4),
+          //                   ),
+          //                   decoration: BoxDecoration(
+          //                     color: controller.isTranslationEnabled
+          //                         ? Colors.green[100]
+          //                         : Colors.blue[100],
+          //                     borderRadius: BorderRadius.circular(6),
+          //                   ),
+          //                   child: Icon(
+          //                     Icons.translate,
+          //                     size: _getResponsiveIconSize(context, 14),
+          //                     color: controller.isTranslationEnabled
+          //                         ? Colors.green[700]
+          //                         : Colors.blue[700],
+          //                   ),
+          //                 ),
+          //               ),
+          //               SizedBox(width: _getResponsiveSize(context, 8)),
+          //               // Definition text
+          //               Expanded(
+          //                 child: snapshot.connectionState ==
+          //                         ConnectionState.waiting
+          //                     ? Row(
+          //                         children: [
+          //                           SizedBox(
+          //                             width: _getResponsiveSize(context, 12),
+          //                             height: _getResponsiveSize(context, 12),
+          //                             child: CircularProgressIndicator(
+          //                               strokeWidth: 2,
+          //                               valueColor:
+          //                                   AlwaysStoppedAnimation<Color>(
+          //                                 Colors.grey[600]!,
+          //                               ),
+          //                             ),
+          //                           ),
+          //                           SizedBox(
+          //                               width: _getResponsiveSize(context, 8)),
+          //                           Text(
+          //                             'Translating...',
+          //                             style: TextStyle(
+          //                               fontSize:
+          //                                   _getResponsiveFontSize(context, 12),
+          //                               color: Colors.grey[600],
+          //                               fontStyle: FontStyle.italic,
+          //                             ),
+          //                           ),
+          //                         ],
+          //                       )
+          //                     : Text(
+          //                         displayText,
+          //                         style: TextStyle(
+          //                           fontSize:
+          //                               _getResponsiveFontSize(context, 20),
+          //                           color: Colors.grey[700],
+          //                           height: 1.3,
+          //                         ),
+          //                         textAlign: TextAlign.center,
+          //                         maxLines: 3,
+          //                         overflow: TextOverflow.ellipsis,
+          //                       ),
+          //               ),
+          //             ],
+          //           ),
+          //         );
+          //       },
+          //     );
+          //   }
+          //   return const SizedBox.shrink();
+          // }),
+
           SizedBox(height: _getResponsiveSize(context, 15)), // Reduced spacing
           Text(
             'Missing ${controller.getMissingLetterCount()} letter(s)',
@@ -602,46 +644,55 @@ class MissingWordUI extends StatelessWidget {
             ),
             SizedBox(width: _getResponsiveSize(context, 12)),
             Expanded(
-              child: Obx(() => Text(
-                    controller.userInput.isEmpty
-                        ? 'Tap to enter missing letters...'
-                        : controller.userInput.toUpperCase(),
-                    style: TextStyle(
-                      fontSize: _getResponsiveFontSize(context, 18),
-                      color: controller.userInput.isEmpty
-                          ? Colors.grey[400]
-                          : Colors.blue[700],
-                      fontWeight: controller.userInput.isEmpty
-                          ? FontWeight.normal
-                          : FontWeight.bold,
-                      letterSpacing: _getResponsiveSize(context, 2),
-                    ),
-                  )),
+              child: Obx(() {
+                final controller = Get.find<MissingWordController>();
+                return Text(
+                  controller.userInput.isEmpty
+                      ? 'Tap to enter missing letters...'
+                      : controller.userInput.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: _getResponsiveFontSize(context, 18),
+                    color: controller.userInput.isEmpty
+                        ? Colors.grey[400]
+                        : Colors.blue[700],
+                    fontWeight: controller.userInput.isEmpty
+                        ? FontWeight.normal
+                        : FontWeight.bold,
+                    letterSpacing: _getResponsiveSize(context, 2),
+                  ),
+                );
+              }),
             ),
-            if (controller.userInput.length ==
-                controller.getMissingLetterCount())
-              GestureDetector(
-                onTap: () => controller.onKeyPressed('ENTER'),
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: _getResponsivePadding(context, 12),
-                    vertical: _getResponsivePadding(context, 6),
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius:
-                        BorderRadius.circular(_getResponsiveSize(context, 8)),
-                  ),
-                  child: Text(
-                    'CHECK',
-                    style: TextStyle(
-                      fontSize: _getResponsiveFontSize(context, 12),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+            Obx(() {
+              final controller = Get.find<MissingWordController>();
+              if (controller.userInput.length ==
+                  controller.getMissingLetterCount()) {
+                return GestureDetector(
+                  onTap: () => controller.onKeyPressed('ENTER'),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: _getResponsivePadding(context, 12),
+                      vertical: _getResponsivePadding(context, 6),
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius:
+                          BorderRadius.circular(_getResponsiveSize(context, 8)),
+                    ),
+                    child: Text(
+                      'CHECK',
+                      style: TextStyle(
+                        fontSize: _getResponsiveFontSize(context, 12),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-              ),
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            }),
           ],
         ),
       ),
@@ -934,26 +985,37 @@ class MissingWordUI extends StatelessWidget {
                   SizedBox(width: _getResponsiveSize(context, 16)),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => controller.restartGame(),
+                      onTap: () => Get.back(),
                       child: Container(
                         padding: EdgeInsets.symmetric(
                           vertical: _getResponsivePadding(context, 16),
                         ),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [Colors.blue[600]!, Colors.blue[800]!],
+                            colors: [Colors.green[400]!, Colors.green[600]!],
                           ),
                           borderRadius: BorderRadius.circular(
                               _getResponsiveSize(context, 12)),
                         ),
                         child: Center(
-                          child: Text(
-                            'Play Again',
-                            style: TextStyle(
-                              fontSize: _getResponsiveFontSize(context, 18),
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.arrow_forward_rounded,
+                                color: Colors.white,
+                                size: _getResponsiveIconSize(context, 20),
+                              ),
+                              SizedBox(width: _getResponsiveSize(context, 8)),
+                              Text(
+                                'Continue',
+                                style: TextStyle(
+                                  fontSize: _getResponsiveFontSize(context, 18),
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -1090,6 +1152,178 @@ class MissingWordUI extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  // Helper method to get progress color based on completion percentage
+  Color _getProgressColor(double progressValue) {
+    if (progressValue < 0.25) {
+      return Colors.red[400]!; // Just started - red
+    } else if (progressValue < 0.5) {
+      return Colors.orange[500]!; // Quarter way - orange
+    } else if (progressValue < 0.75) {
+      return Colors.yellow[600]!; // Half way - yellow
+    } else if (progressValue < 1.0) {
+      return Colors.lightGreen[500]!; // Almost done - light green
+    } else {
+      return Colors.green[600]!; // Completed - green
+    }
+  }
+
+  // Show word image in popup
+  void _showWordImagePopup(
+      BuildContext context, MissingWordController controller) {
+    final imageUrl = controller.getCurrentWordImageUrl();
+
+    if (imageUrl.isEmpty) {
+      // Show message if no image available
+      showToast(
+        'No image available for this word',
+        duration: const Duration(milliseconds: 2000),
+        position: ToastPosition.center,
+        backgroundColor: Colors.orange.withOpacity(0.9),
+        radius: _getResponsiveSize(context, 10),
+        textStyle: TextStyle(
+          fontSize: _getResponsiveFontSize(context, 16),
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.8,
+              maxHeight: MediaQuery.of(context).size.height * 0.8,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius:
+                  BorderRadius.circular(_getResponsiveSize(context, 16)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: _getResponsiveSize(context, 10),
+                  offset: Offset(0, _getResponsiveSize(context, 5)),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Header with close button
+                Container(
+                  padding: EdgeInsets.all(_getResponsivePadding(context, 16)),
+                  decoration: BoxDecoration(
+                    color: Colors.blue[50],
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(_getResponsiveSize(context, 16)),
+                      topRight:
+                          Radius.circular(_getResponsiveSize(context, 16)),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Word Image',
+                        style: TextStyle(
+                          fontSize: _getResponsiveFontSize(context, 20),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue[700],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Container(
+                          padding:
+                              EdgeInsets.all(_getResponsivePadding(context, 4)),
+                          decoration: BoxDecoration(
+                            color: Colors.red[100],
+                            borderRadius: BorderRadius.circular(
+                                _getResponsiveSize(context, 20)),
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            size: _getResponsiveIconSize(context, 20),
+                            color: Colors.red[700],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Image content
+                Padding(
+                  padding: EdgeInsets.all(_getResponsivePadding(context, 16)),
+                  child: ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(_getResponsiveSize(context, 12)),
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.contain,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          height: _getResponsiveSize(context, 200),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.blue[600]!),
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: _getResponsiveSize(context, 200),
+                          padding: EdgeInsets.all(
+                              _getResponsivePadding(context, 20)),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(
+                                _getResponsiveSize(context, 12)),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                size: _getResponsiveIconSize(context, 48),
+                                color: Colors.grey[400],
+                              ),
+                              SizedBox(height: _getResponsiveSize(context, 12)),
+                              Text(
+                                'Failed to load image',
+                                style: TextStyle(
+                                  fontSize: _getResponsiveFontSize(context, 16),
+                                  color: Colors.grey[600],
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

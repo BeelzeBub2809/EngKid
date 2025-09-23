@@ -15,4 +15,9 @@ abstract class ReadingApi {
   Future<ApiResponseObject> getListReading(
     @Query("searchTerm") String searchTerm,
   );
+
+  @GET('kid-reading/{readingId}')
+  Future<ApiResponseObject> getReadingDetail(
+    @Path("readingId") int readingId,
+  );
 }

@@ -1,58 +1,25 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_tts/flutter_tts.dart';
+import '../../../domain/word/get_words_by_game_id_usecase.dart';
+import '../../../domain/entities/word/word_entity.dart';
 
 enum MemoryGameType { cardMatching }
 
-enum MemoryDifficulty { easy, medium, hard }
+enum GameState { loading, playing, finished }
 
-enum GameState { setup, loading, playing, finished }
-
-enum CardType { word, phonetic }
-
-class WordData {
-  final String word;
-  final String pronunciation;
-  final String phonetic;
-
-  WordData({
-    required this.word,
-    required this.pronunciation,
-    required this.phonetic,
-  });
-
-  factory WordData.fromJson(Map<String, dynamic> json) {
-    return WordData(
-      word: json['word'] ?? '',
-      pronunciation: json['pronunciation'] ?? '',
-      phonetic: json['phonetic'] ?? '',
-    );
-  }
-}
-
-class RandomWordResponse {
-  final String word;
-
-  RandomWordResponse({required this.word});
-
-  factory RandomWordResponse.fromJson(Map<String, dynamic> json) {
-    return RandomWordResponse(word: json['word'] ?? '');
-  }
-}
+enum CardType { word, image }
 
 class MemoryCard {
   final int id;
   final int pairId; // ID to identify matching pairs
-  final String content; // Either word or phonetic
+  final String content; // Either word or empty for image cards
   final String word; // Original word
-  final String pronunciation;
-  final String phonetic;
-  final CardType type; // word or phonetic
+  final String image; // Word image URL
+  final CardType type; // word or image
   final Color color;
   bool isFlipped;
   bool isMatched;
@@ -62,8 +29,7 @@ class MemoryCard {
     required this.pairId,
     required this.content,
     required this.word,
-    required this.pronunciation,
-    required this.phonetic,
+    required this.image,
     required this.type,
     required this.color,
     this.isFlipped = false,
@@ -72,27 +38,26 @@ class MemoryCard {
 }
 
 class MemoryGameController extends GetxController {
+  final GetWordsByGameIdUseCase _getWordsByGameIdUseCase;
+
+  MemoryGameController(this._getWordsByGameIdUseCase);
+
   // Game state
-  final _gameState = GameState.setup.obs;
-  final _gameStarted = false.obs;
+  final _gameState = GameState.loading.obs;
   final _gameInProgress = false.obs;
   final _gameFinished = false.obs;
-  final _isLoading = false.obs;
-  final _showResult = false.obs;
+  final _isLoading = true.obs;
   final _timerActive = false.obs;
 
-  // Game settings
-  final _selectedGameType = MemoryGameType.cardMatching.obs;
-  final _selectedDifficulty = MemoryDifficulty.easy.obs;
-  final _rounds = 1.obs;
-  final _currentRound = 0.obs;
+  // Game data from navigation arguments
+  Map<String, dynamic>? _gameData;
+  int get gameId => _gameData?['game_id'] ?? 2;
 
   // Game progress
   final _score = 0.obs;
   final _attempts = 0.obs;
   final _correctAttempts = 0.obs;
-  final _round = 1.obs;
-  final _gameTime = 120.obs; // 2 minutes for card matching
+  final _gameTime = 180.obs; // 3 minutes default
 
   // Card matching specific
   final _cards = <MemoryCard>[].obs;
@@ -100,46 +65,31 @@ class MemoryGameController extends GetxController {
   final _canFlipCards = true.obs;
   final _matchedPairs = 0.obs;
 
+  // Words from API
+  final _words = <WordEntity>[].obs;
+  final _errorMessage = ''.obs;
+
   Timer? _gameTimer;
+  late FlutterTts _flutterTts;
 
   // Getters
   GameState get gameState => _gameState.value;
-  bool get gameStarted => _gameStarted.value;
   bool get gameInProgress => _gameInProgress.value;
   bool get gameFinished => _gameFinished.value;
   bool get isLoading => _isLoading.value;
-  bool get showResult => _showResult.value;
   bool get timerActive => _timerActive.value;
-
-  MemoryGameType get selectedGameType => _selectedGameType.value;
-  MemoryDifficulty get selectedDifficulty => _selectedDifficulty.value;
-  String get selectedDifficultyString =>
-      _selectedDifficulty.value.name.capitalize!;
-  int get rounds => _rounds.value;
-  int get currentRound => _currentRound.value;
 
   int get score => _score.value;
   int get attempts => _attempts.value;
   int get correctAttempts => _correctAttempts.value;
-  int get round => _round.value;
   int get gameTime => _gameTime.value;
 
   List<MemoryCard> get cards => _cards;
   List<int> get flippedCards => _flippedCards;
   bool get canFlipCards => _canFlipCards.value;
   int get matchedPairs => _matchedPairs.value;
-
-  // Add TTS and API constants
-  static const String RANDOM_WORD_API_URL =
-      'https://random-word-api-eight.vercel.app/word/multiple';
-  static const String DICTIONARY_API_URL =
-      'https://api.dictionaryapi.dev/api/v2/entries/en';
-
-  late FlutterTts _flutterTts;
-  final _isLoadingWords = false.obs;
-
-  // Getters for loading state
-  bool get isLoadingWords => _isLoadingWords.value;
+  List<WordEntity> get words => _words;
+  String get errorMessage => _errorMessage.value;
 
   @override
   void onInit() {
@@ -147,7 +97,9 @@ class MemoryGameController extends GetxController {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    _gameData = Get.arguments as Map<String, dynamic>?;
     _initializeTts();
+    _initializeGame();
     super.onInit();
   }
 
@@ -159,130 +111,115 @@ class MemoryGameController extends GetxController {
     _flutterTts.setPitch(1.0);
   }
 
-  Future<void> playPronunciation(String word) async {
-    try {
-      await _flutterTts.speak(word);
-    } catch (e) {
-      print('Error playing pronunciation: $e');
-    }
+  Future<void> _initializeGame() async {
+    await _loadWordsAndStartGame();
   }
 
-  void setDifficulty(MemoryDifficulty difficulty) {
-    _selectedDifficulty.value = difficulty;
-  }
-
-  Future<void> startGame() async {
-    // Set state to loading first
+  Future<void> _loadWordsAndStartGame() async {
     _gameState.value = GameState.loading;
     _isLoading.value = true;
-
-    // Reset game values
-    _gameStarted.value = true;
-    _gameInProgress.value = false; // Don't start until cards are ready
-    _gameFinished.value = false;
-    _showResult.value = false;
-    _timerActive.value = false;
-    _score.value = 0;
-    _attempts.value = 0;
-    _correctAttempts.value = 0;
-    _round.value = 1;
-    _currentRound.value = 0;
-    _matchedPairs.value = 0;
-
-    // Set game time based on difficulty
-    switch (_selectedDifficulty.value) {
-      case MemoryDifficulty.easy:
-        _gameTime.value = 180; // 3 minutes
-        break;
-      case MemoryDifficulty.medium:
-        _gameTime.value = 150; // 2.5 minutes
-        break;
-      case MemoryDifficulty.hard:
-        _gameTime.value = 120; // 2 minutes
-        break;
-    }
+    _errorMessage.value = '';
 
     try {
-      await _generateGame();
+      // Fetch words from API using game ID from arguments
+      final fetchedWords = await _getWordsByGameIdUseCase.call(gameId);
+      _words.value = fetchedWords;
 
-      print('Cards generated: ${_cards.length}');
-
-      if (_cards.isNotEmpty) {
-        // Now start the actual game
-        _gameState.value = GameState.playing;
-        _gameInProgress.value = true;
-        _timerActive.value = true;
-        _isLoading.value = false;
-        _startCurrentRound();
-      } else {
-        // Force fallback card generation if no cards were created
-        print('No cards generated, using fallback');
-        _generateFallbackCardsForCurrentDifficulty();
-
-        if (_cards.isNotEmpty) {
-          _gameState.value = GameState.playing;
-          _gameInProgress.value = true;
-          _timerActive.value = true;
-          _isLoading.value = false;
-          _startCurrentRound();
-        } else {
-          // Fallback if no cards generated
-          _gameState.value = GameState.setup;
-          _gameStarted.value = false;
-          _isLoading.value = false;
-          Get.snackbar(
-            'Error',
-            'Unable to load game data. Please try again.',
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-        }
+      if (fetchedWords.isEmpty) {
+        throw Exception('No words found for this game');
       }
-    } catch (e) {
-      print('Error starting game: $e');
-      _gameState.value = GameState.setup;
-      _gameStarted.value = false;
+
+      // Generate cards from words
+      await _generateCardsFromWords();
+
+      // Start the game
+      _gameState.value = GameState.playing;
+      _gameInProgress.value = true;
+      _timerActive.value = true;
       _isLoading.value = false;
+      _startGameTimer();
+    } catch (e) {
+      _errorMessage.value = e.toString();
+      _isLoading.value = false;
+      _gameState.value = GameState.loading; // Stay in loading to show error
+
       Get.snackbar(
         'Error',
-        'Failed to start game. Please check your connection.',
+        'Failed to load game: ${e.toString()}',
         backgroundColor: Colors.red,
         colorText: Colors.white,
+        duration: const Duration(seconds: 3),
       );
     }
   }
 
-  void pauseGame() {
-    _gameInProgress.value = false;
-    _timerActive.value = false;
-    _gameTimer?.cancel();
+  Future<void> _generateCardsFromWords() async {
+    _cards.clear();
+
+    // Limit to maximum 12 words (24 cards total) for better gameplay
+    final wordsToUse = _words.take(12).toList();
+
+    final colors = [
+      Colors.red,
+      Colors.blue,
+      Colors.green,
+      Colors.yellow,
+      Colors.purple,
+      Colors.orange,
+      Colors.pink,
+      Colors.cyan,
+      Colors.lime,
+      Colors.indigo,
+      Colors.teal,
+      Colors.amber,
+    ];
+
+    final cardPairs = <MemoryCard>[];
+
+    for (int i = 0; i < wordsToUse.length; i++) {
+      final word = wordsToUse[i];
+      final color = colors[i % colors.length];
+
+      // Create word card (with text and pronunciation button)
+      cardPairs.add(MemoryCard(
+        id: i * 2,
+        pairId: i,
+        content: word.word,
+        word: word.word,
+        image: word.image,
+        type: CardType.word,
+        color: color,
+      ));
+
+      // Create image card (with word image)
+      cardPairs.add(MemoryCard(
+        id: i * 2 + 1,
+        pairId: i,
+        content: '', // Empty content for image cards
+        word: word.word,
+        image: word.image,
+        type: CardType.image,
+        color: color,
+      ));
+    }
+
+    // Shuffle the cards
+    final random = Random();
+    cardPairs.shuffle(random);
+    _cards.value = cardPairs;
+
+    // Adjust game time based on number of cards
+    final cardCount = _cards.length;
+    if (cardCount <= 12) {
+      _gameTime.value = 120; // 2 minutes for small games
+    } else if (cardCount <= 16) {
+      _gameTime.value = 150; // 2.5 minutes for medium games
+    } else {
+      _gameTime.value = 180; // 3 minutes for large games
+    }
   }
 
-  void resumeGame() {
-    _gameInProgress.value = true;
-    _timerActive.value = true;
-    _gameTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_gameTime.value > 0 && !_gameInProgress.value) {
-        timer.cancel();
-      } else if (_gameTime.value > 0) {
-        _gameTime.value--;
-      } else {
-        timer.cancel();
-        _gameOver(false);
-      }
-    });
-  }
-
-  void _startCurrentRound() {
-    _startCardMatchingRound();
-  }
-
-  void _startCardMatchingRound() {
-    // Cards should already be generated at this point
-    _canFlipCards.value = true;
-    _flippedCards.clear();
-
-    // Start timer
+  void _startGameTimer() {
     _gameTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_gameTime.value > 0 && _gameInProgress.value) {
         _gameTime.value--;
@@ -293,7 +230,14 @@ class MemoryGameController extends GetxController {
     });
   }
 
-  // Card matching game methods
+  Future<void> playPronunciation(String word) async {
+    try {
+      await _flutterTts.speak(word);
+    } catch (e) {
+      print('Error playing pronunciation: $e');
+    }
+  }
+
   void flipCard(int cardIndex) {
     if (!_canFlipCards.value ||
         _cards[cardIndex].isFlipped ||
@@ -303,6 +247,9 @@ class MemoryGameController extends GetxController {
     _cards[cardIndex].isFlipped = true;
     _flippedCards.add(cardIndex);
     _cards.refresh();
+
+    // Auto-play pronunciation when card is flipped
+    playPronunciation(_cards[cardIndex].word);
 
     if (_flippedCards.length == 2) {
       _canFlipCards.value = false;
@@ -314,9 +261,9 @@ class MemoryGameController extends GetxController {
     final card1 = _cards[_flippedCards[0]];
     final card2 = _cards[_flippedCards[1]];
 
-    // Check if they have the same pairId and different types (word vs phonetic)
+    // Check if they have the same pairId and different types (word vs image)
     if (card1.pairId == card2.pairId && card1.type != card2.type) {
-      // Match found - word matches its phonetic
+      // Match found - word matches its image
       card1.isMatched = true;
       card2.isMatched = true;
       _matchedPairs.value++;
@@ -380,307 +327,36 @@ class MemoryGameController extends GetxController {
     );
   }
 
+  void pauseGame() {
+    _gameInProgress.value = false;
+    _timerActive.value = false;
+    _gameTimer?.cancel();
+  }
+
+  void resumeGame() {
+    _gameInProgress.value = true;
+    _timerActive.value = true;
+    _startGameTimer();
+  }
+
   void resetGame() {
-    _gameState.value = GameState.setup;
-    _gameStarted.value = false;
+    _gameState.value = GameState.loading;
     _gameFinished.value = false;
     _gameInProgress.value = false;
-    _currentRound.value = 0;
     _score.value = 0;
     _attempts.value = 0;
     _correctAttempts.value = 0;
-    _showResult.value = false;
     _timerActive.value = false;
     _matchedPairs.value = 0;
-    _isLoading.value = false;
+    _isLoading.value = true;
+    _errorMessage.value = '';
 
     _cards.clear();
     _flippedCards.clear();
     _gameTimer?.cancel();
-  }
 
-  Future<void> _generateGame() async {
-    _isLoading.value = true;
-    await _generateCardMatchingGame();
-    _isLoading.value = false;
-  }
-
-  Future<List<String>> _fetchRandomWords(int count) async {
-    try {
-      final response = await http.get(
-        Uri.parse(
-            '$RANDOM_WORD_API_URL/$count/types?types=noun,verb,adjective'),
-        headers: {'Accept': 'application/json'},
-      ).timeout(const Duration(seconds: 10));
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        return data
-            .map((item) => RandomWordResponse.fromJson(item).word)
-            .toList();
-      } else {
-        throw Exception('Failed to fetch words: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error fetching random words: $e');
-      // Fallback words if API fails
-      return _getFallbackWords(count);
-    }
-  }
-
-  List<String> _getFallbackWords(int count) {
-    final fallbackWords = [
-      'cat',
-      'dog',
-      'bird',
-      'fish',
-      'tree',
-      'house',
-      'car',
-      'book',
-      'run',
-      'jump',
-      'sing',
-      'dance',
-      'happy',
-      'sad',
-      'big',
-      'small',
-      'red',
-      'blue',
-      'green',
-      'yellow',
-      'sun',
-      'moon',
-      'star',
-      'water',
-      'fire',
-      'earth',
-      'wind',
-      'love',
-      'hope',
-      'dream',
-      'play',
-      'work'
-    ];
-    fallbackWords.shuffle();
-    return fallbackWords.take(count).toList();
-  }
-
-  Future<WordData> _fetchWordPronunciation(String word) async {
-    try {
-      final response = await http.get(
-        Uri.parse('$DICTIONARY_API_URL/$word'),
-        headers: {'Accept': 'application/json'},
-      ).timeout(const Duration(seconds: 8));
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        if (data.isNotEmpty) {
-          final wordEntry = data[0];
-          String pronunciation = '';
-          String phonetic = '';
-
-          // Try to get phonetic transcription
-          if (wordEntry['phonetic'] != null) {
-            phonetic = wordEntry['phonetic'];
-          }
-
-          // Try to get pronunciation from phonetics array
-          if (wordEntry['phonetics'] != null) {
-            final phonetics = wordEntry['phonetics'] as List;
-            for (var phoneticEntry in phonetics) {
-              if (phoneticEntry['text'] != null &&
-                  phoneticEntry['text'].toString().isNotEmpty) {
-                phonetic = phoneticEntry['text'];
-                break;
-              }
-            }
-          }
-
-          return WordData(
-            word: word,
-            pronunciation: pronunciation,
-            phonetic: phonetic.isNotEmpty ? phonetic : '/$word/',
-          );
-        }
-      }
-    } catch (e) {
-      print('Error fetching pronunciation for $word: $e');
-    }
-
-    // Return fallback data
-    return WordData(
-      word: word,
-      pronunciation: '',
-      phonetic: '/$word/',
-    );
-  }
-
-  Future<void> _generateCardPairs() async {
-    _cards.clear();
-    _isLoadingWords.value = true;
-
-    int pairCount;
-    switch (_selectedDifficulty.value) {
-      case MemoryDifficulty.easy:
-        pairCount = 6; // 12 cards total
-        break;
-      case MemoryDifficulty.medium:
-        pairCount = 8; // 16 cards total
-        break;
-      case MemoryDifficulty.hard:
-        pairCount = 12; // 24 cards total
-        break;
-    }
-
-    try {
-      // Fetch random words
-      final words = await _fetchRandomWords(pairCount);
-      print('Fetched words: $words');
-
-      // Fetch pronunciations for each word
-      final List<WordData> wordDataList = [];
-      for (String word in words) {
-        final wordData = await _fetchWordPronunciation(word);
-        wordDataList.add(wordData);
-      }
-
-      print('Word data list length: ${wordDataList.length}');
-
-      final colors = [
-        Colors.red,
-        Colors.blue,
-        Colors.green,
-        Colors.yellow,
-        Colors.purple,
-        Colors.orange,
-        Colors.pink,
-        Colors.cyan,
-        Colors.lime,
-        Colors.indigo,
-        Colors.teal,
-        Colors.amber,
-      ];
-
-      final cardPairs = <MemoryCard>[];
-
-      for (int i = 0; i < wordDataList.length; i++) {
-        final wordData = wordDataList[i];
-        final color = colors[i % colors.length];
-
-        // Create word card
-        cardPairs.add(MemoryCard(
-          id: i * 2,
-          pairId: i,
-          content: wordData.word,
-          word: wordData.word,
-          pronunciation: wordData.pronunciation,
-          phonetic: wordData.phonetic,
-          type: CardType.word,
-          color: color,
-        ));
-
-        // Create phonetic card
-        cardPairs.add(MemoryCard(
-          id: i * 2 + 1,
-          pairId: i,
-          content: wordData.phonetic,
-          word: wordData.word,
-          pronunciation: wordData.pronunciation,
-          phonetic: wordData.phonetic,
-          type: CardType.phonetic,
-          color: color,
-        ));
-      }
-
-      final random = Random();
-      cardPairs.shuffle(random);
-      _cards.value = cardPairs;
-
-      print('Total cards generated: ${_cards.length}');
-    } catch (e) {
-      print('Error generating card pairs: $e');
-      // Use fallback words if everything fails
-      _generateFallbackCards(pairCount);
-      print('Fallback cards generated: ${_cards.length}');
-    } finally {
-      _isLoadingWords.value = false;
-    }
-  }
-
-  void _generateFallbackCards(int pairCount) {
-    final fallbackWords = _getFallbackWords(pairCount);
-    final colors = [
-      Colors.red,
-      Colors.blue,
-      Colors.green,
-      Colors.yellow,
-      Colors.purple,
-      Colors.orange,
-      Colors.pink,
-      Colors.cyan,
-      Colors.lime,
-      Colors.indigo,
-      Colors.teal,
-      Colors.amber,
-    ];
-
-    final cardPairs = <MemoryCard>[];
-    final random = Random();
-
-    for (int i = 0; i < fallbackWords.length; i++) {
-      final word = fallbackWords[i];
-      final color = colors[i % colors.length];
-      final phonetic = '/$word/';
-
-      // Create word card
-      cardPairs.add(MemoryCard(
-        id: i * 2,
-        pairId: i,
-        content: word,
-        word: word,
-        pronunciation: '',
-        phonetic: phonetic,
-        type: CardType.word,
-        color: color,
-      ));
-
-      // Create phonetic card
-      cardPairs.add(MemoryCard(
-        id: i * 2 + 1,
-        pairId: i,
-        content: phonetic,
-        word: word,
-        pronunciation: '',
-        phonetic: phonetic,
-        type: CardType.phonetic,
-        color: color,
-      ));
-    }
-
-    cardPairs.shuffle(random);
-    _cards.addAll(cardPairs);
-  }
-
-  void _generateFallbackCardsForCurrentDifficulty() {
-    int pairCount;
-    switch (_selectedDifficulty.value) {
-      case MemoryDifficulty.easy:
-        pairCount = 6; // 12 cards total
-        break;
-      case MemoryDifficulty.medium:
-        pairCount = 8; // 16 cards total
-        break;
-      case MemoryDifficulty.hard:
-        pairCount = 12; // 24 cards total
-        break;
-    }
-    _generateFallbackCards(pairCount);
-  }
-
-  Future<void> _generateCardMatchingGame() async {
-    await _generateCardPairs();
+    // Reload the game
+    _initializeGame();
   }
 
   @override

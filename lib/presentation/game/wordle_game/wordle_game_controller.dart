@@ -5,6 +5,8 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:EngKid/utils/lib_function.dart';
 import 'package:EngKid/widgets/dialog/dialog_wordle_result.dart';
 import 'package:EngKid/widgets/dialog/dialog_word_definition.dart';
+import '../../../domain/entities/word/word_entity.dart';
+import '../../../domain/word/get_words_by_game_id_usecase.dart';
 
 enum LetterStatus { correct, wrongPosition, notInWord, empty }
 
@@ -18,18 +20,24 @@ class WordleLetter {
 class WordleGameController extends GetxController {
   final dio.Dio _dio = dio.Dio();
   late FlutterTts _flutterTts;
-  // ignore: constant_identifier_names
-  static const List<String> API_URLS = [
-    'https://random-word-api-eight.vercel.app/word/english/noun',
-    'https://random-word-api-eight.vercel.app/word/english/verb',
-    'https://random-word-api-eight.vercel.app/word/english/adjective',
-  ];
+  final GetWordsByGameIdUseCase _getWordsByGameIdUseCase;
+
+  // Game data from navigation arguments
+  Map<String, dynamic>? _gameData;
+  int get gameId => _gameData?['game_id'] ?? 2;
+
   // ignore: constant_identifier_names
   static const String DICTIONARY_API_URL =
       'https://api.dictionaryapi.dev/api/v2/entries/en';
 
+  // Constructor with dependency injection
+  WordleGameController(this._getWordsByGameIdUseCase);
+
   // Game state
   final RxString _targetWord = ''.obs;
+  final RxString _targetWordImageUrl = ''.obs;
+  final RxString _targetWordDefinition = ''.obs;
+  final RxList<WordEntity> _gameWords = <WordEntity>[].obs;
   final RxList<List<WordleLetter>> _guesses = <List<WordleLetter>>[].obs;
   final RxInt _currentRow = 0.obs;
   final RxInt _currentCol = 0.obs;
@@ -42,6 +50,8 @@ class WordleGameController extends GetxController {
 
   // Getters
   String get targetWord => _targetWord.value;
+  String get targetWordImageUrl => _targetWordImageUrl.value;
+  String get targetWordDefinition => _targetWordDefinition.value;
   List<List<WordleLetter>> get guesses => _guesses;
   int get currentRow => _currentRow.value;
   int get currentCol => _currentCol.value;
@@ -58,6 +68,7 @@ class WordleGameController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _gameData = Get.arguments as Map<String, dynamic>?;
     _initTts();
     startNewGame();
   }
@@ -70,47 +81,50 @@ class WordleGameController extends GetxController {
     await _flutterTts.setPitch(1.0);
   }
 
-  Future<String?> _fetchRandomWord() async {
+  Future<void> _loadWordsFromAPI() async {
     try {
       _isLoading.value = true;
 
-      // Randomly select one of the API endpoints
-      final random = DateTime.now().millisecondsSinceEpoch % API_URLS.length;
-      final selectedApiUrl = API_URLS[random];
+      // Fetch words from API using game ID
+      final fetchedWords = await _getWordsByGameIdUseCase.call(gameId);
+      _gameWords.value = fetchedWords;
+      print(
+          'Loaded ${_gameWords.length} words from API for Wordle game (ID: $gameId)');
 
-      debugPrint('Fetching word from: $selectedApiUrl');
-      final response = await _dio.get(selectedApiUrl);
-      if (response.statusCode == 200) {
-        print('API Response: ${response.data}');
-
-        // Handle the new API response format: {"word": "Kemp", "definition": "...", "pronunciation": "..."}
-        String word = '';
-        if (response.data is Map<String, dynamic> &&
-            response.data['word'] != null) {
-          word = response.data['word'].toString().toUpperCase();
-        }
-
-        if (word.isNotEmpty) {
-          return word;
-        }
+      if (_gameWords.isEmpty) {
+        throw Exception('No words found for Wordle game (ID: $gameId)');
       }
-      return null;
     } catch (e) {
-      debugPrint('Error fetching random word: $e');
-      return null;
+      print('Error loading words from API: $e');
+      _gameWords.clear();
     } finally {
       _isLoading.value = false;
     }
   }
 
+  WordEntity? _selectRandomWord() {
+    if (_gameWords.isEmpty) return null;
+
+    final random = DateTime.now().millisecondsSinceEpoch % _gameWords.length;
+    return _gameWords[random];
+  }
+
   Future<void> startNewGame() async {
     _isLoading.value = true;
 
-    // Try to get word from API, fallback to default words if failed
-    String? apiWord = await _fetchRandomWord();
+    // Load words from API first
+    await _loadWordsFromAPI();
 
-    if (apiWord != null) {
-      _targetWord.value = apiWord;
+    // Try to get random word from loaded words
+    WordEntity? selectedWord = _selectRandomWord();
+
+    if (selectedWord != null) {
+      _targetWord.value = selectedWord.word.toUpperCase();
+      _targetWordImageUrl.value = selectedWord.image;
+      _targetWordDefinition.value = selectedWord.note;
+
+      print('Selected Wordle word: ${_targetWord.value}');
+      print('Word image URL: ${_targetWordImageUrl.value}');
     } else {
       // Fallback words if API fails
       List<String> fallbackWords = [
@@ -133,6 +147,8 @@ class WordleGameController extends GetxController {
       ];
       _targetWord.value = fallbackWords[
           DateTime.now().millisecondsSinceEpoch % fallbackWords.length];
+      _targetWordImageUrl.value = '';
+      _targetWordDefinition.value = '';
       LibFunction.toast('Using offline word (API unavailable)');
     }
 
@@ -387,23 +403,157 @@ class WordleGameController extends GetxController {
   void showHint() async {
     if (_gameFinished.value) return;
 
+    // Speak the word
     await _flutterTts.speak(_targetWord.value);
 
-    // Fetch and show definition as toast
-    final wordInfo = await fetchWordDefinition(_targetWord.value);
-    if (wordInfo != null) {
-      String definition = wordInfo['definition'] ?? 'Definition not available';
-      String pronunciation = wordInfo['pronunciation'] ?? '';
-
-      String hintMessage = 'Definition: $definition';
-      if (pronunciation.isNotEmpty) {
-        hintMessage += '\nPronunciation: $pronunciation';
-      }
-
-      LibFunction.toast(hintMessage);
+    // Show image hint if available
+    if (_targetWordImageUrl.value.isNotEmpty) {
+      // Trigger image popup - this will be handled by UI
+      Get.dialog(_buildImageHintDialog());
     } else {
-      LibFunction.toast('Hint: Could not fetch word definition');
+      // Fallback to definition if no image
+      if (_targetWordDefinition.value.isNotEmpty) {
+        LibFunction.toast('Hint: ${_targetWordDefinition.value}');
+      } else {
+        LibFunction.toast('Hint: Listen to the pronunciation!');
+      }
     }
+  }
+
+  Widget _buildImageHintDialog() {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: Get.width * 0.8,
+          maxHeight: Get.height * 0.8,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.blue[50],
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Word Hint',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue[700],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Get.back(),
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.red[100],
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        size: 20,
+                        color: Colors.red[700],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Image content
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  _targetWordImageUrl.value,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      height: 200,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.blue[600]!),
+                        ),
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      height: 200,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 48,
+                            color: Colors.grey[400],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Failed to load hint image',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[600],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 8),
+                          if (_targetWordDefinition.value.isNotEmpty)
+                            Text(
+                              _targetWordDefinition.value,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[700],
+                                fontStyle: FontStyle.italic,
+                              ),
+                              textAlign: TextAlign.center,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void resetGame() {
