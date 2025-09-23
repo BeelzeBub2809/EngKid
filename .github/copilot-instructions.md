@@ -160,8 +160,6 @@ flutter pub run build_runner watch --delete-conflicting-outputs
 5. Handle permission requests
 
 ## 🚨 LƯU Ý QUAN TRỌNG
-- **LUÔN** chạy code generation sau khi thay đổi models
-- **LUÔN** test trên cả dev và prod flavors
 - **LUÔN** dispose controllers và players đúng cách
 - **LUÔN** handle exceptions và network errors
 - **LUÔN** follow Clean Architecture principles

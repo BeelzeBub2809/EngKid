@@ -480,21 +480,37 @@ class _NotificationItemState extends State<NotificationItem> {
         children: [
           if (widget.notification.title != "")
             Obx(
-              () => Text(
-                widget.notification.title,
-                maxLines: widget.controller.idShowMore
-                        .contains(widget.notification.id)
-                    ? null
-                    : 1,
-                overflow: widget.controller.idShowMore
-                        .contains(widget.notification.id)
-                    ? null
-                    : TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: const Color(0xff333333),
-                  fontSize: Fontsize.small,
-                  fontWeight: FontWeight.w600,
-                ),
+                  () => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.notification.title,
+                      maxLines: widget.controller.idShowMore.contains(widget.notification.id)
+                          ? null
+                          : 1,
+                      overflow: widget.controller.idShowMore.contains(widget.notification.id)
+                          ? null
+                          : TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: const Color(0xff333333),
+                        fontSize: Fontsize.small,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  Text(
+                    "To: All",
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: Fontsize.smaller,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ],
               ),
             ),
           Padding(
