@@ -21,8 +21,6 @@ class WeekScreen extends GetView<WeekController> {
     final Size size = MediaQuery.of(context).size;
     final heightChart = 0.15 * size.height;
     return Container(
-      width: 0.65 * size.width,
-      height: 0.6 * size.height,
       padding: EdgeInsets.symmetric(horizontal: 0.03 * size.width),
       decoration: const BoxDecoration(
         image: DecorationImage(

@@ -20,7 +20,8 @@ abstract class StudentReadingApi {
     @Body() Map<String, dynamic> body,
   );
 
-  @GET('student-stars/students/{kid_student_id}/learning-paths/{learning_path_id}/stars')
+  @GET(
+      'student-stars/students/{kid_student_id}/learning-paths/{learning_path_id}/stars')
   Future<ApiResponseObject> getLearningPathStars(
     @Path('kid_student_id') int studentId,
     @Path('learning_path_id') int learningPathId,
