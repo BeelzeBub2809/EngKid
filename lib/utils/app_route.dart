@@ -18,6 +18,8 @@ class AppRoute {
   static const starBoard = '/star_board';
   static const starLineChart = '/star_line_chart';
   static const managementStarBoardRouteKey = 2;
+  static const starBoardCategory = '/star_board_category';
+  static const starBoardCategoryChart = '/star_board_category_chart';
   static const starBoardWeek = '/star_board_week';
   static const starBoardMonth = '/star_board_month';
   static const starBoardYear = '/star_board_year';

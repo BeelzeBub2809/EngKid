@@ -43,6 +43,7 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
 
   late int stars = 1;
   late int readingId = -1;
+  late int learningPathId = -1;
   late bool isBack = false;
   late Timer _timerReading;
   late double _duration = 0;
@@ -115,6 +116,8 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     quizUseCases.reading = Get.arguments[2] as Reading;
 
     readingId = quiz.reading.id;
+    // Lấy learningPathId từ arguments[3], nếu null thì gán -1
+    learningPathId = (Get.arguments[3] as int?) ?? -1;
     _topicService.readingName = quiz.reading.name;
 
     _unCompleteQuestions

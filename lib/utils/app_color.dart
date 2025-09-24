@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 
 class AppColor {
   static const primary = Color(0xFF2196F3);
+  static const primaryColor = Color(0xFF2196F3); // Thêm primaryColor cho compatibility
   static const toastBackground = Color(0xAA000000);
   static const secondary = Color(0xFF64B5F6);
+  static const secondaryColor = Color(0xFF64B5F6); // Thêm secondaryColor cho compatibility
   static const deny = Color(0xFF933434);
   static const red = Color(0XFFE30613);
   static const gray = Color(0XFF545454);
@@ -22,4 +24,7 @@ class AppColor {
   static const darkBlue = Color(0xFF0D47A1);
   static const lightGray = Color(0xFFE0E0E0);
   static const darkGray = Color(0xFF424242);
+
+  static const Color starHighLight = Color(0xFFFFD700);
+  static const Color starDark = Color(0xFFD3D3D3);
 }

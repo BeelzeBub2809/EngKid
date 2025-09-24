@@ -196,15 +196,15 @@ class Tabs extends StatelessWidget {
                     onTap: () {
                       controller.onChooseFeature(index);
                     },
-                    pathImage: controller.navBar[index].value.isActive
+                    pathImage: controller.navBar[index].isActive
                         ? LocalImage.shapeBoardTabActive
                         : LocalImage.shapeBoardTabUnActive,
-                    text: controller.navBar[index].value.title,
+                    text: controller.navBar[index].title,
                     data: const {'week': ''},
                     width: 0.12 * size.width,
                     height: 0.14 * size.height,
                     style: TextStyle(
-                      color: controller.navBar[index].value.isActive
+                      color: controller.navBar[index].isActive
                           ? Colors.white
                           : Colors.black,
                       fontSize: Fontsize.larger,

@@ -1,13 +1,13 @@
-
 import 'package:EngKid/data/core/remote/api/student_reading_api/student_reading_api.dart';
 import 'package:EngKid/data/core/remote/api_response_object/api_response_object.dart';
 import 'package:EngKid/domain/start_board/entities/entities.dart';
+import 'package:EngKid/domain/start_board/entities/learning_path_stars.dart';
 import 'package:EngKid/domain/start_board/star_board_responsitory.dart';
 
 import '../core/remote/api/reading_api/reading_api.dart';
 
 class StarBoardRepoImp implements StarBoardRepository {
-  final StudentReadingApi  studentReadingApi;
+  final StudentReadingApi studentReadingApi;
   StarBoardRepoImp({required this.studentReadingApi});
 
   @override
@@ -29,6 +29,24 @@ class StarBoardRepoImp implements StarBoardRepository {
       return histories;
     } else {
       return [];
+    }
+  }
+
+  @override
+  Future<LearningPathStars> getLearningPathStars(int studentId, int learningPathId) async {
+    try {
+      final ApiResponseObject response = await studentReadingApi.getLearningPathStars(
+        studentId,
+        learningPathId,
+      );
+
+      if (response.data != null) {
+        return LearningPathStars.fromJson(response.data);
+      } else {
+        throw Exception('No data returned from API');
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 }

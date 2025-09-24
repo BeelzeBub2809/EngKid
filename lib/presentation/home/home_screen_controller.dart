@@ -184,7 +184,7 @@ class HomeScreenController extends GetxController with WidgetsBindingObserver {
       Get.toNamed(AppRoute.addChildrenCode);
       return;
     }
-    Get.toNamed(AppRoute.fourPicsOneWordGame);
+    Get.toNamed(AppRoute.missingWordGame);
   }
 
   int indexCurrentUserInChildProfiles() {
