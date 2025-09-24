@@ -830,7 +830,25 @@ class ReadingSpaceController extends GetxController
     return category['unlocked'] == true;
   }
 
-  // Check if learning path item is unlocked based on new logic
+  // Navigate to Category Chart screen
+  void navigateToLearningPathStars() async {
+    if (selectedLearningPath.value != null) {
+      await LibFunction.effectConfirmPop();
+
+      final arguments = {
+        'learningPathId': selectedLearningPath.value!['id'],
+      };
+
+      Get.toNamed(AppRoute.starBoardCategoryChart, arguments: arguments);
+    } else {
+      Get.snackbar(
+        'Error',
+        'No learning path selected',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  } // Check if learning path item is unlocked based on new logic
+
   bool isLearningPathItemUnlocked(int index) {
     if (learningPathItems.isEmpty || index >= learningPathItems.length)
       return false;

@@ -59,13 +59,11 @@ class StarBoardController extends GetxController {
         final firstId = learningPaths[0]['id'];
         _selectedLearningPathId.value = firstId;
         debugPrint('Initial learning path ID: $firstId');
-
-        // Delay navigation để đảm bảo CategoryChartController đã được khởi tạo
-        await Future.delayed(Duration(milliseconds: 100));
-        Get.offNamed(
-          AppRoute.starBoardWeek,
+        final currentNavItem = _navBar[0];
+        await Get.offNamed(
+          AppRoute.starBoardCategoryChart,
           id: AppRoute.managementStarBoardRouteKey,
-          arguments: {'learningPathId': firstId},
+          arguments: {'learningPathId': currentNavItem.id},
           preventDuplicates: false,
         );
       }

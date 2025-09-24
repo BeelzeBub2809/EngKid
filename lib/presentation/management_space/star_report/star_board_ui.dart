@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:EngKid/presentation/core/user_service.dart';
+import 'package:EngKid/presentation/management_space/star_report/category_chart/category_chart_ui.dart';
+import 'package:EngKid/presentation/management_space/star_report/category_chart/category_chart_binding.dart';
+import 'package:EngKid/presentation/management_space/star_report/month/month_binding.dart';
 import 'package:EngKid/presentation/management_space/star_report/month/month_ui.dart';
 import 'package:EngKid/presentation/management_space/star_report/week/week_binding.dart';
 import 'package:EngKid/presentation/management_space/star_report/week/week_ui.dart';
 import 'package:EngKid/presentation/management_space/star_report/year/year_binding.dart';
 import 'package:EngKid/presentation/management_space/star_report/year/year_ui.dart';
-import 'package:EngKid/utils/app_color.dart';
 import 'package:EngKid/utils/app_route.dart';
 import 'package:EngKid/utils/font_size.dart';
 import 'package:EngKid/utils/images.dart';
-import 'package:EngKid/utils/lib_function.dart';
-import 'package:EngKid/widgets/button/image_button.dart';
-import 'package:EngKid/widgets/image/cache_image.dart';
-import 'package:EngKid/widgets/loading/loading_dialog.dart';
 import 'package:EngKid/widgets/text/image_text.dart';
-import 'package:EngKid/widgets/text/regular_text.dart';
 
-import 'month/month_binding.dart';
 import 'star_board_controller.dart';
 
 class StarBoardUI extends GetView<StarBoardController> {
@@ -78,7 +73,6 @@ class StarBoardUI extends GetView<StarBoardController> {
                                     ),
                                     child: Center(
                                       child: SizedBox(
-                                        width: 0.2 * size.width,
                                         height: 0.2 * size.width,
                                         child: ChartData(
                                           controller: controller,
@@ -123,30 +117,40 @@ class ChartData extends StatelessWidget {
           initialRoute: controller.initialChildPageRoute,
           onGenerateRoute: (settings) {
             switch (settings.name) {
+              case AppRoute.starBoardCategoryChart:
+                final args = settings.arguments as Map<String, dynamic>?;
+                final learningPathId =
+                    args != null && args['learningPathId'] != null
+                        ? args['learningPathId'] as int
+                        : -1;
+                return GetPageRoute(
+                  settings: settings,
+                  page: () => const CategoryChartUI(),
+                  binding: CategoryChartBinding(learningPathId: learningPathId),
+                );
               case AppRoute.starBoardWeek:
                 return GetPageRoute(
+                  settings: settings,
                   page: () => const WeekScreen(),
                   binding: WeekBinding(),
-                  transition: Transition.noTransition,
                 );
               case AppRoute.starBoardMonth:
                 return GetPageRoute(
+                  settings: settings,
                   page: () => const MonthScreen(),
                   binding: MonthBinding(),
-                  transition: Transition.noTransition,
                 );
               case AppRoute.starBoardYear:
                 return GetPageRoute(
+                  settings: settings,
                   page: () => const YearScreen(),
                   binding: YearBinding(),
-                  transition: Transition.noTransition,
                 );
-
               default:
                 return GetPageRoute(
+                  settings: settings,
                   page: () => const WeekScreen(),
                   binding: WeekBinding(),
-                  transition: Transition.noTransition,
                 );
             }
           },
