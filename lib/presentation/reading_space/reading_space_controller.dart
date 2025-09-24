@@ -767,7 +767,8 @@ class ReadingSpaceController extends GetxController
       arguments: [
         quiz, // current reading
         readings.length - 1 == index, // is end
-        readings[index]
+        readings[index],
+        selectedLearningPath.value?['id'], // learning path id nếu có
       ],
     );
     if (result == true) {
@@ -781,7 +782,8 @@ class ReadingSpaceController extends GetxController
       arguments: [
         quiz, // current reading
         false, // is end - for learning path items, we don't use this logic
-        readingData // Pass the reading data we created
+        readingData, // Pass the reading data we created
+        selectedLearningPath.value?['id'], // learning path id
       ],
     );
     if (result == true) {

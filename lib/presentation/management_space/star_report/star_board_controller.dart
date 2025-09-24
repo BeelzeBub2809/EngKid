@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:EngKid/domain/core/entities/entities.dart';
 import 'package:EngKid/utils/app_route.dart';
+import 'package:EngKid/domain/learning_path/learning_path_usecases.dart';
 
 class StarBoardController extends GetxController {
-  StarBoardController();
+  final LearningPathUseCases learningPathUseCases;
+
+  StarBoardController({required this.learningPathUseCases});
 
   final ScrollController scrollControllerNav = ScrollController();
   final ScrollController scrollControllerBoard = ScrollController();
@@ -15,48 +17,88 @@ class StarBoardController extends GetxController {
   final Rx<String> _initiaChildPageRoute = AppRoute.starBoardWeek.obs;
   String get initialChildPageRoute => _initiaChildPageRoute.value;
 
-  final List<Rx<NavItem>> _navBar = [
-    const NavItem(title: 'week', isActive: true).obs,
-    const NavItem(title: 'month', isActive: false).obs,
-    const NavItem(title: 'year', isActive: false).obs,
-  ];
-  List<Rx<NavItem>> get navBar => _navBar;
+  final RxInt _selectedLearningPathId = RxInt(-1);
+  int get selectedLearningPathId => _selectedLearningPathId.value;
+
+  final RxList<NavItem> _navBar = <NavItem>[].obs;
+  List<NavItem> get navBar => _navBar;
 
   @override
-  Future<void> onInit() async {
+  void onInit() {
     super.onInit();
+    debugPrint("StarBoard Controller onInit");
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchLearningPaths();
+    });
+  }
+
+  Future<void> fetchLearningPaths() async {
+    try {
+      isLoading.value = true;
+      final learningPaths = await learningPathUseCases.getListLearningPaths();
+
+      if (learningPaths.isEmpty) {
+        debugPrint('No learning paths found');
+        return;
+      }
+
+      _navBar.clear();
+      for (var i = 0; i < learningPaths.length; i++) {
+        final item = learningPaths[i];
+        _navBar.add(
+          NavItem(
+            id: item['id'],
+            title: item['name'],
+            isActive: i == 0,
+          ),
+        );
+      }
+
+      // Set initial selected learning path id và navigate
+      if (learningPaths.isNotEmpty) {
+        final firstId = learningPaths[0]['id'];
+        _selectedLearningPathId.value = firstId;
+        debugPrint('Initial learning path ID: $firstId');
+
+        // Delay navigation để đảm bảo CategoryChartController đã được khởi tạo
+        await Future.delayed(Duration(milliseconds: 100));
+        Get.offNamed(
+          AppRoute.starBoardWeek,
+          id: AppRoute.managementStarBoardRouteKey,
+          arguments: {'learningPathId': firstId},
+          preventDuplicates: false,
+        );
+      }
+    } catch (e) {
+      debugPrint('Error fetching learning paths: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> onChooseFeature(int index) async {
-    final int activeIndex =
-        navBar.indexWhere((element) => element.value.isActive == true);
-    if (activeIndex == index) return;
-    _navBar[activeIndex](
-      navBar[activeIndex].value.copyWith(isActive: false),
-    );
-    _navBar[index](
-      navBar[index].value.copyWith(isActive: true),
-    );
+    if (index < 0 || index >= _navBar.length) return;
 
-    // Use nested navigation with proper routes
-    String routeName;
-    switch (navBar[index].value.title) {
-      case 'week':
-        routeName = AppRoute.starBoardWeek;
-        break;
-      case 'month':
-        routeName = AppRoute.starBoardMonth;
-        break;
-      case 'year':
-        routeName = AppRoute.starBoardYear;
-        break;
-      default:
-        routeName = AppRoute.starBoardWeek;
+    final currentNavItem = _navBar[index];
+    if (currentNavItem.id == null) return;
+
+    // Update active states
+    final oldIndex = _navBar.indexWhere((item) => item.isActive);
+    if (oldIndex >= 0) {
+      _navBar[oldIndex] = _navBar[oldIndex].copyWith(isActive: false);
     }
+    _navBar[index] = currentNavItem.copyWith(isActive: true);
 
-    Get.offNamed(
-      routeName,
+    // Set selected id và navigate
+    final selectedId = currentNavItem.id!;
+    _selectedLearningPathId.value = selectedId;
+    debugPrint('Navigating to learning path ID: $selectedId');
+
+    await Get.offNamed(
+      AppRoute.starBoardCategoryChart,
       id: AppRoute.managementStarBoardRouteKey,
+      arguments: {'learningPathId': selectedId},
+      preventDuplicates: false,
     );
   }
 }
