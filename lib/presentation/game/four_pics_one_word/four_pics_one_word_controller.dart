@@ -276,7 +276,7 @@ class FourPicsOneWordController extends GetxController {
 
   Future<void> _endGame() async {
     _gameFinished.value = true;
-    await _topicService.submitReadingResult(_userService.currentUser.id, null, 5, 1, 0, learningPathId, gameId);
+    await _topicService.submitGameResult(_userService.currentUser.id, null, 5, 1, "00:00", learningPathId, gameId);
     _showGameResult();
   }
 

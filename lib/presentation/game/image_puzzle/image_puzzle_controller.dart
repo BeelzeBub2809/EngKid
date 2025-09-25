@@ -219,7 +219,7 @@ class ImagePuzzleGameController extends GetxController {
       barrierDismissible: false,
     );
 
-    await _topicService.submitReadingResult(_userService.currentUser.id, null, 5, 1, 0, learningPathId, gameId);
+    await _topicService.submitGameResult(_userService.currentUser.id, null, 5, 1, "00:00", learningPathId, gameId);
 
     Future.delayed(const Duration(seconds: 6), () {
       if (Get.isDialogOpen ?? false) {

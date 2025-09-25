@@ -152,6 +152,24 @@ class TopicService extends GetxService {
     }
   }
 
+  Future<void> submitGameResult(int kid_student_id, int? kid_reading_id,
+      int score, int is_completed, String duration, int learning_path_id, int? game_id) async {
+    try {
+      final Map<String, dynamic> request = {
+        "kid_student_id": kid_student_id,
+        "kid_reading_id": kid_reading_id,
+        "score": score,
+        "is_completed": is_completed,
+        "duration": duration,
+        "learning_path_id": learning_path_id,
+        "game_id": game_id
+      };
+      await _readingUsecases.submitReadingResult(request);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<List<Reading>> getReadingByTopic(int cateId) async {
     try {
       final request = ReadingByTopicRequest(
