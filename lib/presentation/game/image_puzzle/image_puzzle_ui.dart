@@ -157,7 +157,7 @@ class ImagePuzzleGameUI extends GetView<ImagePuzzleGameController> {
             ),
 
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
               child: Column(
                 children: [
                   Obx(() {
@@ -202,31 +202,6 @@ class ImagePuzzleGameUI extends GetView<ImagePuzzleGameController> {
                       }),
                     );
                   }),
-                  SizedBox(height: 2.h),
-                  Obx(() => controller.gameCompleted.value
-                      ? Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 1.h),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFD700).withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      'WELL DONE',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
-                      : const SizedBox.shrink()),
                 ],
               ),
             ),
@@ -249,12 +224,10 @@ class ImagePuzzleGameUI extends GetView<ImagePuzzleGameController> {
     );
   }
 
-  // ĐÃ SỬA ĐỔI: Không còn Positioned, hoạt động trong Row
   Widget _buildPuzzlePiece({
     required int index,
     required int totalPieces,
   }) {
-    // Dùng Expanded để mỗi mảnh tự động chia đều chiều rộng
     return Expanded(
       child: Obx(() {
         final pieceIndex = controller.currentOrder[index];
