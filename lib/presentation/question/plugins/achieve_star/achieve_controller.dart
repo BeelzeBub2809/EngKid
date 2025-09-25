@@ -44,7 +44,7 @@ class AchieveStarController extends GetxController {
     // });
     int totalQuestions = questionController.totalQuestion;
     totalStar = totalQuestions > 5 ? questionController.stars/5 * 5 : questionController.stars/totalQuestions * 5;
-    await _topicService.submitReadingResult(_userService.currentUser.id, questionController.readingId, questionController.stars, 1, questionController.doQuizDuration, questionController.learningPathId);
+    await _topicService.submitReadingResult(_userService.currentUser.id, questionController.readingId, questionController.stars, 1, questionController.doQuizDuration, questionController.learningPathId, null);
     getStars();
   }
 

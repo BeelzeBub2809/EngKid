@@ -326,6 +326,7 @@ class ReadingSpaceController extends GetxController
   }
 
   Future<void> fetchData() async {
+    print("Call Fetch Data");
     try {
       _isLoading.value = true;
       _readings.clear();
@@ -383,6 +384,7 @@ class ReadingSpaceController extends GetxController
   }
 
   Future<void> fetchLearningPathItems() async {
+    print("Call featch learning path items");
     try {
       learningPathItems.clear();
 
@@ -508,6 +510,7 @@ class ReadingSpaceController extends GetxController
         'prerequisite_reading_id': gameDetailData['prerequisite_reading_id'],
         'is_active': gameDetailData['is_active'] == 1,
         'sequence_order': gameDetailData['sequence_order'] ?? 1,
+        'learning_path_id': selectedLearningPath.value?['id']
       };
 
       if (kDebugMode) {
@@ -771,6 +774,7 @@ class ReadingSpaceController extends GetxController
         selectedLearningPath.value?['id'], // learning path id nếu có
       ],
     );
+    print("Lesson result: $result");
     if (result == true) {
       await fetchData();
     }
@@ -786,6 +790,7 @@ class ReadingSpaceController extends GetxController
         selectedLearningPath.value?['id'], // learning path id
       ],
     );
+    print("Lesson result: $result");
     if (result == true) {
       // Refresh learning path items instead of regular readings
       if (selectedLearningPath.value != null) {
