@@ -425,7 +425,8 @@ class ReadingSpaceController extends GetxController
       selectedCategoryIndex.value = index;
       await _learningPathService.changeCategory(pathId, index);
       learningPathItems.value =
-          _learningPathService.currentCategoryItems.toList();
+          _learningPathService.currentCategoryItems.toList()
+      ;
     }
   }
 
