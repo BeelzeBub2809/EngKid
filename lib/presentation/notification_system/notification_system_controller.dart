@@ -130,6 +130,7 @@ class NotificationSystemController extends GetxController {
               type: 2,
               isRead: 0,
               notiType: 0,
+              parentId: item['parent_id'] ?? 0,
             ),
           );
         }
@@ -255,6 +256,10 @@ class NotificationSystemController extends GetxController {
     } catch (e) {
       print("HomeScreenController not found: $e");
     }
+  }
+
+  String getUserLoginName() {
+    return _userService.userLogin.name ?? "";
   }
 
   @override

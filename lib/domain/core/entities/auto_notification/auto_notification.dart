@@ -1,4 +1,6 @@
 // ignore_for_file: invalid_annotation_target
+import 'dart:convert';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'auto_notification.freezed.dart';
@@ -16,10 +18,10 @@ class AutoNotification with _$AutoNotification {
     @Default("") String title,
     @Default("") String content,
     @Default(-1) int type, // 1 là push_notification - 0 là auto_notification
-    @Default(0)
-    int notiType, // 1 là push_notification - 0 là auto_notification
+    @Default(0) int notiType, // 1 là push_notification - 0 là auto_notification
     @JsonKey(name: "created_at") @Default("") String createdAt,
     @JsonKey(name: "is_read") @Default(0) int isRead,
+    @JsonKey(name: "parent_id") @Default(0) int parentId,
     // @JsonKey("is_sent") String isSent,
   }) = _AutoNotification;
   factory AutoNotification.fromJson(Map<String, dynamic> json) =>
