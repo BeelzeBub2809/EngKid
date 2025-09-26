@@ -1005,42 +1005,6 @@ class Header extends StatelessWidget {
                 //   width: 0.02 * size.height,
                 // ),
                 // Learning Path Stars Button (for testing)
-                if (controller.selectedLearningPath.value != null)
-                  GestureDetector(
-                    onTap: () {
-                      controller.navigateToLearningPathStars();
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.8),
-                        borderRadius: BorderRadius.circular(0.02 * size.height),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 0.02 * size.width,
-                        vertical: 0.01 * size.height,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.star,
-                            color: Colors.white,
-                            size: 0.03 * size.width,
-                          ),
-                          SizedBox(width: 0.01 * size.width),
-                          RegularText(
-                            'Stats',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: Fontsize.smallest,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                SizedBox(width: 0.02 * size.width),
                 GestureDetector(
                   onTap: () {
                     // userService.onPressProfile();
