@@ -1,9 +1,12 @@
 // ignore_for_file: file_names
 
+import 'package:EngKid/di/injection.dart';
+import 'package:EngKid/presentation/core/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:EngKid/utils/images.dart';
 import 'package:EngKid/utils/lib_function.dart';
+import 'package:get/get.dart';
 
 class SwiperControlCustom extends SwiperPlugin {
   ///IconData for previous
@@ -50,14 +53,20 @@ class SwiperControlCustom extends SwiperPlugin {
     required double width,
     required height,
   }) {
+    final userService = Get.find<UserService>();
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
+      onTap: () async {
         LibFunction.effectConfirmPop();
         if (previous) {
-          config!.controller.previous(animation: true);
+          if (await userService.validateParent()) {
+            config!.controller.previous(animation: true);
+          }
         } else {
-          config!.controller.next(animation: true);
+          if (await userService.validateParent()) {
+            config!.controller.next(animation: true);
+          }
         }
       },
       child: Padding(

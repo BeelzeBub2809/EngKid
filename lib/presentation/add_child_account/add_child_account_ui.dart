@@ -102,9 +102,8 @@ class AddChildAccountScreen extends GetView<AddChildAccountController> {
                   },
                   pathImage: LocalImage.backButton,
                   semantics: 'back',
-                  width: IMUtils.isMobile()
-                      ? Get.width * 0.07
-                      : Get.width * 0.08,
+                  width:
+                      IMUtils.isMobile() ? Get.width * 0.07 : Get.width * 0.08,
                   height: Get.height * 0.14,
                 ),
               ),
@@ -133,12 +132,11 @@ class AddChildAccountScreen extends GetView<AddChildAccountController> {
                   text: 'add'.tr,
                   pathImage: LocalImage.shapeButton,
                   onTap: () {
-                    // if(controller.numberChild) {
-                    //
-                    // }else{
-                    //   LibFunction.toast('Bạn chỉ được tạo tối đa 3 con');
-                    // }
-                    controller.createChildAccount();
+                    if (controller.numberChild) {
+                      controller.createChildAccount();
+                    } else {
+                      LibFunction.toast('Bạn chỉ được tạo tối đa 3 con');
+                    }
                   },
                   isUpperCase: true,
                   width: Get.width * 0.18,
@@ -355,11 +353,7 @@ class AddChildAccountScreen extends GetView<AddChildAccountController> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...[
-                    "male",
-                    "female",
-                    "other"
-                  ].map((sex) => Row(
+                  ...["male", "female", "other"].map((sex) => Row(
                         children: [
                           RegularText(
                             sex.tr,
