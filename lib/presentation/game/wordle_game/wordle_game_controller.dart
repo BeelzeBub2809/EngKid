@@ -319,8 +319,6 @@ class WordleGameController extends GetxController {
       LibFunction.toast('Congratulations! You won!');
       await _topicService.submitGameResult(_userService.currentUser.id, null, 5,
           1, "00:00", learningPathId, gameId);
-      await _topicService.submitGameResult(_userService.currentUser.id, null, 5,
-          1, "00:00", learningPathId, gameId);
       // Show result dialog after a brief delay
       Future.delayed(const Duration(milliseconds: 500), () {
         _showResultDialog();
