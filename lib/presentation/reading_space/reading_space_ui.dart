@@ -1,7 +1,6 @@
-import 'package:EngKid/utils/app_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:EngKid/presentation/core/topic_service.dart';
 import 'package:EngKid/presentation/core/user_service.dart';
 import 'package:EngKid/utils/app_color.dart';
@@ -15,8 +14,44 @@ import 'package:EngKid/widgets/text/regular_text.dart';
 
 import 'reading_space_controller.dart';
 
-class ReadingScreen extends GetView<ReadingSpaceController> {
+class ReadingScreen extends StatefulWidget {
   const ReadingScreen({super.key});
+
+  @override
+  State<ReadingScreen> createState() => _ReadingScreenState();
+}
+
+class _ReadingScreenState extends State<ReadingScreen>
+    with RouteAware, WidgetsBindingObserver {
+  ReadingSpaceController get controller => Get.find<ReadingSpaceController>();
+  bool _hasInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _hasInitialized = true;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Only refresh if not first time (avoid double init call)
+    if (_hasInitialized && mounted) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          debugPrint("ReadingScreen didChangeDependencies - refreshing UI");
+          controller.onResumedRefresh();
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

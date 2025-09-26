@@ -317,7 +317,8 @@ class WordleGameController extends GetxController {
       _gameFinished.value = true;
       _isKeyboardVisible.value = false; // Auto-close keyboard
       LibFunction.toast('Congratulations! You won!');
-      await _topicService.submitGameResult(_userService.currentUser.id, null, 5, 1, "00:00", learningPathId, gameId);await _topicService.submitGameResult(_userService.currentUser.id, null, 5, 1, "00:00", learningPathId, gameId);
+      await _topicService.submitGameResult(_userService.currentUser.id, null, 5,
+          1, "00:00", learningPathId, gameId);
       // Show result dialog after a brief delay
       Future.delayed(const Duration(milliseconds: 500), () {
         _showResultDialog();
@@ -429,134 +430,142 @@ class WordleGameController extends GetxController {
   Widget _buildImageHintDialog() {
     return Dialog(
       backgroundColor: Colors.transparent,
-      child: Container(
+      child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: Get.width * 0.8,
-          maxHeight: Get.height * 0.8,
+          maxHeight: Get.height * 0.85,
+          maxWidth: Get.width * 0.9,
+          minHeight: Get.height * 0.4,
+          minWidth: Get.width * 0.7,
         ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Header
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.blue[50],
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.blue[50],
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
                 ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Word Hint',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue[700],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Get.back(),
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Colors.red[100],
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Icon(
-                        Icons.close,
-                        size: 20,
-                        color: Colors.red[700],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Word Hint',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue[700],
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            // Image content
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  _targetWordImageUrl.value,
-                  fit: BoxFit.contain,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Container(
-                      height: 200,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                              : null,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.blue[600]!),
+                    GestureDetector(
+                      onTap: () => Get.back(),
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.red[100],
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Icon(
+                          Icons.close,
+                          size: 20,
+                          color: Colors.red[700],
                         ),
                       ),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 200,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.error_outline,
-                            size: 48,
-                            color: Colors.grey[400],
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            'Failed to load hint image',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[600],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 8),
-                          if (_targetWordDefinition.value.isNotEmpty)
-                            Text(
-                              _targetWordDefinition.value,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[700],
-                                fontStyle: FontStyle.italic,
-                              ),
-                              textAlign: TextAlign.center,
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                        ],
-                      ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+              // Image content
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxHeight: Get.height * 0.6,
+                      maxWidth: Get.width * 0.7,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        _targetWordImageUrl.value,
+                        fit: BoxFit.contain,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.blue[600]!),
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.error_outline,
+                                  size: 48,
+                                  color: Colors.grey[400],
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  'Failed to load hint image',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[600],
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 8),
+                                if (_targetWordDefinition.value.isNotEmpty)
+                                  Text(
+                                    _targetWordDefinition.value,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[700],
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

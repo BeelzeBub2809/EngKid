@@ -1198,128 +1198,147 @@ class MissingWordUI extends StatelessWidget {
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor: Colors.transparent,
-          child: Container(
+          child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.8,
-              maxHeight: MediaQuery.of(context).size.height * 0.8,
+              maxHeight: MediaQuery.of(context).size.height * 0.85,
+              maxWidth: MediaQuery.of(context).size.width * 0.9,
+              minHeight: MediaQuery.of(context).size.height * 0.4,
+              minWidth: MediaQuery.of(context).size.width * 0.7,
             ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius:
-                  BorderRadius.circular(_getResponsiveSize(context, 16)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: _getResponsiveSize(context, 10),
-                  offset: Offset(0, _getResponsiveSize(context, 5)),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Header with close button
-                Container(
-                  padding: EdgeInsets.all(_getResponsivePadding(context, 16)),
-                  decoration: BoxDecoration(
-                    color: Colors.blue[50],
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(_getResponsiveSize(context, 16)),
-                      topRight:
-                          Radius.circular(_getResponsiveSize(context, 16)),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius:
+                    BorderRadius.circular(_getResponsiveSize(context, 16)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: _getResponsiveSize(context, 10),
+                    offset: Offset(0, _getResponsiveSize(context, 5)),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Header with close button
+                  Container(
+                    padding: EdgeInsets.all(_getResponsivePadding(context, 16)),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.only(
+                        topLeft:
+                            Radius.circular(_getResponsiveSize(context, 16)),
+                        topRight:
+                            Radius.circular(_getResponsiveSize(context, 16)),
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Word Image',
-                        style: TextStyle(
-                          fontSize: _getResponsiveFontSize(context, 20),
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue[700],
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Container(
-                          padding:
-                              EdgeInsets.all(_getResponsivePadding(context, 4)),
-                          decoration: BoxDecoration(
-                            color: Colors.red[100],
-                            borderRadius: BorderRadius.circular(
-                                _getResponsiveSize(context, 20)),
-                          ),
-                          child: Icon(
-                            Icons.close,
-                            size: _getResponsiveIconSize(context, 20),
-                            color: Colors.red[700],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Word Image',
+                          style: TextStyle(
+                            fontSize: _getResponsiveFontSize(context, 20),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue[700],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Image content
-                Padding(
-                  padding: EdgeInsets.all(_getResponsivePadding(context, 16)),
-                  child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.circular(_getResponsiveSize(context, 12)),
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.contain,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          height: _getResponsiveSize(context, 200),
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.blue[600]!),
+                        GestureDetector(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: Container(
+                            padding: EdgeInsets.all(
+                                _getResponsivePadding(context, 4)),
+                            decoration: BoxDecoration(
+                              color: Colors.red[100],
+                              borderRadius: BorderRadius.circular(
+                                  _getResponsiveSize(context, 20)),
+                            ),
+                            child: Icon(
+                              Icons.close,
+                              size: _getResponsiveIconSize(context, 20),
+                              color: Colors.red[700],
                             ),
                           ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          height: _getResponsiveSize(context, 200),
-                          padding: EdgeInsets.all(
-                              _getResponsivePadding(context, 20)),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(
-                                _getResponsiveSize(context, 12)),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.error_outline,
-                                size: _getResponsiveIconSize(context, 48),
-                                color: Colors.grey[400],
-                              ),
-                              SizedBox(height: _getResponsiveSize(context, 12)),
-                              Text(
-                                'Failed to load image',
-                                style: TextStyle(
-                                  fontSize: _getResponsiveFontSize(context, 16),
-                                  color: Colors.grey[600],
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+                  // Image content
+                  Expanded(
+                    child: Padding(
+                      padding:
+                          EdgeInsets.all(_getResponsivePadding(context, 16)),
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height * 0.6,
+                          maxWidth: MediaQuery.of(context).size.width * 0.7,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                              _getResponsiveSize(context, 12)),
+                          child: Image.network(
+                            imageUrl,
+                            fit: BoxFit.contain,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                height: _getResponsiveSize(context, 200),
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                        : null,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.blue[600]!),
+                                  ),
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                height: _getResponsiveSize(context, 200),
+                                padding: EdgeInsets.all(
+                                    _getResponsivePadding(context, 20)),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(
+                                      _getResponsiveSize(context, 12)),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.error_outline,
+                                      size: _getResponsiveIconSize(context, 48),
+                                      color: Colors.grey[400],
+                                    ),
+                                    SizedBox(
+                                        height:
+                                            _getResponsiveSize(context, 12)),
+                                    Text(
+                                      'Failed to load image',
+                                      style: TextStyle(
+                                        fontSize:
+                                            _getResponsiveFontSize(context, 16),
+                                        color: Colors.grey[600],
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
