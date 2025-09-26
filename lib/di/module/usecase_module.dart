@@ -23,6 +23,7 @@ import 'package:EngKid/data/word/word_repository_impl.dart';
 import 'package:EngKid/domain/ebook_category/ebook_category_usecase.dart';
 import 'package:EngKid/domain/game/game_usecases.dart';
 import 'package:EngKid/domain/repositories/word_repository.dart';
+import 'package:EngKid/domain/word/get_pronunciation_usecase.dart';
 import 'package:EngKid/domain/word/get_words_by_game_id_usecase.dart';
 import 'package:EngKid/domain/feedback/feedback_usecases.dart';
 import 'package:EngKid/domain/learning_path/learning_path_usecases.dart';
@@ -35,6 +36,7 @@ import 'package:EngKid/domain/topic/topic_reading_usecases.dart';
 import 'package:EngKid/data/core/remote/api/ebook_api/ebook_api.dart';
 import 'package:EngKid/data/ebook/ebook_repo.dart';
 import 'package:EngKid/domain/ebook/ebook_usecases.dart';
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:EngKid/data/core/remote/api/user_api/user_api.dart';
 import 'package:EngKid/data/core/remote/api/auth_api/auth_api.dart';
@@ -161,5 +163,8 @@ class UseCaseModule {
         WordRepositoryImpl(getIt.get<WordApiClient>()));
     getIt.registerSingleton<GetWordsByGameIdUseCase>(
         GetWordsByGameIdUseCase(getIt.get<WordRepository>()));
+    getIt.registerSingleton<GetPronunciationUrlUseCase>(
+        GetPronunciationUrlUseCase(getIt.get<Dio>())
+    );
   }
 }

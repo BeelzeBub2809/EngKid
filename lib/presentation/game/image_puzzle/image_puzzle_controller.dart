@@ -1,5 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
+import 'package:EngKid/domain/entities/word/word_entity.dart';
+import 'package:EngKid/domain/word/get_pronunciation_usecase.dart';
+import 'package:EngKid/domain/word/get_words_by_game_id_usecase.dart';
+import 'package:EngKid/presentation/core/topic_service.dart';
+import 'package:EngKid/presentation/core/user_service.dart';
+import 'package:EngKid/utils/lib_function.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
@@ -18,6 +25,11 @@ class PuzzleData {
 }
 
 class ImagePuzzleGameController extends GetxController {
+  final TopicService _topicService = Get.find<TopicService>();
+  final UserService _userService = Get.find<UserService>();
+  final GetWordsByGameIdUseCase _getWordsByGameIdUseCase;
+  final GetPronunciationUrlUseCase _getPronunciationUrlUseCase;
+  ImagePuzzleGameController(this._getWordsByGameIdUseCase, this._getPronunciationUrlUseCase);
   // Observable states
   final RxBool isLoading = false.obs;
   final RxBool showingCompleteImage = true.obs;
@@ -25,6 +37,11 @@ class ImagePuzzleGameController extends GetxController {
   final RxBool gameCompleted = false.obs;
   final RxInt draggedIndex = (-1).obs;
   final RxList<int> currentOrder = <int>[].obs;
+
+  Map<String, dynamic>? _gameData;
+  int get gameId => _gameData?['game_id'] ?? 2;
+  int get learningPathId => _gameData?['learning_path_id'] ?? 1;
+  final _words = <WordEntity>[].obs;
 
   // Make currentPuzzle observable
   final Rx<PuzzleData?> currentPuzzle = Rx<PuzzleData?>(null);
@@ -40,6 +57,7 @@ class ImagePuzzleGameController extends GetxController {
   void onInit() {
     super.onInit();
     _audioPlayer = AudioPlayer();
+    _gameData = Get.arguments as Map<String, dynamic>?;
     _initializeGame();
   }
 
@@ -50,20 +68,30 @@ class ImagePuzzleGameController extends GetxController {
     super.onClose();
   }
 
-  void _initializeGame() {
+  Future<void> _initializeGame() async {
     isLoading.value = true;
 
-    // Mock data for testing
-    currentPuzzle.value = PuzzleData(
-      word: "CAT",
-      backgroundImagePath: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-      audioPath: "https://www.soundjay.com/misc/sounds/cat.mp3",
-    );
+    try {
+      final fetchedWords = await _getWordsByGameIdUseCase.call(gameId);
+      if (fetchedWords.isEmpty) {
+        throw Exception('No words found for this game');
+      }
+      _words.value = fetchedWords;
+      currentPuzzle.value = PuzzleData(
+        word: _words[0].word,
+        backgroundImagePath: _words[0].image,
+        audioPath: null,
+      );
 
-    _setupPuzzleOrder();
-    _startPreviewTimer();
+      _setupPuzzleOrder();
+      _startPreviewTimer();
 
-    isLoading.value = false;
+      isLoading.value = false;
+    } catch (e) {
+      isLoading.value = false;
+      print("Fail to load word in image puzzle game");
+      print(e);
+    }
   }
 
   void _setupPuzzleOrder() {
@@ -156,55 +184,51 @@ class ImagePuzzleGameController extends GetxController {
   void _checkGameCompletion() {
     if (_isInCorrectOrder(currentOrder)) {
       gameCompleted.value = true;
+      LibFunction.playAudioLocal('assets/audios/correct.wav');
       _playCompletionSound();
-      Future.delayed(const Duration(seconds: 3), () {
-        _showCompletionDialog();
-      });
+      _showFireworksAnimation();
     }
   }
 
   void _playCompletionSound() async {
     try {
-      if (currentPuzzle.value?.audioPath != null) {
-        await _audioPlayer.setUrl(currentPuzzle.value!.audioPath!);
-        await _audioPlayer.play();
+      final word = currentPuzzle.value?.word;
+      if (word != null) {
+        // Gọi API lấy audio path
+        final audioUrl = await _getPronunciationUrlUseCase.call(word);
+        if (audioUrl != null && audioUrl.isNotEmpty) {
+          await _audioPlayer.setUrl(audioUrl);
+          await _audioPlayer.play();
+        } else {
+          print("⚠️ No audio found for $word");
+        }
       }
     } catch (e) {
       print('Error playing completion sound: $e');
     }
   }
 
-  void _showCompletionDialog() {
+  Future<void> _showFireworksAnimation() async {
     Get.dialog(
-      AlertDialog(
-        title: const Text('🎉 Chúc mừng!'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Bạn đã hoàn thành từ: ${currentPuzzle.value?.word ?? ''}'),
-            const SizedBox(height: 16),
-            const Text('Bạn đã ghép đúng tất cả các mảnh!'),
-          ],
+      Center(
+        child: Image.asset(
+          "assets/gifs/fireworks.gif",
+          fit: BoxFit.cover,
         ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.back();
-              resetGame();
-            },
-            child: const Text('Chơi lại'),
-          ),
-          TextButton(
-            onPressed: () {
-              Get.back();
-              Get.back(); // Return to previous screen
-            },
-            child: const Text('Thoát'),
-          ),
-        ],
       ),
+      barrierDismissible: false,
     );
+
+    await _topicService.submitGameResult(_userService.currentUser.id, null, 5, 1, "00:00", learningPathId, gameId);
+
+    Future.delayed(const Duration(seconds: 6), () {
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+      Get.back(result: true);
+    });
   }
+
 
   void resetGame() {
     gameCompleted.value = false;

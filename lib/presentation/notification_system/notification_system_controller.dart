@@ -97,11 +97,11 @@ class NotificationSystemController extends GetxController {
     try {
       _isLoading.value = true;
 
-      final int studentId = _userService.currentUser.id;
-      print("Getting notifications for student ID: $studentId");
+      final int parentId = _userService.userLogin.id;
+      print("Getting notifications for student ID: $parentId");
 
       final response = await _notificationUsecases.getNotification(
-        studentId: studentId,
+        studentId: parentId,
         searchTerm: _textSearch.value,
         pageNumb: _currentPage.value,
         pageSize: _itemsPerPage.value,

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:EngKid/presentation/core/topic_service.dart';
+import 'package:EngKid/presentation/core/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -42,6 +44,8 @@ class MemoryGameController extends GetxController {
 
   MemoryGameController(this._getWordsByGameIdUseCase);
 
+  final TopicService _topicService = Get.find<TopicService>();
+  final UserService _userService = Get.find<UserService>();
   // Game state
   final _gameState = GameState.loading.obs;
   final _gameInProgress = false.obs;
@@ -52,6 +56,7 @@ class MemoryGameController extends GetxController {
   // Game data from navigation arguments
   Map<String, dynamic>? _gameData;
   int get gameId => _gameData?['game_id'] ?? 2;
+  int get learningPathId => _gameData?['learning_path_id'] ?? 1;
 
   // Game progress
   final _score = 0.obs;
@@ -292,7 +297,7 @@ class MemoryGameController extends GetxController {
     _cards.refresh();
   }
 
-  void _gameComplete() {
+  Future<void> _gameComplete() async {
     _gameState.value = GameState.finished;
     _gameFinished.value = true;
     _gameInProgress.value = false;
@@ -301,7 +306,7 @@ class MemoryGameController extends GetxController {
 
     // Bonus points for time remaining
     _score.value += _gameTime.value;
-
+    await _topicService.submitGameResult(_userService.currentUser.id, null, 5, 1, "00:00", learningPathId, gameId);
     Get.snackbar(
       'Congratulations!',
       'You completed the memory game with score: ${_score.value}',

@@ -15,7 +15,7 @@ class NotificationRepositoryImp implements NotificationRepository {
   }) async {
     try {
       final Map<String, dynamic> body = {
-        "studentId": studentId,
+        "parentId": studentId,
         "searchTerm": searchTerm,
         "pageNumb": pageNumb,
         "pageSize": pageSize,

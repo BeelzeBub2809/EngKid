@@ -144,14 +144,13 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
     _unCompleteQuestions.addAll(quiz.questions.sublist(0));
 
     _unCompleteQuestions.add(const Question(typeCode: 'achieve_star'));
-    _unCompleteQuestions.add(const Question(typeCode: 'final_screen'));
 
     if (_unCompleteQuestions.isNotEmpty) {
       _checkVideoPlugin(_unCompleteQuestions[0]);
       _getPlugin(_unCompleteQuestions);
       _initCheckCorrectAnswer();
     } else {
-      Get.back();
+      Get.back(result: true);
     }
     final double duration = getTimeDurationFromStorage();
     final double doQuizDuration = getTimeDoingQuizFromStorage();

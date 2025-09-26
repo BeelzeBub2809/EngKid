@@ -63,12 +63,9 @@ class FourPicsOneWordUI extends GetView<FourPicsOneWordController> {
         children: [
           // Header with back button, title and score
           _buildHeader(size),
-          const SizedBox(height: 10),
-          // Game status (single question)
-          _buildGameStatus(size),
           const SizedBox(height: 15),
           // Four pictures grid
-          _buildFourPicturesGrid(size),
+          _buildSinglePicture(size),
           const SizedBox(height: 15),
           // Answer input area
           _buildAnswerInputArea(size),
@@ -191,54 +188,7 @@ class FourPicsOneWordUI extends GetView<FourPicsOneWordController> {
     );
   }
 
-  Widget _buildGameStatus(Size size) {
-    return Obx(() {
-      return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              controller.gameFinished 
-                ? (controller.answeredCorrectly ? Icons.check_circle : Icons.cancel)
-                : Icons.quiz,
-              color: controller.gameFinished
-                ? (controller.answeredCorrectly ? Colors.green : Colors.red)
-                : AppColor.primary,
-              size: 24,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              controller.gameFinished
-                ? (controller.answeredCorrectly ? 'Completed Successfully!' : 'Try Again!')
-                : 'Solve the Puzzle!',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: controller.gameFinished
-                  ? (controller.answeredCorrectly ? Colors.green : Colors.red)
-                  : AppColor.primary,
-              ),
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
-  Widget _buildFourPicturesGrid(Size size) {
+  Widget _buildSinglePicture(Size size) {
     return Obx(() {
       final question = controller.currentQuestion;
       if (question == null) return const SizedBox();
@@ -258,9 +208,10 @@ class FourPicsOneWordUI extends GetView<FourPicsOneWordController> {
           ],
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min, // container co gọn theo nội dung
           children: [
             Text(
-              'What do these 4 pictures have in common?',
+              'What is this?',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -269,87 +220,73 @@ class FourPicsOneWordUI extends GetView<FourPicsOneWordController> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 1,
-              ),
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 6,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      question.imagePaths[index],
-                      fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                              valueColor: AlwaysStoppedAnimation<Color>(AppColor.primary),
-                            ),
-                          ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.image,
-                                size: 40,
-                                color: Colors.grey.shade400,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Image ${index + 1}',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+            SizedBox(
+              width: MediaQuery.of(Get.context!).size.width * 0.2, //40% chiều rộng màn hình
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
                     ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    question.imagePaths,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        color: Colors.grey.shade200,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                                : null,
+                            valueColor: AlwaysStoppedAnimation<Color>(AppColor.primary),
+                          ),
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey.shade200,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.image,
+                              size: 40,
+                              color: Colors.grey.shade400,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Image',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+              ),
             ),
           ],
         ),
       );
     });
   }
+
+
 
   Widget _buildAnswerInputArea(Size size) {
     return Obx(() {
@@ -585,35 +522,6 @@ class FourPicsOneWordUI extends GetView<FourPicsOneWordController> {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: controller.restartGame,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.shade500,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 4,
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.refresh, size: 20),
-                      SizedBox(width: 8),
-                      Text(
-                        'Play Again',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton(
                   onPressed: () => Get.back(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red.shade500,
@@ -646,36 +554,6 @@ class FourPicsOneWordUI extends GetView<FourPicsOneWordController> {
 
         return Row(
           children: [
-            // Skip button
-            Expanded(
-              child: ElevatedButton(
-                onPressed: controller.skipQuestion,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey.shade500,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  elevation: 4,
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.skip_next, size: 20),
-                    SizedBox(width: 8),
-                    Text(
-                      'Skip',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
             // Listen button
             Expanded(
               child: ElevatedButton(

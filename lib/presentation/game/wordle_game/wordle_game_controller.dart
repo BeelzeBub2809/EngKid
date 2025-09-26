@@ -1,3 +1,5 @@
+import 'package:EngKid/presentation/core/topic_service.dart';
+import 'package:EngKid/presentation/core/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
@@ -25,6 +27,7 @@ class WordleGameController extends GetxController {
   // Game data from navigation arguments
   Map<String, dynamic>? _gameData;
   int get gameId => _gameData?['game_id'] ?? 2;
+  int get learningPathId => _gameData?['learning_path_id'] ?? 1;
 
   // ignore: constant_identifier_names
   static const String DICTIONARY_API_URL =
@@ -32,6 +35,9 @@ class WordleGameController extends GetxController {
 
   // Constructor with dependency injection
   WordleGameController(this._getWordsByGameIdUseCase);
+
+  final TopicService _topicService = Get.find<TopicService>();
+  final UserService _userService = Get.find<UserService>();
 
   // Game state
   final RxString _targetWord = ''.obs;
@@ -288,7 +294,7 @@ class WordleGameController extends GetxController {
     return _guesses[_currentRow.value].map((letter) => letter.letter).join('');
   }
 
-  void _submitGuess() {
+  Future<void> _submitGuess() async {
     if (_currentCol.value != wordLength) {
       LibFunction.toast('Complete the word first!');
       return;
@@ -311,7 +317,7 @@ class WordleGameController extends GetxController {
       _gameFinished.value = true;
       _isKeyboardVisible.value = false; // Auto-close keyboard
       LibFunction.toast('Congratulations! You won!');
-
+      await _topicService.submitGameResult(_userService.currentUser.id, null, 5, 1, "00:00", learningPathId, gameId);await _topicService.submitGameResult(_userService.currentUser.id, null, 5, 1, "00:00", learningPathId, gameId);
       // Show result dialog after a brief delay
       Future.delayed(const Duration(milliseconds: 500), () {
         _showResultDialog();

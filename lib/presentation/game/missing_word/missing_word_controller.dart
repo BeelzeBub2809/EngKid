@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:convert';
+import 'package:EngKid/presentation/core/topic_service.dart';
+import 'package:EngKid/presentation/core/user_service.dart';
 import 'package:get/get.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:http/http.dart' as http;
@@ -67,6 +69,8 @@ class MissingWordController extends GetxController {
   final GetWordsByGameIdUseCase _getWordsByGameIdUseCase;
 
   MissingWordController(this._getWordsByGameIdUseCase);
+  final TopicService _topicService = Get.find<TopicService>();
+  final UserService _userService = Get.find<UserService>();
 
   final _gameState = MissingWordGameState.loading.obs;
   final _isLoading = false.obs;
@@ -85,6 +89,7 @@ class MissingWordController extends GetxController {
   int _currentWordIndex = 0;
   Map<String, dynamic>? _gameData;
   int get gameId => _gameData?['game_id'] ?? 2;
+  int get learningPathId => _gameData?['learning_path_id'] ?? 1;
 
   final _currentWord = Rx<MissingLetterData?>(null);
   final _userInput = ''.obs;
@@ -859,12 +864,13 @@ class MissingWordController extends GetxController {
     _updateCurrentWordInput();
   }
 
-  void _endGame() {
+  Future<void> _endGame() async {
     _gameTimer?.cancel();
     _gameInProgress.value = false;
     _gameState.value = MissingWordGameState.finished;
     _showResult.value = true;
     _isKeyboardVisible.value = false;
+    await _topicService.submitGameResult(_userService.currentUser.id, null, 5, 1, "00:00", learningPathId, gameId);
 
     LibFunction.effectFinish();
   }

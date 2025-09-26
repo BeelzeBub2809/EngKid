@@ -1,3 +1,7 @@
+import 'package:EngKid/domain/entities/word/word_entity.dart';
+import 'package:EngKid/domain/word/get_words_by_game_id_usecase.dart';
+import 'package:EngKid/presentation/core/topic_service.dart';
+import 'package:EngKid/presentation/core/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -6,7 +10,7 @@ import 'package:EngKid/widgets/dialog/dialog_four_pics_result.dart';
 
 class FourPicsOneWordQuestion {
   final String word;
-  final List<String> imagePaths;
+  final String imagePaths;
   final String hint;
   final int difficulty; // 1: easy, 2: medium, 3: hard
 
@@ -20,7 +24,11 @@ class FourPicsOneWordQuestion {
 
 class FourPicsOneWordController extends GetxController {
   late FlutterTts _flutterTts;
+  final GetWordsByGameIdUseCase _getWordsByGameIdUseCase;
+  FourPicsOneWordController(this._getWordsByGameIdUseCase);
 
+  final TopicService _topicService = Get.find<TopicService>();
+  final UserService _userService = Get.find<UserService>();
   // Game state variables - chỉ có 1 question
   final Rx<FourPicsOneWordQuestion?> _currentQuestion = Rx<FourPicsOneWordQuestion?>(null);
   final RxString _currentAnswer = ''.obs;
@@ -34,6 +42,11 @@ class FourPicsOneWordController extends GetxController {
   final RxInt _hints = 3.obs;
   final RxBool _isLoading = true.obs;
   final RxBool _showHint = false.obs;
+  Map<String, dynamic>? _gameData;
+  int get gameId => _gameData?['game_id'] ?? 2;
+  int get learningPathId => _gameData?['learning_path_id'] ?? 1;
+  final _words = <WordEntity>[].obs;
+  final RxInt _hintRevealedCount = 0.obs;
 
   // Getters
   FourPicsOneWordQuestion? get currentQuestion => _currentQuestion.value;
@@ -53,6 +66,7 @@ class FourPicsOneWordController extends GetxController {
   void onInit() {
     super.onInit();
     _initializeTTS();
+    _gameData = Get.arguments as Map<String, dynamic>?;
     _loadGameData();
   }
 
@@ -73,20 +87,17 @@ class FourPicsOneWordController extends GetxController {
   Future<void> _loadGameData() async {
     try {
       _isLoading.value = true;
-
-      // Chỉ có 1 question với hình ảnh online
+      final fetchedWords = await _getWordsByGameIdUseCase.call(gameId);
+      if (fetchedWords.isEmpty) {
+        throw Exception('No words found for this game');
+      }
+      _words.value = fetchedWords;
       final question = FourPicsOneWordQuestion(
-        word: "CAT",
-        imagePaths: [
-          "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop&crop=center",
-          "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=300&h=300&fit=crop&crop=center",
-          "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=300&h=300&fit=crop&crop=center",
-          "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=300&h=300&fit=crop&crop=center",
-        ],
-        hint: "A small furry pet that says meow",
-        difficulty: 1,
+        word: _words[0].word,
+        imagePaths: _words[0].image,
+        hint: '',
       );
-
+      _hints.value = (question.word.length - 1).clamp(0, question.word.length);
       _currentQuestion.value = question;
 
       // Start game
@@ -124,7 +135,7 @@ class FourPicsOneWordController extends GetxController {
     final answerLetters = answer.split('');
 
     // Add extra random letters to make it challenging
-    final extraLetters = ['A', 'E', 'I', 'O', 'U', 'R', 'S', 'T', 'L', 'N', 'M', 'D'];
+    final extraLetters = ['A', 'E', 'I', 'O', 'U', 'R', 'S'];
     final neededExtra = (16 - answerLetters.length).clamp(0, extraLetters.length);
 
     final allLetters = <String>[];
@@ -224,16 +235,22 @@ class FourPicsOneWordController extends GetxController {
   }
 
   void useHint() {
-    if (_hints.value > 0 && !_showHint.value) {
+    final answer = _currentAnswer.value;
+
+    if (_hints.value > 0 && _hintRevealedCount.value < answer.length) {
       _hints.value--;
-      _showHint.value = true;
+
+      final revealIndex = _hintRevealedCount.value;
+      final letterToReveal = answer[revealIndex];
+
+      _hintRevealedCount.value++;
 
       Get.snackbar(
         'Hint! 💡',
-        currentQuestion?.hint ?? '',
+        'The ${revealIndex + 1} letter is "$letterToReveal"',
         backgroundColor: Colors.blue,
         colorText: Colors.white,
-        duration: const Duration(seconds: 4),
+        duration: const Duration(seconds: 2),
         snackPosition: SnackPosition.TOP,
       );
     } else if (_hints.value <= 0) {
@@ -244,33 +261,22 @@ class FourPicsOneWordController extends GetxController {
         colorText: Colors.white,
         duration: const Duration(seconds: 2),
       );
+    } else {
+      Get.snackbar(
+        'All Letters Revealed!',
+        'The whole word is already revealed.',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+      );
     }
   }
 
-  void skipQuestion() {
-    Get.dialog(
-      AlertDialog(
-        title: const Text('Skip Question'),
-        content: const Text('Are you sure you want to skip this question? The game will end.'),
-        actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Get.back();
-              _endGame();
-            },
-            child: const Text('Skip'),
-          ),
-        ],
-      ),
-    );
-  }
 
-  void _endGame() {
+
+  Future<void> _endGame() async {
     _gameFinished.value = true;
+    await _topicService.submitGameResult(_userService.currentUser.id, null, 5, 1, "00:00", learningPathId, gameId);
     _showGameResult();
   }
 
