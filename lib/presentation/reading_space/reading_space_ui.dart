@@ -22,6 +22,7 @@ class ReadingScreen extends GetView<ReadingSpaceController> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final TopicService topicService = Get.find<TopicService>();
+
     return Obx(() {
       return Stack(
         children: [

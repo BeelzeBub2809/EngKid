@@ -162,14 +162,14 @@ class QuestionController extends GetxController with WidgetsBindingObserver {
   void _initCheckCorrectAnswer() {
     checkCorrectAnswer = List<bool>.filled(_unCompleteQuestions.length, false);
     if (checkCorrectAnswer.isNotEmpty) {
-      checkCorrectAnswer[0] = true;
-      checkCorrectAnswer[1] = true;
-      if (checkCorrectAnswer.length > 1) {
-        checkCorrectAnswer[checkCorrectAnswer.length - 1] = true;
-        checkCorrectAnswer[checkCorrectAnswer.length - 2] = true;
-        checkCorrectAnswer[checkCorrectAnswer.length - 3] = true;
-        checkCorrectAnswer[checkCorrectAnswer.length - 4] = true;
-      }
+      // checkCorrectAnswer[0] = true;
+      // checkCorrectAnswer[1] = true;
+      // if (checkCorrectAnswer.length > 1) {
+      //   checkCorrectAnswer[checkCorrectAnswer.length - 1] = true;
+      //   checkCorrectAnswer[checkCorrectAnswer.length - 2] = true;
+      //   checkCorrectAnswer[checkCorrectAnswer.length - 3] = true;
+      //   checkCorrectAnswer[checkCorrectAnswer.length - 4] = true;
+      // }
     }
   }
 
