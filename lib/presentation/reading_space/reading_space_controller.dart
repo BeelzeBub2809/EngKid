@@ -265,31 +265,31 @@ class ReadingSpaceController extends GetxController
 
   VideoPlayerController get videoController => _videoController!;
 
-  List get isDownloaded => _isDownloaded.value;
+  List get isDownloaded => _isDownloaded;
 
-  List get isVideoDownloaded => _isVideoDownloaded.value;
+  List get isVideoDownloaded => _isVideoDownloaded;
 
-  List get isMultipleDownloading => _isMultipleDownloading.value;
+  List get isMultipleDownloading => _isMultipleDownloading;
 
-  List get isHasVideoMong => _isHasVideoMong.value;
+  List get isHasVideoMong => _isHasVideoMong;
 
   bool get isDownloadedScreen => _isDownloadedScreen.value;
 
   String get selectedLanguage => _selectLanguage.value;
 
-  List get isCheckedMong => _isCheckedMong.value;
+  List get isCheckedMong => _isCheckedMong;
 
   bool get isCheckedAllMong => _isCheckedAllMong.value;
 
   bool get isSelectedMong => _isSelectedMong.value;
 
-  List get isDownloadedVideoMong => _isDownloadedVideoMong.value;
+  List get isDownloadedVideoMong => _isDownloadedVideoMong;
 
   bool get ReadingSequence => _readingSequence.value;
 
-  List<Topic> get topics => _topics.value;
+  List<Topic> get topics => _topics;
 
-  List<Reading> get readings => _readings.value;
+  List<Reading> get readings => _readings;
 
   int get topicIndex => _topicIndex.value;
 
@@ -318,6 +318,19 @@ class ReadingSpaceController extends GetxController
     } else {
       await fetchData();
     }
+  }
+
+  // Call this when screen is resumed to refresh data and rebuild UI
+  void onResumedRefresh() async {
+    debugPrint("Performing onResumedRefresh - rebuilding reading space UI");
+    await refreshData();
+  }
+
+  // Manual method to force refresh - can be called from outside
+  void forceRefreshUI() async {
+    debugPrint("Force refreshing reading space UI");
+    await refreshData();
+    update(); // Force GetX to rebuild UI
   }
 
   @override
@@ -585,6 +598,10 @@ class ReadingSpaceController extends GetxController
       // Navigate directly to specific game based on game_type
       final result = await _navigateToSpecificGame(gameType, gameData);
 
+      // Refresh UI when returning from game (regardless of result)
+      debugPrint("Returned from game: $gameType, refreshing reading space UI");
+      await refreshData();
+
       // Handle result if game completed and returned data
       if (result == true) {
         // Refresh learning path items nếu cần
@@ -836,10 +853,11 @@ class ReadingSpaceController extends GetxController
       ],
     );
     print("Lesson result: $result");
-    if (result == true) {
-      await refreshData();
-      await fetchData();
-    }
+
+    // Always refresh when returning from lesson (regardless of result)
+    debugPrint("Returned from lesson, refreshing reading space UI");
+    await refreshData();
+    await fetchData();
   }
 
   Future<void> startLearningPathLearning(Quiz quiz, int itemIndex) async {
@@ -853,12 +871,15 @@ class ReadingSpaceController extends GetxController
       ],
     );
     print("Lesson result: $result");
-    if (result == true) {
-      await refreshData();
-      // Refresh learning path items instead of regular readings
-      if (selectedLearningPath.value != null) {
-        await fetchLearningPathItems();
-      }
+
+    // Always refresh when returning from learning path lesson
+    debugPrint(
+        "Returned from learning path lesson, refreshing reading space UI");
+    await refreshData();
+
+    // Refresh learning path items instead of regular readings
+    if (selectedLearningPath.value != null) {
+      await fetchLearningPathItems();
     }
   }
 
@@ -907,13 +928,11 @@ class ReadingSpaceController extends GetxController
         'learningPathId': selectedLearningPath.value!['id'],
       };
 
-      final result = await Get.toNamed(AppRoute.starBoardCategoryChart,
-          arguments: arguments);
+      await Get.toNamed(AppRoute.starBoardCategoryChart, arguments: arguments);
 
-      // Refresh data when returning from category chart
-      if (result != null) {
-        await refreshData();
-      }
+      // Always refresh when returning from category chart
+      debugPrint("Returned from category chart, refreshing reading space UI");
+      await refreshData();
     } else {
       Get.snackbar(
         'Error',
