@@ -325,6 +325,67 @@ class ReadingSpaceController extends GetxController
     await fetchData();
   }
 
+  // Method to refresh all data and rebuild UI - call this when returning to screen
+  Future<void> refreshData() async {
+    try {
+      debugPrint("Refreshing Reading Space data...");
+      _isLoading.value = true;
+
+      if (selectedLearningPath.value != null) {
+        await fetchLearningPathCategories();
+      } else {
+        await fetchData();
+      }
+
+      _isLoading.value = false;
+      update(); // Force UI rebuild
+      debugPrint("Reading Space data refreshed successfully");
+    } catch (e) {
+      debugPrint("Error refreshing reading space data: $e");
+      _isLoading.value = false;
+    }
+  }
+
+  // Call this method when navigating back to screen manually
+  void onScreenResumed() {
+    debugPrint("Reading Space screen resumed manually");
+    refreshData();
+  }
+
+  // Handle app lifecycle changes
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    switch (state) {
+      case AppLifecycleState.resumed:
+        debugPrint("App resumed - refreshing Reading Space data");
+        refreshData();
+
+        // Original logic for time limit
+        final int timeLimit = getTimeLimitFromStorage();
+        debugPrint("app in resumed");
+        if (timeLimit > 0) {
+          countdownTimerUseApp(timeLimit);
+        }
+        break;
+      case AppLifecycleState.inactive:
+        debugPrint("app in inactive");
+        saveTimeLimitToStorage();
+        break;
+      case AppLifecycleState.paused:
+        debugPrint("app in paused");
+        saveTimeLimitToStorage();
+        break;
+      case AppLifecycleState.detached:
+        debugPrint("app in detached");
+        saveTimeLimitToStorage();
+        break;
+      case AppLifecycleState.hidden:
+        break;
+    }
+  }
+
   Future<void> fetchData() async {
     print("Call Fetch Data");
     try {
@@ -425,8 +486,7 @@ class ReadingSpaceController extends GetxController
       selectedCategoryIndex.value = index;
       await _learningPathService.changeCategory(pathId, index);
       learningPathItems.value =
-          _learningPathService.currentCategoryItems.toList()
-      ;
+          _learningPathService.currentCategoryItems.toList();
     }
   }
 
@@ -777,6 +837,7 @@ class ReadingSpaceController extends GetxController
     );
     print("Lesson result: $result");
     if (result == true) {
+      await refreshData();
       await fetchData();
     }
   }
@@ -793,6 +854,7 @@ class ReadingSpaceController extends GetxController
     );
     print("Lesson result: $result");
     if (result == true) {
+      await refreshData();
       // Refresh learning path items instead of regular readings
       if (selectedLearningPath.value != null) {
         await fetchLearningPathItems();
@@ -845,7 +907,13 @@ class ReadingSpaceController extends GetxController
         'learningPathId': selectedLearningPath.value!['id'],
       };
 
-      Get.toNamed(AppRoute.starBoardCategoryChart, arguments: arguments);
+      final result = await Get.toNamed(AppRoute.starBoardCategoryChart,
+          arguments: arguments);
+
+      // Refresh data when returning from category chart
+      if (result != null) {
+        await refreshData();
+      }
     } else {
       Get.snackbar(
         'Error',
@@ -1056,33 +1124,6 @@ class ReadingSpaceController extends GetxController
           60; // unit minutes
     } catch (e) {
       return 30 * 60;
-    }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        final int timeLimit = getTimeLimitFromStorage();
-        debugPrint("app in resumed");
-        if (timeLimit > 0) {
-          countdownTimerUseApp(timeLimit);
-        }
-        break;
-      case AppLifecycleState.inactive:
-        debugPrint("app in inactive");
-        saveTimeLimitToStorage();
-        break;
-      case AppLifecycleState.paused:
-        debugPrint("app in paused");
-        saveTimeLimitToStorage();
-        break;
-      case AppLifecycleState.detached:
-        debugPrint("app in detached");
-        saveTimeLimitToStorage();
-        break;
-      case AppLifecycleState.hidden:
-        break;
     }
   }
 
